@@ -2,10 +2,10 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=p1_heap
-ConfigurationName      :=Debug
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 WorkspacePath          := "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS"
 ProjectPath            := "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap"
@@ -36,8 +36,8 @@ ObjectSwitch           :=-o
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E 
 MakeDirCommand         :=mkdir -p
-CmpOptions             := -g $(Preprocessors)
-LinkOptions            :=  
+CmpOptions             :=  $(Preprocessors)
+LinkOptions            :=  -O2
 IncludePath            :=  "$(IncludeSwitch)." "$(IncludeSwitch)." 
 RcIncludePath          :=
 Libs                   :=
@@ -60,7 +60,7 @@ $(OutputFile): makeDirStep $(Objects)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) $(Objects) $(LibPath) $(Libs) $(LinkOptions)
 
 makeDirStep:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 

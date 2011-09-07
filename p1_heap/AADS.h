@@ -8,6 +8,7 @@ struct Element {
 
 struct Heap {
 	Element data[];
+	Element min;
 };
 
 class BinaryHeap {
@@ -16,7 +17,7 @@ class BinaryHeap {
 		void insert(Element*, Heap*);
 		Element* find_min(Heap*);
 		Element* delete_min(Heap*);
-		Heap* meld(Heap*);
+		Heap* meld(Heap*, Heap*);
 		Element* decrease_key(int, Element*);
 		Element* delete_element(Element*, Heap*);
 };
@@ -27,7 +28,7 @@ class FibonacciHeap {
 		void insert(Element*, Heap*);
 		Element* find_min(Heap*);
 		Element* delete_min(Heap*);
-		Heap* meld(Heap*);
+		Heap* meld(Heap*, Heap*);
 		Element* decrease_key(int, Element*);
 		Element* delete_element(Element*, Heap*);
 };
