@@ -1,36 +1,15 @@
 #ifndef AADS_H
 #define AADS_H
 
-struct Element {
+typedef struct Element {
 	int key;
-	void* data;
-};
+	void *data;
+} Element;
 
-struct Heap {
-	Element data[];
+typedef struct Heap {
 	Element min;
-};
-
-class BinaryHeap {
-	public:
-		Heap* initialize_heap(int);
-		void insert(Element*, Heap*);
-		Element* find_min(Heap*);
-		Element* delete_min(Heap*);
-		Heap* meld(Heap*, Heap*);
-		Element* decrease_key(int, Element*);
-		Element* delete_element(Element*, Heap*);
-};
-
-class FibonacciHeap {
-	public:
-		Heap* initialize_heap(int);
-		void insert(Element*, Heap*);
-		Element* find_min(Heap*);
-		Element* delete_min(Heap*);
-		Heap* meld(Heap*, Heap*);
-		Element* decrease_key(int, Element*);
-		Element* delete_element(Element*, Heap*);
-};
+	int size;
+	Element *data[];
+} Heap;
 
 #endif

@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Peter Hvidgaard
-Date                   :=09/07/2011
+Date                   :=09/11/2011
 CodeLitePath           :="/home/hvidgaard/.codelite"
 LinkerName             :=gcc
 ArchiveTool            :=ar rcus
@@ -76,21 +76,21 @@ $(IntermediateDirectory)/main$(DependSuffix): main.c
 $(IntermediateDirectory)/main$(PreprocessSuffix): main.c
 	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/main$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/main.c"
 
-$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix): BinaryHeap.cpp $(IntermediateDirectory)/BinaryHeap$(DependSuffix)
-	$(CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.cpp" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/BinaryHeap$(DependSuffix): BinaryHeap.cpp
-	@$(CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/BinaryHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.cpp"
+$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix): BinaryHeap.c $(IntermediateDirectory)/BinaryHeap$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BinaryHeap$(DependSuffix): BinaryHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/BinaryHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.c"
 
-$(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix): BinaryHeap.cpp
-	@$(CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.cpp"
+$(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix): BinaryHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.c"
 
-$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix): FibonacciHeap.cpp $(IntermediateDirectory)/FibonacciHeap$(DependSuffix)
-	$(CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.cpp" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/FibonacciHeap$(DependSuffix): FibonacciHeap.cpp
-	@$(CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/FibonacciHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.cpp"
+$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix): FibonacciHeap.c $(IntermediateDirectory)/FibonacciHeap$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FibonacciHeap$(DependSuffix): FibonacciHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/FibonacciHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c"
 
-$(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix): FibonacciHeap.cpp
-	@$(CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.cpp"
+$(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix): FibonacciHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
