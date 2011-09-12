@@ -11,7 +11,7 @@ typedef struct Element {
 typedef struct Heap {
 	unsigned int max_size;
 	unsigned int size;
-	Element data[];
+	Element * data;
 } Heap;
 
 #endif
