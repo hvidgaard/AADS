@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AADS Project 1" default="main" basedir="."
+	xmlns:cpptasks="antlib:net.sf.antcontrib.cpptasks">
+
+	<target name="main">
+		<mkdir dir="obj"/>
+		
+		<cpptasks:cc outtype="executable" subsystem="console" outfile="main" objdir="obj">
+			<includepath>
+				<pathelement path="."/>
+			</includepath>
+			<fileset dir="." includes="*.c"/>
+		</cpptasks:cc>
+	</target>
+	
+</project>
