@@ -1,5 +1,5 @@
 4					# of vertices
 0 45 12 53			the weight of all from vertex 1 to all other vertecies in numerical order
-30 0 2 54			from vertex 2
-9 0 0 3				from vertex 3
-3 6 9 0				from vertex 4 - note that a weight of 0 means there's no edge.
+45 0 0 6			from vertex 2
+12 0 0 9			from vertex 3
+53 6 9 0			from vertex 4 - note that a weight of 0 means there's no edge, and the symmetry because it's undirected
