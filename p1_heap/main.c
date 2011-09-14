@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 		printf("got: %d\n\n", e->key);
 		printf("heap size is now: %d\n", h->size);
 		fflush(stdout);
-		//free(e);
+		free(e);
 	}
 
 	fflush(stdout);
