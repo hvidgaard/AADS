@@ -2,20 +2,20 @@
 #define AADS_H
 #define UINT_MAX 4294967295
 
-typedef struct Element {
+typedef struct bh_element {
 	unsigned int key;
 	unsigned int index;
 	void *data;
-} Element;
+} bh_element;
 
-typedef struct Binary_heap {
+typedef struct binary_heap {
 	unsigned int max_size;
 	unsigned int size;
-	Element * data;
-} Binary_heap;
+	bh_element * data;
+} binary_heap;
 
-typedef struct Fib_heap {
+typedef struct fib_heap {
 	//INSERT HERE
-} Fib_heap;
+} fib_heap;
 
 #endif

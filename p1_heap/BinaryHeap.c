@@ -2,15 +2,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Binary_heap *bh_init_heap(unsigned int size);
-unsigned int bh_insert(unsigned int key, void *data, Binary_heap *h);
-unsigned int bh_find_min(Binary_heap *h);
-Element *bh_delete_min(Binary_heap *h);
-Binary_heap *bh_meld(Binary_heap *h1, Binary_heap *h2);
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, Binary_heap *h);
-Element *bh_delete_element(unsigned int e, Binary_heap *h);
-void bh_min_heapify(unsigned int e, Binary_heap *h);
-void bh_exchange(unsigned int e1, unsigned int e2, Binary_heap *h);
+binary_heap *bh_init_heap(unsigned int size);
+unsigned int bh_insert(unsigned int key, void *data, binary_heap *h);
+unsigned int bh_find_min(binary_heap *h);
+bh_element *bh_delete_min(binary_heap *h);
+binary_heap *bh_meld(binary_heap *h1, binary_heap *h2);
+unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, binary_heap *h);
+bh_element *bh_delete_element(unsigned int e, binary_heap *h);
+void bh_min_heapify(unsigned int e, binary_heap *h);
+void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h);
 
 /* Given an index in the array, the family relations are as following:
  * 
@@ -27,7 +27,7 @@ void bh_exchange(unsigned int e1, unsigned int e2, Binary_heap *h);
  * it's children. Basicly it will move it down until both of it's children are
  * larger - while making sure that it stays within the size of the current heap.
  */
-void bh_min_heapify(unsigned int e, Binary_heap *h) {
+void bh_min_heapify(unsigned int e, binary_heap *h) {
 	unsigned int parent = e / 2;
 	unsigned int left = e * 2;
 	unsigned int right = (e * 2) + 1;
@@ -47,7 +47,7 @@ void bh_min_heapify(unsigned int e, Binary_heap *h) {
 	}
 }
 
-void bh_exchange(unsigned int e1, unsigned int e2, Binary_heap *h) {
+void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h) {
 	unsigned int t_key = h->data[e1].key;
 	unsigned int t_index = h->data[e1].index;
 	void *t_data = h->data[e1].data;
@@ -61,15 +61,15 @@ void bh_exchange(unsigned int e1, unsigned int e2, Binary_heap *h) {
 	//printf("now %d key %d and %d key %d\n\n", e1, h->data[e1].key, e2, h->data[e2].key);
 }
 
-Binary_heap *bh_init_heap(unsigned int size) {
-	Binary_heap *h = malloc(sizeof(struct Binary_heap));
+binary_heap *bh_init_heap(unsigned int size) {
+	binary_heap *h = malloc(sizeof(struct binary_heap));
 	h->max_size = size;
 	h->size = 0;
-	h->data = calloc(size+1, sizeof(struct Element));
+	h->data = calloc(size+1, sizeof(struct bh_element));
 	return h;
 }
 
-unsigned int bh_insert(unsigned int key, void *data, Binary_heap *h) {
+unsigned int bh_insert(unsigned int key, void *data, binary_heap *h) {
 	unsigned int result;
 	if (h->size < h->max_size) {
 		//printf("insert key %d\n", key);
@@ -87,14 +87,14 @@ unsigned int bh_insert(unsigned int key, void *data, Binary_heap *h) {
 	}
 }
 
-unsigned int bh_find_min(Binary_heap *h) {
+unsigned int bh_find_min(binary_heap *h) {
 	if (h->size > 0)
 		return 1;
 	else
 		return 0;
 }
 
-Element *bh_delete_min(Binary_heap *h) {
+bh_element *bh_delete_min(binary_heap *h) {
 	if (h->size > 0)
 		return bh_delete_element(1, h);
 	else
@@ -103,14 +103,14 @@ Element *bh_delete_min(Binary_heap *h) {
 
 /* NOT IMPLEMENTED
  */
-Binary_heap *bh_meld(Binary_heap *h1, Binary_heap *h2) {
+binary_heap *bh_meld(binary_heap *h1, binary_heap *h2) {
 	return 0;
 }
 
 /* will decrease the key of an element, and bubble it up until the heap
  * property is reestablished
  */
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, Binary_heap *h) {
+unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, binary_heap *h) {
 	unsigned int parent;
 	if (new_key >= h->data[e].key)
 			//technically it's an error, so we return 0
@@ -127,8 +127,8 @@ unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, Binary_heap *
 	return e;
 }
 
-Element *bh_delete_element(unsigned int e, Binary_heap *h){
-	Element *result = malloc(sizeof(struct Element));
+bh_element *bh_delete_element(unsigned int e, binary_heap *h){
+	bh_element *result = malloc(sizeof(struct bh_element));
 	//printf("Deleting: %d, with key %d\n", e, h->data[e].key);
 	if (h->size > 1 && e <= h->size) {
 		bh_exchange(e, h->size, h);

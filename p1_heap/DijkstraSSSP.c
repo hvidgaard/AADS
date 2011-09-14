@@ -68,7 +68,7 @@ unsigned long long test_binary(FILE * testfile){
 	}
    return 0;
 	
-	Binary_heap *h = bh_init_heap(size);
+	binary_heap *h = bh_init_heap(size);
 	dist[source] = 0;
 	bh_insert(0, source, h);
 }
