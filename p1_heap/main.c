@@ -5,7 +5,7 @@
 int main(int argc, char **argv)
 {
 	printf("hello world\n");
-	Heap *h = (Heap*)bh_init_heap(16);
+	Binary_heap *h = bh_init_heap(16);
 	int i;
 	for (i = 1; i <= 16; i++)
 		bh_insert(17-i, NULL, h);
@@ -19,12 +19,13 @@ int main(int argc, char **argv)
 	Element *e;
 	while (h->size != 0){
 		printf("heap size: %d - deleting min\n", h->size);
-		e = (Element*)bh_delete_min(h);
+		e = bh_delete_min(h);
 		printf("got: %d\n\n", e->key);
 		printf("heap size is now: %d\n", h->size);
 		fflush(stdout);
 		//free(e);
 	}
+
 	fflush(stdout);
 	return 0;
 }

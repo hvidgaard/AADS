@@ -8,10 +8,14 @@ typedef struct Element {
 	void *data;
 } Element;
 
-typedef struct Heap {
+typedef struct Binary_heap {
 	unsigned int max_size;
 	unsigned int size;
 	Element * data;
-} Heap;
+} Binary_heap;
+
+typedef struct Fib_heap {
+	//INSERT HERE
+} Fib_heap;
 
 #endif

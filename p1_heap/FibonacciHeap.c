@@ -1,37 +1,13 @@
-#include<AADS.h>
+#include <AADS.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-Heap *fh_init_heap(int size);
-void fh_insert(Element *e, Heap *h);
-Element *fh_find_min(Heap *h);
-Element *fh_delete_min(Heap *h);
-Heap *fh_meld(Heap *h1, Heap *h2);
-Element *fh_decrease_key(int delta, Element *e, Heap *h);
-Element *fh_delete_element(Element *e, Heap *h);
-
-Heap *fh_init_heap(int size) {
-	return 0;
-}
-
-void fh_insert(Element *e, Heap *h) {
-	return;
-}
-
-Element *fh_find_min(Heap *h) {
-	return 0;
-}
-
-Element *fh_delete_min(Heap *h) {
-	return 0;
-}
-
-Heap *fh_meld(Heap *h1, Heap *h2) {
-	return 0;
-}
-
-Element *fh_decrease_key(int delta, Element *e, Heap *h) {
-	return 0;
-}
-
-Element *fh_delete_element(Element *e, Heap *h){
-	return 0;
-}
+Fib_heap *fib_init_heap(unsigned int size);
+unsigned int fib_insert(unsigned int key, void *data, Fib_heap *h);
+unsigned int fib_find_min(Fib_heap *h);
+Element *fib_delete_min(Fib_heap *h);
+Fib_heap *fib_meld(Fib_heap *h1, Fib_heap *h2);
+unsigned int fib_decrease_key(unsigned int new_key, unsigned int e, Fib_heap *h);
+Element *fib_delete_element(unsigned int e, Fib_heap *h);
+void fib_min_heapify(unsigned int e, Fib_heap *h);
+void fib_exchange(unsigned int e1, unsigned int e2, Fib_heap *h);

@@ -48,7 +48,7 @@ LibPath                := "$(LibraryPathSwitch)."
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects=$(IntermediateDirectory)/main$(ObjectSuffix) $(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) 
+Objects=$(IntermediateDirectory)/main$(ObjectSuffix) $(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix) 
 
 ##
 ## Main Build Targets 
@@ -92,6 +92,14 @@ $(IntermediateDirectory)/FibonacciHeap$(DependSuffix): FibonacciHeap.c
 $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix): FibonacciHeap.c
 	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c"
 
+$(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix): DijkstraSSSP.c $(IntermediateDirectory)/DijkstraSSSP$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/DijkstraSSSP.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/DijkstraSSSP$(DependSuffix): DijkstraSSSP.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix) -MF$(IntermediateDirectory)/DijkstraSSSP$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/DijkstraSSSP.c"
+
+$(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix): DijkstraSSSP.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/DijkstraSSSP.c"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
@@ -107,6 +115,9 @@ clean:
 	$(RM) $(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix)
 	$(RM) $(IntermediateDirectory)/FibonacciHeap$(DependSuffix)
 	$(RM) $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/DijkstraSSSP$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix)
 	$(RM) $(OutputFile)
 
 
