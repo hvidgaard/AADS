@@ -36,12 +36,12 @@ void fib_insert(unsigned int key, FibHeap *heap) {
 }
 
 void fib_meld(FibHeap *heap, FibHeap *insertHeap) {
-	fib_circle(heap->min, insertHeap->min);
+	fib_join_circles(heap->min, insertHeap->min);
 	if(heap->min->key > insertHeap->min->key)
 		heap.min = insertHeap.min;
 }
 
-void fib_circle(FibNod *node1, FibNode *node2) {
+void fib_join_circles(FibNod *node1, FibNode *node2) {
 	if(node1 == NULL)
 		node1 = node2;
 	if(node2 == NULL)
@@ -55,23 +55,21 @@ void fib_circle(FibNod *node1, FibNode *node2) {
 void fib_delete_min(FibHeap *heap) {
 	FibNode *node;
 	FibNode *startNode;
+	FibNode *rootNodes[heap->maxRank];
 
-	heap->min->child->left.right = heap->min.right;
-	heap->min->right.left = heap->min->child.left;
-	heap->min->child.left = heap->min.left;
-	heap->min->left.right = heap->min.child;
+	fib_join_circles(heap->min.child, heap->min.left);
 
 	node = startNode = heap->min.child;
-	FibNode *rootNodes = (FibNode*) calloc(heap->maxRank,sizeof(FibNode));
+	rootNodes = (FibNode*) calloc(heap->maxRank,sizeof(FibNode));
 	do {
 		while(rootNodes[node.rank] != NULL) {
 			if(node->key < node.left->key) {
-				fib_circle(node.child, node.left);
+				fib_join_circles(node.child, node.left);
 			} else {
 				if(node == startNode)
 					startNode = node.left;
 				node = node.left;
-				fib_circle(node.child, node.right);
+				fib_join_circles(node.child, node.right);
 			}
 			node.rank++;
 		}
