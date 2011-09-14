@@ -1,25 +1,30 @@
 #include <stdio.h>
 #include <AADS.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv)
 {
 	printf("hello world\n");
-	Heap* h = bh_init_heap(32);
-	printf("%d\n",bh_insert(50, NULL, h));
-	printf("%d\n",bh_insert(32, NULL, h));
-	printf("%d\n",bh_insert(62, NULL, h));
-	printf("%d\n",bh_insert(8, NULL, h));
-	printf("%d\n",bh_insert(26, NULL, h));
-	printf("%d\n",bh_insert(1, NULL, h));
-	printf("%d\n",bh_insert(435, NULL, h));
-	printf("%d\n",bh_insert(60, NULL, h));
-	printf("%d\n",bh_insert(853, NULL, h));
-	printf("%d\n",bh_insert(36, NULL, h));
-	int i = 0;
+	Heap *h = (Heap*)bh_init_heap(16);
+	int i;
+	for (i = 1; i <= 16; i++)
+		bh_insert(17-i, NULL, h);
+	i = 0;
 	while (i < h->size) {
 		printf("element %d value %d\n", i, h->data[i].key);
+		fflush(stdout);
 		i++;
 	}
-	printf("hello world\n");
+	printf("\n");
+	Element *e;
+	while (h->size != 0){
+		printf("heap size: %d - deleting min\n", h->size);
+		e = (Element*)bh_delete_min(h);
+		printf("got: %d\n\n", e->key);
+		printf("heap size is now: %d\n", h->size);
+		fflush(stdout);
+		//free(e);
+	}
+	fflush(stdout);
 	return 0;
 }
