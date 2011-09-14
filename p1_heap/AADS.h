@@ -14,8 +14,19 @@ typedef struct binary_heap {
 	bh_element * data;
 } binary_heap;
 
-typedef struct fib_heap {
+typedef struct FibElement {
+	unsigned int key;
+	unsigned int index;
+	unsigned bool marked;
+	Element * parent;
+	Element * child;
+	Element * leftSibling;
+	Element * rightSibling;
+	void *data;
+} Element;
+
+typedef struct FibHeap {
 	//INSERT HERE
-} fib_heap;
+} FibHeap;
 
 #endif

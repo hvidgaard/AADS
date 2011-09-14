@@ -2,15 +2,27 @@
 <project name="AADS Project 1" default="main" basedir="."
 	xmlns:cpptasks="antlib:net.sf.antcontrib.cpptasks">
 
+	<property name="objectdir" value="obj" />
+	<property name="mainfile" value="main" />
+
 	<target name="main">
 		<mkdir dir="obj"/>
 		
-		<cpptasks:cc outtype="executable" subsystem="console" outfile="main" objdir="obj">
+		<cpptasks:cc outfile="${mainfile}" outtype="executable" subsystem="console" objdir="${objectdir}">
 			<includepath>
 				<pathelement path="."/>
 			</includepath>
 			<fileset dir="." includes="*.c"/>
 		</cpptasks:cc>
+	</target>
+
+	<target name="clean">
+		<delete dir="${objectdir}"/>
+		<delete file="${mainfile}"/>
+<!-- 		<delete includeEmptyDirs="true">
+			<fileset dir="${objectdir}" includes="*.o" />
+			<file name="main"/>
+		</delete> -->
 	</target>
 	
 </project>
