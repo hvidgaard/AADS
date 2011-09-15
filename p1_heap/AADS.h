@@ -17,16 +17,16 @@ typedef struct binary_heap {
 typedef struct FibNode {
 	unsigned int key;
 	unsigned int rank;
-	unsigned bool marked;
-	Element *parent;
-	Element *child;
-	Element *left;
-	Element *right;
-} Element;
+	unsigned int marked;
+	struct FibNode* parent;
+	struct FibNode* child;
+	struct FibNode* left;
+	struct FibNode* right;
+} FibNode;
 
 typedef struct FibHeap {
-	FibElement *min;
 	unsigned int maxRank;
+	FibNode *min;
 } FibHeap;
 
 #endif
