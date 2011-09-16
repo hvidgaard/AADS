@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AADS Project 1" default="main" basedir="."
+<project name="AADS Project 1" default="all" basedir="."
 	xmlns:cpptasks="antlib:net.sf.antcontrib.cpptasks">
 
+	<property name="src" value="src" />
 	<property name="objectdir" value="obj" />
-	<property name="mainfile" value="main" />
+	<property name="debug" value="true" />
 
-	<target name="main">
-		<mkdir dir="obj"/>
+	<target name="all" depends="binary,fibonacci,benchmark">
+	</target>
+
+	<target name="benchmark">
+	</target>
+
+	<target name="binary">
+		<mkdir dir="${objectdir}"/>
 		
-		<cpptasks:cc outfile="${mainfile}" outtype="executable" subsystem="console" objdir="${objectdir}">
+		<cpptasks:cc outfile="BinaryHeapTest" outtype="executable"
+			subsystem="console" objdir="${objectdir}" debug="${debug}">
 			<includepath>
-				<pathelement path="."/>
+				<pathelement path="${src}"/>
 			</includepath>
-			<fileset dir="." includes="*.c"/>
+			<fileset dir="${src}" includes="BinaryHeap.c" />
+			<fileset dir="${src}" includes="BinaryHeapTest.c" />
+		</cpptasks:cc>
+	</target>
+
+	<target name="fibonacci">
+		<mkdir dir="${objectdir}"/>
+		
+		<cpptasks:cc outfile="FibonacciHeapTest" outtype="executable"
+			subsystem="console" objdir="${objectdir}" debug="${debug}">
+			<includepath>
+				<pathelement path="${src}"/>
+			</includepath>
+			<fileset dir="${src}" includes="FibonacciHeap.c" />
+			<fileset dir="${src}" includes="FibonacciHeapTest.c" />
 		</cpptasks:cc>
 	</target>
 
 	<target name="clean">
 		<delete dir="${objectdir}"/>
-		<delete file="${mainfile}"/>
+		<delete file="FibonacciHeapTest"/>
+		<delete file="BinaryHeapTest"/>
 <!-- 		<delete includeEmptyDirs="true">
 			<fileset dir="${objectdir}" includes="*.o" />
 			<file name="main"/>
