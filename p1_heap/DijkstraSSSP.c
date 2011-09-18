@@ -18,20 +18,27 @@ unsigned long long test_binary(FILE * testfile);
 unsigned long long test_fib(FILE * testfile);
 
 unsigned long long test_binary(FILE * testfile){
-	unsigned int size = 0;
-	unsigned int source = 0;
-	unsigned int dist[size];
+	unsigned int size;
+	unsigned int source;
+	unsigned int len;
 	
 	if (testfile != NULL){
+		//reading the lines 256 chars at a time, it may be longer
+		//but that's okay, we'll handle that special case later.
 		char line_buf[256];
+		//when reading an int, it shouldn't be more than 10 chars long.
 		char int_buf[10];
+		
 		unsigned int num_vertices;
 		unsigned int line_buf_i = 0;
 		unsigned int int_buf_i = 0;
 		unsigned int edges_i = 0;
 		unsigned int vertex = 1;
-		fgets(line_buf, 256, testfile);
-		while (line_buf_i < 256 && line_buf[line_buf_i] != '\0'){
+		
+		len = getline(line_buf, 256, testfile);
+		//fgets(line_buf, 256, testfile);
+		int i = 0;
+		while (i != len && line_buf[line_buf_i] != ' '){
 			int_buf[int_buf_i] = line_buf[line_buf_i];
 			line_buf_i++;
 			int_buf_i++;
