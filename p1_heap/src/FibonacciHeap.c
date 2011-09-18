@@ -3,10 +3,10 @@
 #include <FibonacciHeap.h>
 
 /* Initialize a new Fibonacci heap. */
-FibHeap *fib_make_heap(unsigned int maxRank)
+FibHeap *fib_make_heap()
 {
 	struct FibHeap *heap = malloc(sizeof *heap);
-	heap->maxRank = maxRank;
+	heap->nodes = 0;
 	/* No min yet, set it to NULL.
 	This essentially means, the heap has no nodes. */
 	heap->min = NULL;
@@ -30,6 +30,7 @@ FibNode *fib_insert(unsigned int key, FibHeap *heap)
 		node->parent == NULL;
 		node->child == NULL;
 		heap->min = node;
+		heap->nodes = 1;
 		return node;
 	}
 	FibHeap *insertHeap = fib_make_heap(1);
@@ -49,6 +50,8 @@ void *fib_meld(FibHeap *heap1, FibHeap *heap2)
 		heap1->min = heap2->min;
 	else
 		heap2->min = heap1->min;
+	
+	heap1->nodes = heap2->nodes = (heap1->nodes + heap2->nodes);
 }
 
 /* Links two nodes, by setting the left node to be to the left of the right node. */
@@ -86,6 +89,7 @@ void *fib_delete_min(FibHeap *heap)
 		heap->min = oldMin->child;
 		/* If the heap was set to NULL, we are done. */
 		if(!oldMin->child) {
+			heap->nodes--;
 			free(oldMin);
 			return;
 		}
@@ -99,20 +103,27 @@ void *fib_delete_min(FibHeap *heap)
 		/* Set the minimum to be just something, will be updated later. */
 		heap->min = oldMin->left;
 	}
+	heap->nodes--;
 	free(oldMin);
 
+	/* Since we don't know the size of the list and it changes,
+	while we iterate, we simply remember the node we started at instead.
+	The list is circular, so we arrive at the start node when we are done. */
 	FibNode *start;
 	FibNode *next;
 	FibNode *node;
 	node = start = heap->min;
+
+	/* Allocate a zero initialized array, to check if any two nodes have the same rank. */
 	struct FibNode **roots;
-	roots = calloc(heap->maxRank,sizeof(struct FibNode*));
+	/* heap->nodes is actually too large, this can be smaller. */
+	roots = calloc(heap->nodes,sizeof(struct FibNode*));
 	do {
-		/* Remove parent pointer if the node is a child from the min node. */
-		node->parent = NULL;
 		/* Make sure we, know which node is the next one.
 		The actions below can mess with the linked list quite a bit. */
 		next = node->left;
+		/* Remove parent pointer. The node could be a child from the min node. */
+		node->parent = NULL;
 		/* If there already is a node with the same rank, merge the two.
 		Only do that when it is not the same node of course. */
 		while(roots[node->rank] && node != roots[node->rank]) {
@@ -204,6 +215,7 @@ void *fib_delete(FibNode *node, FibHeap *heap)
 			fib_link(node->left, node->right);
 		/* Make the children root nodes. */
 		fib_union(heap->min, node->child);
+		heap->nodes--;
 		free(node);
 	}
 }

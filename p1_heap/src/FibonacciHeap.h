@@ -12,11 +12,11 @@ typedef struct FibNode {
 } FibNode;
 
 typedef struct FibHeap {
-	unsigned int maxRank;
+	unsigned int nodes;
 	FibNode *min;
 } FibHeap;
 
-FibHeap *fib_make_heap(unsigned int maxRank);
+FibHeap *fib_make_heap();
 FibNode *fib_find_min(FibHeap *heap);
 FibNode *fib_insert(unsigned int key, FibHeap *heap);
 void *fib_meld(FibHeap *heap1, FibHeap *heap2);
