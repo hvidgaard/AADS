@@ -1,18 +1,7 @@
-#include <AADS.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-/*
-Binary_heap *bh_init_heap(unsigned int size);
-unsigned int bh_insert(unsigned int key, void *data, Binary_heap *h);
-unsigned int bh_find_min(Binary_heap *h);
-Element *bh_delete_min(Binary_heap *h);
-Binary_heap *bh_meld(Binary_heap *h1, Binary_heap *h2);
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, Binary_heap *h);
-Element *bh_delete_element(unsigned int e, Binary_heap *h);
-void bh_min_heapify(unsigned int e, Binary_heap *h);
-void bh_exchange(unsigned int e1, unsigned int e2, Binary_heap *h);
- */
+#include <BinaryHeap.h>
+#include <FibonacciHeap.h>
 
 unsigned long long test_binary(FILE * testfile);
 unsigned long long test_fib(FILE * testfile);

@@ -1,23 +1,11 @@
-#include <AADS.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-FibHeap *fib_make_heap(unsigned int maxRank);
-FibNode *fib_find_min(FibHeap *heap);
-FibNode *fib_insert(unsigned int key, FibHeap *heap);
-void *fib_meld(FibHeap *heap1, FibHeap *heap2);
-void *fib_link(FibNode *left, FibNode *right);
-void *fib_union(FibNode *node1, FibNode *node2);
-void *fib_delete_min(FibHeap *heap);
-void *fib_extract_childnode(FibNode *node, FibHeap *heap);
-void *fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap);
-void *fib_delete(FibNode *node, FibHeap *heap);
-
+#include <FibonacciHeap.h>
 
 
 FibHeap *fib_make_heap(unsigned int maxRank)
 {
-	FibHeap *heap = malloc(sizeof(struct FibHeap));
+	struct FibHeap *heap = malloc(sizeof *heap);
 	heap->maxRank = maxRank;
 	heap->min = NULL;
 	return heap;
