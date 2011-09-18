@@ -8,7 +8,10 @@ int main(int argc, char **argv)
 	int i;
 	for (i = 1; i <= 16; i++)
 		fib_insert(17-i, heap);
-	i = 0;
+	
+	FibNode *twenty = fib_insert(21, heap);
+	fib_decrease_key(15, twenty, heap);
+
 	FibNode *min = (FibNode *) fib_find_min(heap);
 	while (min != NULL) {
 		printf("min is %d\n", min->key);
