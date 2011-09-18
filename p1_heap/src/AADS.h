@@ -14,8 +14,19 @@ typedef struct binary_heap {
 	bh_element * data;
 } binary_heap;
 
-typedef struct fib_heap {
-	//INSERT HERE
-} fib_heap;
+typedef struct FibNode {
+	unsigned int key;
+	unsigned int rank;
+	unsigned int marked;
+	struct FibNode* parent;
+	struct FibNode* child;
+	struct FibNode* left;
+	struct FibNode* right;
+} FibNode;
+
+typedef struct FibHeap {
+	unsigned int maxRank;
+	FibNode *min;
+} FibHeap;
 
 #endif
