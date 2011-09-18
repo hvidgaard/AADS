@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv)
 {
-	FibHeap *heap = fib_make_heap(16);
+	FibHeap *heap = fib_make_heap(30);
 	int i;
 	for (i = 1; i <= 16; i++)
 		fib_insert(17-i, heap);
