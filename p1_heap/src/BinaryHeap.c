@@ -65,10 +65,10 @@ unsigned int bh_insert(unsigned int key, void *data, binary_heap *h) {
 	if (h->size < h->max_size) {
 		//printf("insert key %d\n", key);
 		h->size++;
-		h->data[h->size].key = UINT_MAX;
+		h->data[h->size].key = key;
 		h->data[h->size].data = data;
 		h->data[h->size].index = h->size;
-		result = bh_decrease_key(key, h->size, h);
+		result = bh_decrease_key(0, h->size, h);
 		//printf("inserted key %d, got index %d\n\n", key, result);
 		return result;
 	}
@@ -103,9 +103,9 @@ binary_heap *bh_meld(binary_heap *h1, binary_heap *h2) {
  */
 unsigned int bh_decrease_key(unsigned int delta, unsigned int e, binary_heap *h) {
 	unsigned int parent;
+	//technically it's an error, so we return 0
 	if (delta < 0)
-			//technically it's an error, so we return 0
-			return 0;
+		return 0;
 	if (e <= h->size) {
 		h->data[e].key -= delta;
 		parent = e / 2;
