@@ -101,13 +101,13 @@ binary_heap *bh_meld(binary_heap *h1, binary_heap *h2) {
 /* will decrease the key of an element, and bubble it up until the heap
  * property is reestablished
  */
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, binary_heap *h) {
+unsigned int bh_decrease_key(unsigned int delta, unsigned int e, binary_heap *h) {
 	unsigned int parent;
-	if (new_key >= h->data[e].key)
+	if (delta < 0)
 			//technically it's an error, so we return 0
 			return 0;
 	if (e <= h->size) {
-		h->data[e].key = new_key;
+		h->data[e].key -= delta;
 		parent = e / 2;
 		while (e > 1 && h->data[parent].key > h->data[e].key) {
 			bh_exchange(e, parent, h);
