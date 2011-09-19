@@ -5,6 +5,7 @@ typedef struct FibNode {
 	unsigned int key;
 	unsigned int rank;
 	unsigned int marked;
+	void *data;
 	struct FibNode* parent;
 	struct FibNode* child;
 	struct FibNode* left;
@@ -18,7 +19,7 @@ typedef struct FibHeap {
 
 FibHeap *fib_make_heap();
 FibNode *fib_find_min(FibHeap *heap);
-FibNode *fib_insert(unsigned int key, FibHeap *heap);
+FibNode *fib_insert(unsigned int key, void *data, FibHeap *heap);
 void *fib_meld(FibHeap *heap1, FibHeap *heap2);
 void *fib_link(FibNode *left, FibNode *right);
 void *fib_union(FibNode *node1, FibNode *node2);

@@ -19,13 +19,14 @@ FibNode *fib_find_min(FibHeap *heap) {
 }
 
 /* Creates a new node with specified key, and inserts it into the heap. */
-FibNode *fib_insert(unsigned int key, FibHeap *heap)
+FibNode *fib_insert(unsigned int key, void *data, FibHeap *heap)
 {
 	FibNode *node;
 	/* If the heap has no nodes, simply insert the new node as the minimum. */
 	if (!heap->min) {
 		node = calloc(1,sizeof(struct FibNode));
 		node->key = key;
+		node->data = data;
 		fib_link(node, node);
 		node->parent == NULL;
 		node->child == NULL;
@@ -36,7 +37,7 @@ FibNode *fib_insert(unsigned int key, FibHeap *heap)
 	FibHeap *insertHeap = fib_make_heap(1);
 	/* This call will result in the execution of the if() above,
 	since the insertHeap has no nodes. */
-	node = fib_insert(key, insertHeap);
+	node = fib_insert(key, data, insertHeap);
 	fib_meld(heap, insertHeap);
 	free(insertHeap);
 	return node;

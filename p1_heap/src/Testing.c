@@ -73,9 +73,9 @@ int test_fibonacci(int argc, char **argv)
 	FibHeap *heap = fib_make_heap(30);
 	int i;
 	for (i = 1; i <= 16; i++)
-		fib_insert(17-i, heap);
+		fib_insert(17-i, NULL, heap);
 	
-	FibNode *twenty = fib_insert(21, heap);
+	FibNode *twenty = fib_insert(21, NULL, heap);
 	fib_decrease_key(15, twenty, heap);
 
 	FibNode *min = (FibNode *) fib_find_min(heap);
