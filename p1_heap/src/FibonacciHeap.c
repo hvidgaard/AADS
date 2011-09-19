@@ -23,7 +23,7 @@ FibNode *fib_insert(unsigned int key, FibHeap *heap)
 {
 	FibNode *node;
 	/* If the heap has no nodes, simply insert the new node as the minimum. */
-	if(!heap->min) {
+	if (!heap->min) {
 		node = calloc(1,sizeof(struct FibNode));
 		node->key = key;
 		fib_link(node, node);
@@ -46,7 +46,7 @@ FibNode *fib_insert(unsigned int key, FibHeap *heap)
 void *fib_meld(FibHeap *heap1, FibHeap *heap2)
 {
 	fib_union(heap1->min, heap2->min);
-	if(heap1->min->key > heap2->min->key)
+	if (heap1->min->key > heap2->min->key)
 		heap1->min = heap2->min;
 	else
 		heap2->min = heap1->min;
@@ -65,7 +65,7 @@ void *fib_link(FibNode *left, FibNode *right)
 void *fib_union(FibNode *node1, FibNode *node2)
 {
 	/* If either node is NULL, do nothing. */
-	if(!node1 || !node2)
+	if (!node1 || !node2)
 		return;
 	/* Avoid tmp variables by using weird sequence of assignments */
 	node1->left->right = node2->right;
@@ -79,16 +79,16 @@ while doing all other kinds of shit. */
 void *fib_delete_min(FibHeap *heap)
 {
 	// Nothing to do if there is no minimum to begin with;
-	if(!heap->min)
+	if (!heap->min)
 		return;
 	
 	FibNode *oldMin = heap->min;
-	if(oldMin->left == oldMin) {
+	if (oldMin->left == oldMin) {
 		/* If the minimum is the only rootNode set the entire
 		set of childNodes of min to be the new root. */
 		heap->min = oldMin->child;
 		/* If the heap was set to NULL, we are done. */
-		if(!oldMin->child) {
+		if (!oldMin->child) {
 			heap->nodes--;
 			free(oldMin);
 			return;
@@ -126,10 +126,10 @@ void *fib_delete_min(FibHeap *heap)
 		node->parent = NULL;
 		/* If there already is a node with the same rank, merge the two.
 		Only do that when it is not the same node of course. */
-		while(roots[node->rank] && node != roots[node->rank]) {
+		while (roots[node->rank] && node != roots[node->rank]) {
 			FibNode *other = roots[node->rank];
 			/* Make one node the child of the other, depending on the key*/
-			if(node->key < other->key) {
+			if (node->key < other->key) {
 				fib_union(node->child, other);
 				other->parent = node;
 			} else {
@@ -150,10 +150,10 @@ void *fib_delete_min(FibHeap *heap)
 		}
 		roots[node->rank] = node;
 		/* Update the minimum of the heap. */
-		if(node->key < heap->min->key)
+		if (node->key < heap->min->key)
 			heap->min = node;
 		node = next;
-	} while(next != start);
+	} while (next != start);
 	free(roots);
 }
 
@@ -162,7 +162,7 @@ Properly updates the parent if necessary and the siblings as well. */
 void *fib_extract_childnode(FibNode *node, FibHeap *heap)
 {
 	FibNode *parent = node->parent;
-	if(node->left == node) {
+	if (node->left == node) {
 		/* Single child. Set parent child pointer to null. */
 		parent->child = NULL;
 	} else {
@@ -180,7 +180,7 @@ void *fib_extract_childnode(FibNode *node, FibHeap *heap)
 	/* Node does not have a parent now. */
 	node->parent = NULL;
 	/* Repeat process for the parent, if it was marked. */
-	if(parent->marked) {
+	if (parent->marked) {
 		fib_extract_childnode(parent, heap);
 		fib_union(heap->min, parent);
 	}
@@ -192,24 +192,24 @@ void *fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap)
 {
 	node->key -= delta;
 	/* Make the node a root node, if it isn't already. */
-	if(node->parent) {
+	if (node->parent) {
 		fib_extract_childnode(node, heap);
 		node->parent = NULL;
 		fib_union(heap->min, node);
 	}
-	if(heap->min->key > node->key)
+	if (heap->min->key > node->key)
 		heap->min = node;
 }
 
 void *fib_delete(FibNode *node, FibHeap *heap)
 {
 	/* If the node is the minimum, it is actually delete_min we want to call. */
-	if(heap->min == node) {
+	if (heap->min == node) {
 		fib_delete_min(heap);
 	} else {
 		/* If node is a child node, do the marking stuff etc.
 		otherwise, we just cut it out. */
-		if(node->parent)
+		if (node->parent)
 			fib_extract_childnode(node, heap);
 		else
 			fib_link(node->left, node->right);
