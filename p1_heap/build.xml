@@ -21,7 +21,6 @@
 				<pathelement path="${src}"/>
 			</includepath>
 			<fileset dir="${src}" includes="BinaryHeap.c" />
-			<fileset dir="${src}" includes="BinaryHeapTest.c" />
 		</cpptasks:cc>
 	</target>
 
@@ -34,7 +33,6 @@
 				<pathelement path="${src}"/>
 			</includepath>
 			<fileset dir="${src}" includes="FibonacciHeap.c" />
-			<fileset dir="${src}" includes="FibonacciHeapTest.c" />
 		</cpptasks:cc>
 	</target>
 
