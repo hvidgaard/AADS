@@ -6,12 +6,13 @@
 unsigned long long test_binary(FILE * testfile);
 unsigned long long test_fib(FILE * testfile);
 
-unsigned long long test_binary(FILE * testfile){
+unsigned long long test_binary(FILE * testfile)
+{
 	unsigned int size = 0;
 	unsigned int source = 0;
 	unsigned int dist[size];
 	
-	if (testfile != NULL){
+	if (testfile) {
 		char line_buf[256];
 		char int_buf[10];
 		unsigned int num_vertices;

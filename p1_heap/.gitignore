@@ -1,5 +1,3 @@
-main
-BinaryHeapTest
-FibonacciHeapTest
+test
 obj/
 history.xml
