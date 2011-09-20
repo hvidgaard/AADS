@@ -2,4 +2,4 @@ test
 obj/
 history.xml
 testdata/*.test
-testdata/*.dot
+testdata/*.png
