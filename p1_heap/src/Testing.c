@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	unsigned int * source = malloc(sizeof(unsigned int));
 	unsigned int ** dist;
 	
-	dist = parse_testfile(fopen("./../testdata/test1.txt", "r"), num_vertices, source);
+	dist = parse_testfile(fopen(argv[1], "r"), num_vertices, source);
 	printf("#vertices: %d\nsource: %d\n\n", *num_vertices, *source);
 	int i, j;
 	for (i = 0; i < *num_vertices; i++){
