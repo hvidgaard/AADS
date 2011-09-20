@@ -20,7 +20,7 @@ fputs($handle, $numberOfVertices."\n");
 fputs($handle, rand(0, $numberOfVertices)."\n");
 for($i = 0; $i < $numberOfVertices; $i++) {
 	for($j = 0; $j < $numberOfVertices; $j++) {
-		if($i != $j && rand(0, 99) < $chanceOfEdge)
+		if($j == $i+1 || ($i != $j && rand(0, 99) < $chanceOfEdge))
 			fputs($handle, rand(1, $maxWeight));
 		else
 			fputs($handle, '0');
@@ -29,12 +29,3 @@ for($i = 0; $i < $numberOfVertices; $i++) {
 	}
 	fputs($handle, "\n");
 }
-
-
-
-
-
-
-
-
-
