@@ -8,12 +8,22 @@
 int test_abstract();
 int test_binary();
 int test_fibonacci();
-unsigned long long parse_testfile(FILE * testfile);
+unsigned int ** parse_testfile(FILE * testfile, unsigned int * num_vertices, unsigned int * source);
 
 int main(int argc, char **argv)
 {
 	printf("Commence testing...\n");
-	parse_testfile(fopen("./../testdata/test1.txt", "r"));
+	unsigned int * num_vertices = malloc(sizeof(unsigned int));
+	unsigned int * source = malloc(sizeof(unsigned int));
+	unsigned int ** dist;
+	
+	dist = parse_testfile(fopen("./../testdata/test1.txt", "r"), num_vertices, source);
+	printf("#vertices: %d\nsource: %d\n\n", *num_vertices, *source);
+	int i, j;
+	for (i = 0; i < *num_vertices; i++){
+		for (j = 0; j < *num_vertices; j++)
+			printf("Dist[%d][%d]: %d\n", i, j, dist[i][j]);
+	}
 	/*if(argc != 2)
 		exit(1);
 	
@@ -91,7 +101,7 @@ int test_fibonacci()
 	return EXIT_SUCCESS;
 }
 
-unsigned long long parse_testfile(FILE * testfile) {
+unsigned int ** parse_testfile(FILE * testfile, unsigned int * num_vertices, unsigned int * source) {
 	if (testfile) {
 		//used for getline and strtoul.
 		char **line_buf_p = malloc(256 * sizeof(char));
@@ -99,7 +109,6 @@ unsigned long long parse_testfile(FILE * testfile) {
 		*line_buf_len = 256;
 		char **tailptr;
 		
-		unsigned int num_vertices, source;
 		unsigned int line_buf_i = 0;
 		unsigned int int_buf_i = 0;
 		unsigned int edges_i = 0;
@@ -110,38 +119,45 @@ unsigned long long parse_testfile(FILE * testfile) {
 		
 		//get the number of vertecies;
 		if (getline(line_buf_p, line_buf_len, testfile))
-			num_vertices = strtoul(*line_buf_p, NULL, 10);
-		else
-			exit(-1);
-		printf("number of vertices: %d\n", num_vertices);
+			*num_vertices = strtoul(*line_buf_p, NULL, 10);
+		else {
+			free(line_buf_p);
+			free(line_buf_len);
+			return NULL;
+		}
 		//then the source
 		if (getline(line_buf_p, line_buf_len, testfile))
-			source = strtoul(*line_buf_p, NULL, 10);
-		else
-			exit(-1);
-		printf("source: %d\n", source);
+			*source = strtoul(*line_buf_p, NULL, 10);
+		else {
+			free(line_buf_p);
+			free(line_buf_len);
+			return NULL;
+		}
 		
 		int i, j; //used to index in loops
 		
 		//create an array with size not known before runtime.
-		unsigned int **dist_array = (unsigned int **)malloc(num_vertices * sizeof(unsigned int *));
-		dist_array[0] = (unsigned int *)malloc(num_vertices * num_vertices * sizeof(unsigned int));
-		for(i = 1; i < num_vertices; i++)
-			dist_array[i] = dist_array[0] + i * num_vertices;
+		unsigned int **dist_array = (unsigned int **)malloc((*num_vertices) * sizeof(unsigned int *));
+		dist_array[0] = (unsigned int *)malloc((*num_vertices) * (*num_vertices) * sizeof(unsigned int));
+		for(i = 1; i < *num_vertices; i++)
+			dist_array[i] = dist_array[0] + i * (*num_vertices);
 		
 		//i is the source vertex, j is the destination vertex.
-		for (i = 0; i < num_vertices; i++) {
+		for (i = 0; i < *num_vertices; i++) {
 			getline(line_buf_p, line_buf_len, testfile);
 			//the first time around tailptr doesn't point to anything
 			//after strtoul is called the first time, tailptr will
 			//always point to the next char that is not part of a number
 			//i.e. a whitespace or linebreak.
 			tailptr = line_buf_p;
-			for (j = 0; j < num_vertices; j++)
+			for (j = 0; j < *num_vertices; j++)
 				dist_array[i][j] = strtoul(*tailptr, tailptr, 10);
 		}
+		free(line_buf_p);
+		free(line_buf_len);
+		return dist_array;
 	}
 	else
-		printf("testfile null\n");
-   return 0;
+		return NULL;
+   ;
 }
