@@ -1,31 +1,42 @@
 #!/usr/bin/php
 <?php
-if($argc != 2) {
-	print("Usage ./generator.php [filename]");
-	exit(1);
-}
-if(file_exists($argv[1])) {
-	print("The file $argv[1] already exists");
-	exit(2);
-}
+for($i = 0; file_exists($i.'.test'); $i++);
+$filename = $i;
 
-$numberOfVertices = 20;
+$numberOfVertices = 10;
 // The chance an edge exists between two vertices, in percent
-$chanceOfEdge = 40;
+$chanceOfEdge = 15;
 // The maximum weight an edge can have
-$maxWeight = 100;
+$maxWeight = 20;
 
-$handle = fopen($argv[1], 'w+');
-fputs($handle, $numberOfVertices."\n");
-fputs($handle, rand(0, $numberOfVertices)."\n");
+$testHandle = fopen($filename.'.test', 'w+');
+$dotHandle = popen("dot -Tpng -o$filename.png", 'w');
+
+$source = rand(0, $numberOfVertices);
+
+fputs($testHandle, "$numberOfVertices\n");
+fputs($testHandle, "$source\n");
+
+fputs($dotHandle, "digraph G {\n");
+fputs($dotHandle, "\t$source [color=red]\n");
+
 for($i = 0; $i < $numberOfVertices; $i++) {
 	for($j = 0; $j < $numberOfVertices; $j++) {
-		if($j == $i+1 || ($i != $j && rand(0, 99) < $chanceOfEdge))
-			fputs($handle, rand(1, $maxWeight));
-		else
-			fputs($handle, '0');
+		if($j == $i+1 || ($i != $j && rand(0, 99) < $chanceOfEdge)) {
+			$weight = rand(1, $maxWeight);
+			fputs($testHandle, $weight);
+			fputs($dotHandle, "\t$i -> $j [label=\"$weight\"]\n");
+		} else {
+			fputs($testHandle, '0');
+		}
 		if($j < $numberOfVertices - 1)
-			fputs($handle, ' ');
+			fputs($testHandle, ' ');
 	}
-	fputs($handle, "\n");
+	fputs($testHandle, "\n");
 }
+fputs($dotHandle, "}");
+
+fclose($testHandle);
+fclose($dotHandle);
+
+print("$filename.test and $filename.dot have been generated\n");
