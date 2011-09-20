@@ -103,8 +103,8 @@ binary_heap *bh_meld(binary_heap *h1, binary_heap *h2) {
  */
 unsigned int bh_decrease_key(unsigned int delta, unsigned int e, binary_heap *h) {
 	unsigned int parent;
-	//technically it's an error, so we return 0
-	if (delta < 0)
+	//error, cannot decrease key to a negative value.
+	if (delta >= h->data[e].key)
 		return 0;
 	if (e <= h->size) {
 		h->data[e].key -= delta;

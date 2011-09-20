@@ -18,20 +18,28 @@ int main(int argc, char **argv)
 	unsigned int ** dist;
 	
 	dist = parse_testfile(fopen(argv[1], "r"), num_vertices, source);
-	printf("#vertices: %d\nsource: %d\n\n", *num_vertices, *source);
-	int i, j;
-	for (i = 0; i < *num_vertices; i++){
-		for (j = 0; j < *num_vertices; j++)
-			printf("Dist[%d][%d]: %d\n", i, j, dist[i][j]);
+	if (dist){
+		printf("#vertices: %d\nsource: %d\n\n", *num_vertices, *source);
+		int i, j;
+		for (i = 0; i < *num_vertices; i++){
+			for (j = 0; j < *num_vertices; j++)
+				printf("Dist[%d][%d]: %d\n", i, j, dist[i][j]);
+		}
 	}
-	/*if(argc != 2)
+	else
+		printf("Failed, testfile could not be opened or was malformed\n");
+	if(argc != 3){
+		printf("wrong # of arguments\n");
 		exit(1);
+	}
+		
 	
-	if(strcmp(argv[1], "abstract") == 0) {
+	/*
+	if(strcmp(argv[2], "abstract") == 0) {
 		exit(test_abstract());
-	} else if(strcmp(argv[1], "bin") == 0) {
+	} else if(strcmp(argv[2], "bin") == 0) {
 		exit(test_binary());
-	} else if(strcmp(argv[1], "fib") == 0) {
+	} else if(strcmp(argv[2], "fib") == 0) {
 		exit(test_fibonacci());
 	}*/
 }
@@ -159,5 +167,4 @@ unsigned int ** parse_testfile(FILE * testfile, unsigned int * num_vertices, uns
 	}
 	else
 		return NULL;
-   ;
 }
