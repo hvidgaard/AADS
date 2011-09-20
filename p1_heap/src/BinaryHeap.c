@@ -1,16 +1,7 @@
-#include <AADS.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <BinaryHeap.h>
 
-binary_heap *bh_init_heap(unsigned int size);
-unsigned int bh_insert(unsigned int key, void *data, binary_heap *h);
-unsigned int bh_find_min(binary_heap *h);
-bh_element *bh_delete_min(binary_heap *h);
-binary_heap *bh_meld(binary_heap *h1, binary_heap *h2);
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, binary_heap *h);
-bh_element *bh_delete_element(unsigned int e, binary_heap *h);
-void bh_min_heapify(unsigned int e, binary_heap *h);
-void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h);
 
 /* Given an index in the array, the family relations are as following:
  * 
@@ -74,10 +65,10 @@ unsigned int bh_insert(unsigned int key, void *data, binary_heap *h) {
 	if (h->size < h->max_size) {
 		//printf("insert key %d\n", key);
 		h->size++;
-		h->data[h->size].key = UINT_MAX;
+		h->data[h->size].key = key;
 		h->data[h->size].data = data;
 		h->data[h->size].index = h->size;
-		result = bh_decrease_key(key, h->size, h);
+		result = bh_decrease_key(0, h->size, h);
 		//printf("inserted key %d, got index %d\n\n", key, result);
 		return result;
 	}
@@ -110,13 +101,13 @@ binary_heap *bh_meld(binary_heap *h1, binary_heap *h2) {
 /* will decrease the key of an element, and bubble it up until the heap
  * property is reestablished
  */
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, binary_heap *h) {
+unsigned int bh_decrease_key(unsigned int delta, unsigned int e, binary_heap *h) {
 	unsigned int parent;
-	if (new_key >= h->data[e].key)
-			//technically it's an error, so we return 0
-			return 0;
+	//technically it's an error, so we return 0
+	if (delta < 0)
+		return 0;
 	if (e <= h->size) {
-		h->data[e].key = new_key;
+		h->data[e].key -= delta;
 		parent = e / 2;
 		while (e > 1 && h->data[parent].key > h->data[e].key) {
 			bh_exchange(e, parent, h);

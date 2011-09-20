@@ -6,42 +6,27 @@
 	<property name="objectdir" value="obj" />
 	<property name="debug" value="true" />
 
-	<target name="all" depends="binary,fibonacci,benchmark">
+	<target name="all" depends="test,benchmark">
 	</target>
 
 	<target name="benchmark">
 	</target>
 
-	<target name="binary">
+	<target name="test">
 		<mkdir dir="${objectdir}"/>
 		
-		<cpptasks:cc outfile="BinaryHeapTest" outtype="executable"
+		<cpptasks:cc outfile="test" outtype="executable"
 			subsystem="console" objdir="${objectdir}" debug="${debug}">
 			<includepath>
 				<pathelement path="${src}"/>
 			</includepath>
-			<fileset dir="${src}" includes="BinaryHeap.c" />
-			<fileset dir="${src}" includes="BinaryHeapTest.c" />
-		</cpptasks:cc>
-	</target>
-
-	<target name="fibonacci">
-		<mkdir dir="${objectdir}"/>
-		
-		<cpptasks:cc outfile="FibonacciHeapTest" outtype="executable"
-			subsystem="console" objdir="${objectdir}" debug="${debug}">
-			<includepath>
-				<pathelement path="${src}"/>
-			</includepath>
-			<fileset dir="${src}" includes="FibonacciHeap.c" />
-			<fileset dir="${src}" includes="FibonacciHeapTest.c" />
+			<fileset dir="${src}" includes="FibonacciHeap.c,BinaryHeap.c,AbstractHeap.c,Testing.c" />
 		</cpptasks:cc>
 	</target>
 
 	<target name="clean">
 		<delete dir="${objectdir}"/>
-		<delete file="FibonacciHeapTest"/>
-		<delete file="BinaryHeapTest"/>
+		<delete file="test"/>
 <!-- 		<delete includeEmptyDirs="true">
 			<fileset dir="${objectdir}" includes="*.o" />
 			<file name="main"/>

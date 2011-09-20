@@ -1,29 +1,20 @@
-#include <AADS.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-/*
-Binary_heap *bh_init_heap(unsigned int size);
-unsigned int bh_insert(unsigned int key, void *data, Binary_heap *h);
-unsigned int bh_find_min(Binary_heap *h);
-Element *bh_delete_min(Binary_heap *h);
-Binary_heap *bh_meld(Binary_heap *h1, Binary_heap *h2);
-unsigned int bh_decrease_key(unsigned int new_key, unsigned int e, Binary_heap *h);
-Element *bh_delete_element(unsigned int e, Binary_heap *h);
-void bh_min_heapify(unsigned int e, Binary_heap *h);
-void bh_exchange(unsigned int e1, unsigned int e2, Binary_heap *h);
- */
+#include <BinaryHeap.h>
+#include <FibonacciHeap.h>
 
 unsigned long long test_binary(FILE * testfile);
 unsigned long long test_fib(FILE * testfile);
 
-unsigned long long test_binary(FILE * testfile){
-	unsigned int size;
-	unsigned int source;
+unsigned long long test_binary(FILE * testfile)
+{
+	unsigned int size = 0;
+	unsigned int source = 0;
+	unsigned int dist[size];
 	unsigned int len;
 	
-	if (testfile != NULL){
-		//reading the lines 256 chars at a time, it may be longer
+	if (testfile) {
+	//reading the lines 256 chars at a time, it may be longer
 		//but that's okay, we'll handle that special case later.
 		char line_buf[256];
 		//when reading an int, it shouldn't be more than 10 chars long.
