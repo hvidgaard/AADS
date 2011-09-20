@@ -7,13 +7,13 @@ unsigned long long test_binary(FILE * testfile);
 
 unsigned long long test_binary(FILE * testfile) {
 	if (testfile) {
-		char *line_buf = malloc(256 * sizeof(char));
-		char **line_buf_p = &line_buf;
+		//used for getline and strtoul.
+		char **line_buf_p = malloc(256 * sizeof(char));
 		size_t *line_buf_len = malloc(sizeof(int));
 		*line_buf_len = 256;
 		char **tailptr;
 		
-		unsigned int num_vertices, source, len, value;
+		unsigned int num_vertices, source;
 		unsigned int line_buf_i = 0;
 		unsigned int int_buf_i = 0;
 		unsigned int edges_i = 0;
@@ -23,15 +23,13 @@ unsigned long long test_binary(FILE * testfile) {
 		//reliably
 		
 		//get the number of vertecies;
-		len = getline(line_buf_p, line_buf_len, testfile);
-		if (len)
+		if (getline(line_buf_p, line_buf_len, testfile))
 			num_vertices = strtoul(*line_buf_p, NULL, 10);
 		else
 			exit(-1);
 		printf("number of vertices: %d\n", num_vertices);
 		//then the source
-		len = getline(line_buf_p, line_buf_len, testfile);
-		if (len)
+		if (getline(line_buf_p, line_buf_len, testfile))
 			source = strtoul(*line_buf_p, NULL, 10);
 		else
 			exit(-1);
@@ -39,9 +37,9 @@ unsigned long long test_binary(FILE * testfile) {
 		
 		int i, j; //used to index in loops
 		
+		//create an array with size not known before it's run.
 		unsigned int **dist_array = (unsigned int **)malloc(num_vertices * sizeof(unsigned int *));
 		dist_array[0] = (unsigned int *)malloc(num_vertices * num_vertices * sizeof(unsigned int));
-		
 		for(i = 1; i < num_vertices; i++)
 			dist_array[i] = dist_array[0] + i * num_vertices;
 		
