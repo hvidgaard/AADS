@@ -12,7 +12,7 @@ int test_fibonacci();
 int main(int argc, char **argv)
 {
 	printf("Commence testing...\n");
-	test_binary(fopen("./../testdata/test1.txt", "w"));
+	test_binary(fopen("./../testdata/test1.txt", "r"));
 	/*if(argc != 2)
 		exit(1);
 	
