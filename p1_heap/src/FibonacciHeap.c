@@ -194,9 +194,11 @@ void *fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap)
 	node->key -= delta;
 	/* Make the node a root node, if it isn't already. */
 	if (node->parent) {
-		fib_extract_childnode(node, heap);
-		node->parent = NULL;
-		fib_union(heap->min, node);
+		if(node->parent->key < node->key) {
+			fib_extract_childnode(node, heap);
+			node->parent = NULL;
+			fib_union(heap->min, node);
+		}
 	}
 	if (heap->min->key > node->key)
 		heap->min = node;
