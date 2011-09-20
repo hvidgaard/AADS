@@ -147,6 +147,10 @@ unsigned int ** parse_testfile(FILE * testfile, unsigned int * num_vertices, uns
 		//create an array with size not known before runtime.
 		unsigned int **dist_array = (unsigned int **)malloc((*num_vertices) * sizeof(unsigned int *));
 		dist_array[0] = (unsigned int *)malloc((*num_vertices) * (*num_vertices) * sizeof(unsigned int));
+		if (!dist_array || !dist_array[0]) {
+			printf("kan ikke allokere arrayet");
+			exit(-1);
+		}
 		for(i = 1; i < *num_vertices; i++)
 			dist_array[i] = dist_array[0] + i * (*num_vertices);
 		
