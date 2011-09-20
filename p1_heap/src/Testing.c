@@ -3,14 +3,17 @@
 #include <BinaryHeap.h>
 #include <FibonacciHeap.h>
 #include <AbstractHeap.h>
+#include <DijkstraSSSP.h>
 
 int test_abstract();
-int test_binary();
+int test_binary2();
 int test_fibonacci();
 
 int main(int argc, char **argv)
 {
-	if(argc != 2)
+	printf("Commence testing...\n");
+	test_binary(fopen("./../testdata/test1.txt", "w"));
+	/*if(argc != 2)
 		exit(1);
 	
 	if(strcmp(argv[1], "abstract") == 0) {
@@ -19,7 +22,7 @@ int main(int argc, char **argv)
 		exit(test_binary());
 	} else if(strcmp(argv[1], "fib") == 0) {
 		exit(test_fibonacci());
-	}
+	}*/
 }
 
 int test_abstract() {
@@ -40,7 +43,7 @@ int test_abstract() {
 	return EXIT_SUCCESS;
 }
 
-int test_binary(int argc, char **argv)
+int test_binary2()
 {
 	printf("hello world\n");
 	binary_heap *h = bh_init_heap(16);
@@ -68,7 +71,7 @@ int test_binary(int argc, char **argv)
 	return EXIT_SUCCESS;
 }
 
-int test_fibonacci(int argc, char **argv)
+int test_fibonacci()
 {
 	FibHeap *heap = fib_make_heap(30);
 	int i;

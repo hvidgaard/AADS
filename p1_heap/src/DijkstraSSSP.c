@@ -4,36 +4,63 @@
 #include <FibonacciHeap.h>
 
 unsigned long long test_binary(FILE * testfile);
-unsigned long long test_fib(FILE * testfile);
 
-unsigned long long test_binary(FILE * testfile)
-{
-	unsigned int size = 0;
-	unsigned int source = 0;
-	unsigned int dist[size];
-	unsigned int len;
-	
+unsigned long long test_binary(FILE * testfile) {
 	if (testfile) {
-	//reading the lines 256 chars at a time, it may be longer
+		//reading the lines 256 chars at a time, it may be longer
 		//but that's okay, we'll handle that special case later.
-		char line_buf[256];
-		//when reading an int, it shouldn't be more than 10 chars long.
-		char int_buf[10];
+		char *line_buf = malloc(256 * sizeof(char));
+		char **line_buf_p = &line_buf;
+		size_t *line_buf_len = malloc(sizeof(int));
+		*line_buf_len = 256;
+		char **tailptr;
 		
-		unsigned int num_vertices;
+		unsigned int num_vertices, source, len, value;
 		unsigned int line_buf_i = 0;
 		unsigned int int_buf_i = 0;
 		unsigned int edges_i = 0;
-		unsigned int vertex = 1;
 		
-		len = getline(line_buf, 256, testfile);
-		//fgets(line_buf, 256, testfile);
-		int i = 0;
-		while (i != len && line_buf[line_buf_i] != ' '){
-			int_buf[int_buf_i] = line_buf[line_buf_i];
-			line_buf_i++;
-			int_buf_i++;
+		//note that the use of 'getline' is GNU libs non-standard function.
+		//it's used because it makes it significantly easier to read lines
+		//reliably
+		
+		
+		//get the number of vertecies;
+		len = getline(line_buf_p, line_buf_len, testfile);
+		if (len)
+			num_vertices = strtoul(*line_buf_p, NULL, 10);
+		else
+			exit(-1);
+		//then the source
+		len = getline(line_buf_p, line_buf_len, testfile);
+		if (len)
+			source = strtoul(*line_buf_p, NULL, 10);
+		else
+			exit(-1);
+		//unsigned int dist[] = malloc(num_vertices * num_vertices * sizeof(unsigned int));
+		
+		int i;
+		unsigned int **dist_array = (unsigned int **)malloc(num_vertices * sizeof(unsigned int *));
+		dist_array[0] = (unsigned int *)malloc(num_vertices * num_vertices * sizeof(unsigned int));
+		for(i = 1; i < num_vertices; i++)
+			dist_array[i] = dist_array[0] + i * num_vertices;
+		
+		i = 0; //the vertex we're reading distances from
+		int j = 0; //the vertex we're reading distance to
+		while (len = getline(line_buf_p, line_buf_len, testfile)) {
+			do {
+				dist_array[i][j] = strtoul(*tailptr, tailptr, 10);
+				j++;
+			}
+			while (**tailptr != '\0');
+			i++;
 		}
+		for (i = 0; i < num_vertices; i++) {
+			for (j = 0; j < num_vertices; j++) {
+				printf("Distance from %d to %d: %d\n", i, j, dist_array[i][j]);
+			}
+		}
+			/*
 		int_buf[int_buf_i] = '\0';
 		num_vertices = (unsigned int) strtoul(int_buf, NULL, 10);
 		unsigned int *edges = malloc(sizeof(unsigned int)*num_vertices*num_vertices);
@@ -64,11 +91,9 @@ unsigned long long test_binary(FILE * testfile)
 		}
 		while (!eof_reached);*/
 	}
+	else
+		printf("testfile null\n");
    return 0;
-	
-	binary_heap *h = bh_init_heap(size);
-	dist[source] = 0;
-	bh_insert(0, source, h);
 }
 /*
 Algorithm Dijkstra(V, E, w, s)

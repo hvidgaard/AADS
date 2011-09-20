@@ -1,6 +1,6 @@
 4					# of vertices
 2					source
 0 45 12 53			the weight of all from vertex 1 to all other vertecies in numerical order
-45 0 0 6			from vertex 2
-12 0 0 9			from vertex 3
-53 6 9 0			from vertex 4 - note that a weight of 0 means there's no edge, and the symmetry because it's undirected
+35 0 0 2			from vertex 2
+5 0 0 45			from vertex 3
+100 6 9 0			from vertex 4 - note that a weight of 0 means there's no edge

@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Peter Hvidgaard
-Date                   :=09/18/2011
+Date                   :=09/20/2011
 CodeLitePath           :="/home/hvidgaard/.codelite"
 LinkerName             :=gcc
 ArchiveTool            :=ar rcus
@@ -38,7 +38,7 @@ PreprocessOnlySwitch   :=-E
 MakeDirCommand         :=mkdir -p
 CmpOptions             := -g $(Preprocessors)
 LinkOptions            :=  
-IncludePath            :=  "$(IncludeSwitch)." "$(IncludeSwitch)." 
+IncludePath            :=  "$(IncludeSwitch)." "$(IncludeSwitch)." "$(IncludeSwitch)./src" 
 RcIncludePath          :=
 Libs                   :=
 LibPath                := "$(LibraryPathSwitch)." 
@@ -48,7 +48,7 @@ LibPath                := "$(LibraryPathSwitch)."
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects=$(IntermediateDirectory)/main$(ObjectSuffix) $(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix) 
+Objects=$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix) $(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) $(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/src_Testing$(ObjectSuffix) 
 
 ##
 ## Main Build Targets 
@@ -68,37 +68,45 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/main$(ObjectSuffix): main.c $(IntermediateDirectory)/main$(DependSuffix)
-	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/main.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/main$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/main$(DependSuffix): main.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/main$(ObjectSuffix) -MF$(IntermediateDirectory)/main$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/main.c"
+$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix): src/AbstractHeap.c $(IntermediateDirectory)/src_AbstractHeap$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/AbstractHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_AbstractHeap$(DependSuffix): src/AbstractHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/src_AbstractHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/AbstractHeap.c"
 
-$(IntermediateDirectory)/main$(PreprocessSuffix): main.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/main$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/main.c"
+$(IntermediateDirectory)/src_AbstractHeap$(PreprocessSuffix): src/AbstractHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_AbstractHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/AbstractHeap.c"
 
-$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix): BinaryHeap.c $(IntermediateDirectory)/BinaryHeap$(DependSuffix)
-	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/BinaryHeap$(DependSuffix): BinaryHeap.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/BinaryHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/BinaryHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.c"
+$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix): src/BinaryHeap.c $(IntermediateDirectory)/src_BinaryHeap$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/BinaryHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_BinaryHeap$(DependSuffix): src/BinaryHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/src_BinaryHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/BinaryHeap.c"
 
-$(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix): BinaryHeap.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/BinaryHeap.c"
+$(IntermediateDirectory)/src_BinaryHeap$(PreprocessSuffix): src/BinaryHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_BinaryHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/BinaryHeap.c"
 
-$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix): FibonacciHeap.c $(IntermediateDirectory)/FibonacciHeap$(DependSuffix)
-	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/FibonacciHeap$(DependSuffix): FibonacciHeap.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/FibonacciHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c"
+$(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix): src/DijkstraSSSP.c $(IntermediateDirectory)/src_DijkstraSSSP$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/DijkstraSSSP.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_DijkstraSSSP$(DependSuffix): src/DijkstraSSSP.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) -MF$(IntermediateDirectory)/src_DijkstraSSSP$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/DijkstraSSSP.c"
 
-$(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix): FibonacciHeap.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/FibonacciHeap.c"
+$(IntermediateDirectory)/src_DijkstraSSSP$(PreprocessSuffix): src/DijkstraSSSP.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_DijkstraSSSP$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/DijkstraSSSP.c"
 
-$(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix): DijkstraSSSP.c $(IntermediateDirectory)/DijkstraSSSP$(DependSuffix)
-	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/DijkstraSSSP.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/DijkstraSSSP$(DependSuffix): DijkstraSSSP.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix) -MF$(IntermediateDirectory)/DijkstraSSSP$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/DijkstraSSSP.c"
+$(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix): src/FibonacciHeap.c $(IntermediateDirectory)/src_FibonacciHeap$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/FibonacciHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_FibonacciHeap$(DependSuffix): src/FibonacciHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/src_FibonacciHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/FibonacciHeap.c"
 
-$(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix): DijkstraSSSP.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/DijkstraSSSP.c"
+$(IntermediateDirectory)/src_FibonacciHeap$(PreprocessSuffix): src/FibonacciHeap.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_FibonacciHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/FibonacciHeap.c"
+
+$(IntermediateDirectory)/src_Testing$(ObjectSuffix): src/Testing.c $(IntermediateDirectory)/src_Testing$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/Testing.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_Testing$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_Testing$(DependSuffix): src/Testing.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_Testing$(ObjectSuffix) -MF$(IntermediateDirectory)/src_Testing$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/Testing.c"
+
+$(IntermediateDirectory)/src_Testing$(PreprocessSuffix): src/Testing.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Testing$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/Testing.c"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
@@ -106,18 +114,21 @@ $(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix): DijkstraSSSP.c
 ## Clean
 ##
 clean:
-	$(RM) $(IntermediateDirectory)/main$(ObjectSuffix)
-	$(RM) $(IntermediateDirectory)/main$(DependSuffix)
-	$(RM) $(IntermediateDirectory)/main$(PreprocessSuffix)
-	$(RM) $(IntermediateDirectory)/BinaryHeap$(ObjectSuffix)
-	$(RM) $(IntermediateDirectory)/BinaryHeap$(DependSuffix)
-	$(RM) $(IntermediateDirectory)/BinaryHeap$(PreprocessSuffix)
-	$(RM) $(IntermediateDirectory)/FibonacciHeap$(ObjectSuffix)
-	$(RM) $(IntermediateDirectory)/FibonacciHeap$(DependSuffix)
-	$(RM) $(IntermediateDirectory)/FibonacciHeap$(PreprocessSuffix)
-	$(RM) $(IntermediateDirectory)/DijkstraSSSP$(ObjectSuffix)
-	$(RM) $(IntermediateDirectory)/DijkstraSSSP$(DependSuffix)
-	$(RM) $(IntermediateDirectory)/DijkstraSSSP$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/src_AbstractHeap$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/src_AbstractHeap$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/src_BinaryHeap$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/src_BinaryHeap$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/src_DijkstraSSSP$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/src_DijkstraSSSP$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/src_FibonacciHeap$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/src_FibonacciHeap$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/src_Testing$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/src_Testing$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/src_Testing$(PreprocessSuffix)
 	$(RM) $(OutputFile)
 
 
