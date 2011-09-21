@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 		int i, j;
 		for (i = 0; i < n; i++){
 			for (j = 0; j < n; j++)
-				printf("Dist[%d][%d]: %d index %d\n", i, j, dist[i * n + j], i * n + j);
+				printf("Dist[%d][%d]: %d index %d\n", i, j, dist[(i * n) + j], i * n + j);
 		}
 	}
 	else
@@ -115,9 +115,10 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 	if (testfile) {
 		unsigned int n;
 		//used for getline and strtoul.
-		char **line_buf_p = malloc(256 * sizeof(char));
-		size_t *line_buf_len = malloc(sizeof(int));
-		*line_buf_len = 256;
+		char *line_buf = malloc(512 * sizeof(char));
+		char **line_buf_p = & line_buf;
+		size_t *line_buf_len = malloc(sizeof(size_t));
+		*line_buf_len = 512;
 		char **tailptr;
 		
 		unsigned int line_buf_i = 0;
@@ -162,8 +163,8 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 			tailptr = line_buf_p;
 			for (j = 0; j < n; j++) {
 				value = strtoul(*tailptr, tailptr, 10);
-				dist_array[i * n + j] = value;
-				printf("dist[%d][%d] = %d og value er: %d\n", i, j, value, value);
+				dist_array[(i * n) + j] = value;
+				printf("dist[%d][%d] = %d og value er %d og index %d\n", i, j, dist_array[(i*n)+j], value, (i*n)+j);
 			}
 		}
 		for (i = 0; i < n; i++) {
