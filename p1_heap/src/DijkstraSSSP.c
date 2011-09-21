@@ -24,7 +24,21 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int ** w,
 			insert(UINT_MAX, v, heap);
 		}
 	}
-	for (i = 0; i < num_vertices; i++){
+	unsigned int size;
+	if(which == USE_BINARY_HEAP){
+		size = heap->bin->size;
+		for (i = 1; i <= size; i++){
+			if (i != source /*&& heap->bin->data[i]*/){
+				//heap->bin->data[i];
+				
+			}
+		}
+	}
+	else{
+		size = heap->fib->nodes;
+		
+	}
+	for (i = 0; i < size; i++){
 		
 	}
 }
