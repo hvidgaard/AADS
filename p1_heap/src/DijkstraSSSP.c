@@ -20,13 +20,13 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, 
 	*v_data = source;
 	
 	elements[source] = bh_insert(0, v_data, h);
-	printf("inserted source, got index %d\n", elements[source]->index);	
+	//printf("inserted source, got index %d\n", elements[source]->index);	
 	for (i = 0; i < num_vertices; i++){
 		if (i != source) {
 			v_data = malloc(sizeof(unsigned int));
 			*v_data = i;
 			elements[*v_data] = bh_insert(UINT_MAX, v_data, h);
-			printf("inserted %d, got index %d\n", *v_data, elements[*v_data]->index);	
+			//printf("inserted %d with key: %d, got index %d\n", *v_data, UINT_MAX, elements[*v_data]->index);	
 			dist[i] = UINT_MAX;
 		}
 	}
@@ -35,9 +35,10 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, 
 	while (h->size > 0) {
 		v = bh_delete_min(h);
 		v_num = *(unsigned int *)v->data;
-		printf("\ndel_min : %d\n", v_num); 
-		 for (i = 1; i < edges[v_num][0]; i++){
+		//printf("del_min : %d\n", v_num); 
+		for (i = 1; i <= edges[v_num][0]; i++){
 			 u_num = edges[v_num][i];
+			 //printf("u: %d - dist[v]: %d, dist[u]: %d, w(u,v): %d\n", u_num, dist[v_num], dist[u_num], w[v_num * num_vertices + u_num]);
 			 if (dist[v_num] + w[v_num * num_vertices + u_num] < dist[u_num] ){
 				 dist[u_num] = dist[v_num] + w[v_num * num_vertices + u_num];
 				 bh_decrease_key(dist[u_num], elements[u_num], h);

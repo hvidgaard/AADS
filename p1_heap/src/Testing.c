@@ -1,5 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/mman.h>
 #include <BinaryHeap.h>
 #include <FibonacciHeap.h>
 #include <AbstractHeap.h>
@@ -45,6 +50,7 @@ int main(int argc, char **argv)
 				//printf("edges[%d][%d] = %d\n", i, j, t_edges[j]);
 			}
 		}
+		dijkstra(n, *source, dist, 0, edges);
 	}
 	else
 		printf("Failed, testfile could not be opened or was malformed\n");
@@ -53,7 +59,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 	//test_binary();
-	dijkstra(n, *source, dist, 0, edges);
+	
 	/*
 	if(strcmp(argv[2], "abstract") == 0) {
 		exit(test_abstract());
@@ -133,10 +139,12 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 	if (testfile) {
 		unsigned int n;
 		//used for getline and strtoul.
-		char *line_buf = malloc(512 * sizeof(char));
-		char **line_buf_p = & line_buf;
-		size_t *line_buf_len = malloc(sizeof(size_t));
-		*line_buf_len = 512;
+		char *line_buf = (char *)malloc(100000 * sizeof(char));
+		if (!line_buf)
+			exit(-1);
+		char **line_buf_p = &line_buf;
+		//size_t *line_buf_len = malloc(sizeof(size_t));
+		//*line_buf_len = 5000 * 4;
 		char **tailptr;
 		
 		unsigned int line_buf_i = 0;
@@ -148,21 +156,21 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 		//reliably
 		
 		//get the number of vertecies;
-		if (getline(line_buf_p, line_buf_len, testfile)) {
-			*num_vertices = strtoul(*line_buf_p, NULL, 10);
+		if (fgets(line_buf, 100000, testfile)) {
+			*num_vertices = strtoul(line_buf, NULL, 10);
 			n = *num_vertices;
 		}
 		else {
-			free(line_buf_p);
-			free(line_buf_len);
+			//free(line_buf_p);
+			//free(line_buf_len);
 			return NULL;
 		}
 		//then the source
-		if (getline(line_buf_p, line_buf_len, testfile))
-			*source = strtoul(*line_buf_p, NULL, 10);
+		if (fgets(line_buf, 100000, testfile))
+			*source = strtoul(line_buf, NULL, 10);
 		else {
-			free(line_buf_p);
-			free(line_buf_len);
+			//free(line_buf_p);
+			//free(line_buf_len);
 			return NULL;
 		}
 		
@@ -173,7 +181,7 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 		unsigned int value;
 		//i is the source vertex, j is the destination vertex.
 		for (i = 0; i < n; i++) {
-			getline(line_buf_p, line_buf_len, testfile);
+			fgets(line_buf, 100000, testfile);
 			//the first time around tailptr doesn't point to anything
 			//after strtoul is called the first time, tailptr will
 			//always point to the next char that is not part of a number

@@ -1,6 +1,6 @@
 #ifndef BINHEAP_H
 #define BINHEAP_H
-#define UINT_MAX 4294967295
+#define UINT_MAX 429496729
 
 typedef struct bh_element {
 	unsigned int key;
