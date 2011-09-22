@@ -1,42 +1,56 @@
 #!/usr/bin/php
 <?php
-for($i = 0; file_exists($i.'.test'); $i++);
-$filename = $i;
+if($argc < 2) {
+	print("Usage: generator.php vertices [chanceOfEdge] [maxWeight]\n");
+	print("                              (default: 15)  (default:20)\n");
+	exit(1);
+}
+for($i = 0; file_exists(__DIR__.'/'.$i.'.test'); $i++);
+$testFile = __DIR__.'/'.$i.'.test';
+$dotFile = __DIR__.'/'.$i.'.png';
 
-$numberOfVertices = 600;
+$useDot = false;
+
+$numVertices = $argv[1];
 // The chance an edge exists between two vertices, in percent
-$chanceOfEdge = 15;
+$chanceOfEdge = @$argv[2]?:15;
 // The maximum weight an edge can have
-$maxWeight = 20;
+$maxWeight = @$argv[3]?:20;
 
-$testHandle = fopen($filename.'.test', 'w+');
-//$dotHandle = popen("dot -Tpng -o$filename.png", 'w');
+$source = rand(0, $numVertices);
 
-$source = rand(0, $numberOfVertices);
-
-fputs($testHandle, "$numberOfVertices\n");
+$testHandle = fopen($testFile, 'w+');
+fputs($testHandle, "$numVertices\n");
 fputs($testHandle, "$source\n");
 
-//fputs($dotHandle, "digraph G {\n");
-//fputs($dotHandle, "\t$source [color=red]\n");
+if($useDot) {
+	$dotHandle = popen("dot -Tpng -o$dotFile", 'w');
+	fputs($dotHandle, "digraph G {\n");
+	fputs($dotHandle, "\t$source [color=red]\n");
+}
 
-for($i = 0; $i < $numberOfVertices; $i++) {
-	for($j = 0; $j < $numberOfVertices; $j++) {
+for($i = 0; $i < $numVertices; $i++) {
+	for($j = 0; $j < $numVertices; $j++) {
+		echo "\rProgress: ".str_pad((round(($i*$numVertices+$j)/($numVertices*$numVertices), 4)*100)."%", 6);
 		if($j == $i+1 || ($i != $j && rand(0, 99) < $chanceOfEdge)) {
 			$weight = rand(1, $maxWeight);
 			fputs($testHandle, $weight);
-			//fputs($dotHandle, "\t$i -> $j [label=\"$weight\"]\n");
+			if($useDot)
+				fputs($dotHandle, "\t$i -> $j [label=\"$weight\"]\n");
 		} else {
 			fputs($testHandle, '0');
 		}
-		if($j < $numberOfVertices - 1)
+		if($j < $numVertices - 1)
 			fputs($testHandle, ' ');
 	}
 	fputs($testHandle, "\n");
 }
-//fputs($dotHandle, "}");
+echo "\n";
+if($useDot) {
+	fputs($dotHandle, "}");
+	fclose($dotHandle);
+}
 
 fclose($testHandle);
-//fclose($dotHandle);
 
-print("$filename.test and $filename.dot have been generated\n");
+print("$testFile and $dotFile have been generated\n");
