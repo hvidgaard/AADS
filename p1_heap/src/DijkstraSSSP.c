@@ -4,9 +4,7 @@
 #include <FibonacciHeap.h>
 #include <BinaryHeap.h>
 
-void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int which, unsigned int ** edges);
-
-void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int which, unsigned int ** edges){
+void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges){
 	unsigned int * dist = malloc(num_vertices * sizeof(unsigned int));
 	
 	binary_heap * h = bh_init_heap(num_vertices);

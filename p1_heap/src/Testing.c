@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 				//printf("edges[%d][%d] = %d\n", i, j, t_edges[j]);
 			}
 		}
-		dijkstra(n, *source, dist, 0, edges);
+		dijkstra(n, *source, dist, edges);
 	}
 	else
 		printf("Failed, testfile could not be opened or was malformed\n");
@@ -70,23 +70,23 @@ int main(int argc, char **argv)
 	}*/
 }
 
-int test_abstract() {
-	AbstractHeap *heap = make_heap(USE_FIBONACCI_HEAP, 30);
-	int i;
-	for (i = 1; i <= 16; i++)
-		insert(17-i, NULL, heap);
+// int test_abstract() {
+// 	AbstractHeap *heap = make_heap(USE_FIBONACCI_HEAP, 30);
+// 	int i;
+// 	for (i = 1; i <= 16; i++)
+// 		insert(17-i, NULL, heap);
 	
-	AbstractNode *twenty = insert(21, NULL, heap);
-	decrease_key(15, twenty, heap);
+// 	AbstractNode *twenty = insert(21, NULL, heap);
+// 	decrease_key(15, twenty, heap);
 
-	AbstractNode *min = (AbstractNode *) find_min(heap);
-	while (min) {
-		printf("min is %d\n", min->key);
-		delete_min(heap);
-		min = find_min(heap);
-	}
-	return EXIT_SUCCESS;
-}
+// 	AbstractNode *min = (AbstractNode *) find_min(heap);
+// 	while (min) {
+// 		printf("min is %d\n", min->key);
+// 		delete_min(heap);
+// 		min = find_min(heap);
+// 	}
+// 	return EXIT_SUCCESS;
+// }
 
 int test_binary()
 {
