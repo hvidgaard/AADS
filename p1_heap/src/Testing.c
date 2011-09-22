@@ -138,8 +138,9 @@ int test_fibonacci()
 unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsigned int * source) {
 	if (testfile) {
 		unsigned int n;
+		int bufferSize = 600000;
 		//used for getline and strtoul.
-		char *line_buf = (char *)malloc(100000 * sizeof(char));
+		char *line_buf = (char *)malloc(bufferSize * sizeof(char));
 		if (!line_buf)
 			exit(-1);
 		char **line_buf_p = &line_buf;
@@ -156,7 +157,7 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 		//reliably
 		
 		//get the number of vertecies;
-		if (fgets(line_buf, 100000, testfile)) {
+		if (fgets(line_buf, bufferSize, testfile)) {
 			*num_vertices = strtoul(line_buf, NULL, 10);
 			n = *num_vertices;
 		}
@@ -166,7 +167,7 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 			return NULL;
 		}
 		//then the source
-		if (fgets(line_buf, 100000, testfile))
+		if (fgets(line_buf, bufferSize, testfile))
 			*source = strtoul(line_buf, NULL, 10);
 		else {
 			//free(line_buf_p);
@@ -181,7 +182,7 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 		unsigned int value;
 		//i is the source vertex, j is the destination vertex.
 		for (i = 0; i < n; i++) {
-			fgets(line_buf, 100000, testfile);
+			fgets(line_buf, bufferSize, testfile);
 			//the first time around tailptr doesn't point to anything
 			//after strtoul is called the first time, tailptr will
 			//always point to the next char that is not part of a number
