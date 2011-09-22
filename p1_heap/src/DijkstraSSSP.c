@@ -30,7 +30,7 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, 
 	}
 	unsigned int v_num;
 	unsigned int u_num;
-	while (h->size > 0) {
+	while (bh_find_min(h)) {
 		v = bh_delete_min(h);
 		v_num = *(unsigned int *)v->data;
 		//printf("del_min : %d\n", v_num); 
@@ -43,6 +43,6 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, 
 			 }
 		 }
 	}
-	for (i = 0; i < num_vertices; i++)
-		printf("distance from %d to %d: %d\n", source, i, dist[i]);
+	// for (i = 0; i < num_vertices; i++)
+	// 	printf("distance from %d to %d: %d\n", source, i, dist[i]);
 }
