@@ -2,36 +2,45 @@
 #include <stdio.h>
 #include <BinaryHeap.h>
 #include <FibonacciHeap.h>
-#include <AbstractHeap.h>
+#include <BinaryHeap.h>
 
 void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int ** w, unsigned int which);
 
 void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int ** w, unsigned int which){
 	unsigned int * dist = malloc(num_vertices * sizeof(unsigned int));
 	
-	AbstractHeap * heap;
-	if(which == USE_BINARY_HEAP)
-		heap = make_heap(USE_BINARY_HEAP, num_vertices);
-	else
-		heap = make_heap(USE_FIBONACCI_HEAP, num_vertices);
+	binary_heap * h = bh_init_heap(num_vertices);
+	bh_element ** elements = malloc(num_vertices * sizeof(bh_element *));
+	bh_element * vp;
 	
 	dist[source] = 0;
 	unsigned int i;
-	for (i = 0; i < num_vertices; i++){
-		if (i != source) {
-			unsigned int * v = malloc(sizeof(unsigned int));
-			*v = i;
-			insert(UINT_MAX, v, heap);
-		}
+	unsigned int * v;
+	v = malloc(sizeof(unsigned int));
+	*v = source;
+	
+	elements[source] = bh_insert(0, v, h);
+	for (i = 0; i < source; i++){
+		v = malloc(sizeof(unsigned int));
+		elements[source] = bh_insert(UINT_MAX, v, h);
 	}
+	for (i++; i < num_vertices; i++){
+		v = malloc(sizeof(unsigned int));
+		elements[source] = bh_insert(UINT_MAX, v, h);
+	}
+	while (h->size > 0) {
+		 vp = bh_delete_min(h);
+		 
+	}
+	/*
 	unsigned int size;
 	if(which == USE_BINARY_HEAP){
 		size = heap->bin->size;
 		for (i = 1; i <= size; i++){
-			if (i != source /*&& heap->bin->data[i]*/){
-				//heap->bin->data[i];
+			//if (i != source && heap->bin->data[i]){
 				
-			}
+				
+			
 		}
 	}
 	else{
@@ -40,7 +49,7 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int ** w,
 	}
 	for (i = 0; i < size; i++){
 		
-	}
+	}*/
 }
 /*
 while Q ≠ ∅ do

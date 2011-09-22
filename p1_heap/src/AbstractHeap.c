@@ -19,8 +19,8 @@ AbstractNode *find_min(AbstractHeap *heap) {
 		node->bin = bh_find_min(heap->bin);
 		if(!node->bin)
 			return NULL;
-		node->key = heap->bin->data[node->bin].key;
-		node->data = heap->bin->data[node->bin].data;
+		node->key = heap->bin->data[node->bin]->key;
+		node->data = heap->bin->data[node->bin]->data;
 	} else {
 		node->fib = fib_find_min(heap->fib);
 		if(!node->fib)

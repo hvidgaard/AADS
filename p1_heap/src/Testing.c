@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 		printf("wrong # of arguments\n");
 		exit(1);
 	}
-		
+	test_binary();
 	
 	/*
 	if(strcmp(argv[2], "abstract") == 0) {
@@ -71,9 +71,9 @@ int test_binary()
 	int i;
 	for (i = 1; i <= 16; i++)
 		bh_insert(17-i, NULL, h);
-	i = 0;
+	i = 1;
 	while (i < h->size) {
-		printf("element %d value %d\n", i, h->data[i].key);
+		printf("element %d value %d\n", i, h->data[i]->key);
 		fflush(stdout);
 		i++;
 	}
