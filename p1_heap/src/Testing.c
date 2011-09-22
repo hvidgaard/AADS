@@ -25,21 +25,25 @@ int main(int argc, char **argv)
 	t_edges = malloc(n * sizeof(unsigned int));
 	edges = malloc(n * sizeof(unsigned int *));
 	if (dist){
-		printf("#vertices: %d\nsource: %d\n\n", n, *source);
+		//printf("#vertices: %d\nsource: %d\n\n", n, *source);
 		int i, j;
 		for (i = 0; i < n; i++){
 			count = 0;
 			for (j = 0; j < n; j++) {
-				printf("Dist[%d][%d]: %d index %d\n", i, j, dist[(i * n) + j], i * n + j);
+				//printf("(%d,%d) distance: %d\n", i,j, dist[(i * n) + j]);
 				if (dist[(i * n) + j]) {
-					t_edges[j] = j;
+					t_edges[count+1] = j;
+					//printf("t_edges[%d][%d] = %d\n", i, count+1, t_edges[count+1]);
 					count++;
 				}
 			}
-			edges[i] = malloc((count) * sizeof(unsigned int));
+			edges[i] = malloc((count+1) * sizeof(unsigned int));
 			edges[i][0] = count;
-			for (j = 0; j < count; j++)
-				edges[i][j+1] = t_edges[j];
+			//printf("count for %d is %d\n", i, count);
+			for (j = 1; j <= count; j++) {
+				edges[i][j] = t_edges[j];
+				//printf("edges[%d][%d] = %d\n", i, j, t_edges[j]);
+			}
 		}
 	}
 	else
@@ -48,8 +52,8 @@ int main(int argc, char **argv)
 		printf("wrong # of arguments\n");
 		exit(1);
 	}
-	test_binary();
-	
+	//test_binary();
+	dijkstra(n, *source, dist, 0, edges);
 	/*
 	if(strcmp(argv[2], "abstract") == 0) {
 		exit(test_abstract());
@@ -178,14 +182,14 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 			for (j = 0; j < n; j++) {
 				value = strtoul(*tailptr, tailptr, 10);
 				dist_array[(i * n) + j] = value;
-				printf("dist[%d][%d] = %d og value er %d og index %d\n", i, j, dist_array[(i*n)+j], value, (i*n)+j);
+				//printf("dist[%d][%d] = %d og value er %d og index %d\n", i, j, dist_array[(i*n)+j], value, (i*n)+j);
 			}
 		}
-		for (i = 0; i < n; i++) {
+		/*for (i = 0; i < n; i++) {
 			for (j = 0; j < n; j++) {
 				printf("dist2[%d][%d] = %d, index: %d\n", i, j, dist_array[i * n + j], i * n + j);
 			}
-		}
+		}*/
 		//free(line_buf_p);
 		//free(line_buf_len);
 		return dist_array;

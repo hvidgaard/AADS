@@ -33,7 +33,7 @@ bh_element * bh_insert(unsigned int key, void *data, binary_heap *h) {
 	if (h->size < h->max_size) {
 		//printf("insert key %d\n", key);
 		h->size++;
-		bh_element * e = malloc(sizeof(bh_element *));
+		bh_element * e = malloc(sizeof(struct bh_element));
 		if (!e)
 			return 0;
 		e->key = key;
@@ -87,7 +87,7 @@ void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h) {
 }
 
 bh_element *bh_delete_element(unsigned int e, binary_heap *h){
-	bh_element * result = malloc(sizeof(bh_element *));
+	bh_element * result = malloc(sizeof(struct bh_element));
 	//printf("Deleting: %d, with key %d\n", e, h->data[e].key);
 	if (h->size > 1 && e <= h->size) {
 		bh_exchange(e, h->size, h);
