@@ -30,20 +30,21 @@ if($useDot) {
 }
 
 for($i = 0; $i < $numVertices; $i++) {
+	echo "\rProgress: ".(round($i/$numVertices, 2)*100)."%";
+	$line = '';
 	for($j = 0; $j < $numVertices; $j++) {
-		echo "\rProgress: ".str_pad((round(($i*$numVertices+$j)/($numVertices*$numVertices), 4)*100)."%", 6);
 		if($j == $i+1 || ($i != $j && rand(0, 99) < $chanceOfEdge)) {
 			$weight = rand(1, $maxWeight);
-			fputs($testHandle, $weight);
+			$line .= $weight;
 			if($useDot)
 				fputs($dotHandle, "\t$i -> $j [label=\"$weight\"]\n");
 		} else {
-			fputs($testHandle, '0');
+			$line .= 0;
 		}
 		if($j < $numVertices - 1)
-			fputs($testHandle, ' ');
+			$line .= ' ';
 	}
-	fputs($testHandle, "\n");
+	fputs($testHandle, $line."\n");
 }
 echo "\n";
 if($useDot) {
