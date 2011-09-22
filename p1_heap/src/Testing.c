@@ -15,17 +15,31 @@ int main(int argc, char **argv)
 	printf("Commence testing...\n");
 	unsigned int * num_vertices = malloc(sizeof(unsigned int));
 	unsigned int * source = malloc(sizeof(unsigned int));
+	unsigned int * t_edges;
+	unsigned int ** edges;
 	unsigned int * dist;
-	unsigned int n;
+	unsigned int n, count;
 	
 	dist = parse_testfile(fopen(argv[1], "r"), num_vertices, source);
 	n = *num_vertices;
+	t_edges = malloc(n * sizeof(unsigned int));
+	edges = malloc(n * sizeof(unsigned int *));
 	if (dist){
 		printf("#vertices: %d\nsource: %d\n\n", n, *source);
 		int i, j;
 		for (i = 0; i < n; i++){
-			for (j = 0; j < n; j++)
+			count = 0;
+			for (j = 0; j < n; j++) {
 				printf("Dist[%d][%d]: %d index %d\n", i, j, dist[(i * n) + j], i * n + j);
+				if (dist[(i * n) + j]) {
+					t_edges[j] = j;
+					count++;
+				}
+			}
+			edges[i] = malloc((count) * sizeof(unsigned int));
+			edges[i][0] = count;
+			for (j = 0; j < count; j++)
+				edges[i][j+1] = t_edges[j];
 		}
 	}
 	else
