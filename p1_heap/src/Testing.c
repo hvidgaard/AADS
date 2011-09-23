@@ -157,10 +157,6 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 		//reliably
 		
 		//get the number of vertecies;
-		if (fgets(line_buf, 100000, testfile)) {
-			*num_vertices = strtoul(line_buf, NULL, 10);
-		if (fgets(line_buf, bufferSize, testfile)) {
-			*num_vertices = strtoul(line_buf, NULL, 10);
 		if (fgets(*buf_p, n*10, testfile)) {
 			*num_vertices = strtoul(*buf_p, NULL, 10);
 			n = *num_vertices;
@@ -171,10 +167,6 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 			return NULL;
 		}
 		//then the source
-		if (fgets(line_buf, 100000, testfile))
-			*source = strtoul(line_buf, NULL, 10);
-		if (fgets(line_buf, bufferSize, testfile))
-			*source = strtoul(line_buf, NULL, 10);
 		buf = buf_t;
 		if (fgets(*buf_p, n*10, testfile))
 			*source = strtoul(*buf_p, NULL, 10);
@@ -190,8 +182,6 @@ unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsi
 		unsigned int value;
 		//i is the source vertex, j is the destination vertex.
 		for (i = 0; i < n; i++) {
-			fgets(line_buf, 100000, testfile);
-			fgets(line_buf, bufferSize, testfile);
 			buf = buf_t;
 			fgets(*buf_p, n*10, testfile);
 			//the first time around tailptr doesn't point to anything
