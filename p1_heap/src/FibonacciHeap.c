@@ -79,6 +79,7 @@ void *fib_union(FibNode *node1, FibNode *node2)
 while doing all other kinds of shit. */
 void *fib_delete_min(FibHeap *heap)
 {
+	printf("dmin s\n");
 	// Nothing to do if there is no minimum to begin with;
 	if (!heap->min)
 		return;
@@ -136,8 +137,10 @@ void *fib_delete_min(FibHeap *heap)
 			} else {
 				/* If the current node is the start, make the next node
 				assume this role. Otherwise the outer loop won't end.*/
-				if(node == start)
+				if(node == start) {
+					printf("dmin reassign start\n");
 					start = next;
+				}
 				fib_union(other->child, node);
 				node->parent = other;
 				/* The other node has for all intents and purposes
@@ -148,6 +151,7 @@ void *fib_delete_min(FibHeap *heap)
 			it does not occupy this position any longer. */
 			roots[node->rank] = NULL;
 			node->rank++;
+			printf("rank %d\n", node->rank);
 		}
 		roots[node->rank] = node;
 		/* Update the minimum of the heap. */
@@ -156,6 +160,7 @@ void *fib_delete_min(FibHeap *heap)
 		node = next;
 	} while (next != start);
 	free(roots);
+	printf("dmin e\n");
 }
 
 /* Extracts a node from a list of child nodes.

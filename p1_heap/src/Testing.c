@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <time.h>
 #include <BinaryHeap.h>
 #include <FibonacciHeap.h>
 #include <AbstractHeap.h>
@@ -30,30 +31,39 @@ int main(int argc, char **argv)
 	t_edges = malloc(n * sizeof(unsigned int));
 	edges = malloc(n * sizeof(unsigned int *));
 	if (dist){
-		//printf("#vertices: %d\nsource: %d\n\n", n, *source);
 		int i, j;
 		for (i = 0; i < n; i++){
 			count = 0;
 			for (j = 0; j < n; j++) {
-				//printf("(%d,%d) distance: %d\n", i,j, dist[(i * n) + j]);
 				if (dist[(i * n) + j]) {
 					t_edges[count+1] = j;
-					//printf("t_edges[%d][%d] = %d\n", i, count+1, t_edges[count+1]);
 					count++;
 				}
 			}
 			edges[i] = malloc((count+1) * sizeof(unsigned int));
 			edges[i][0] = count;
-			//printf("count for %d is %d\n", i, count);
-			for (j = 1; j <= count; j++) {
+			for (j = 1; j <= count; j++)
 				edges[i][j] = t_edges[j];
-				//printf("edges[%d][%d] = %d\n", i, j, t_edges[j]);
-			}
 		}
-		dijkstra(n, *source, dist, edges);
+		clock_t start;
+		if(strcmp(argv[2], "bin") == 0) {
+			printf("Timing exeuction of Dijkstra SSSP with binary heap (%d vertices)\n", n);
+			start = clock();
+			dijkstra_bin(n, *source, dist, edges);
+		} else if(strcmp(argv[2], "fib") == 0) {
+			printf("Timing exeuction of Dijkstra SSSP with fibonacci heap (%d vertices)\n", n);
+			start = clock();
+			dijkstra_fib(n, *source, dist, edges);
+		} else {
+			printf("Unknown heap type '%s'", argv[2]);
+			exit(2);
+		}
+		printf("Executed in %g\n", (double) (clock()-start) / (double) CLOCKS_PER_SEC);
 	}
-	else
+	else {
 		printf("Failed, testfile could not be opened or was malformed\n");
+			exit(3);
+	}
 	if(argc != 3){
 		printf("wrong # of arguments\n");
 		exit(1);
