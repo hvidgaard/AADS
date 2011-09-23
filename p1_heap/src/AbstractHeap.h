@@ -16,7 +16,7 @@ typedef struct AbstractNode {
 	unsigned int key;
 	unsigned int rank;
 	void *data;
-	unsigned int bin;
+	bh_element *bin;
 	FibNode *fib;
 } AbstractNode;
 
