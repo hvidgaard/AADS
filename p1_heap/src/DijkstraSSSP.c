@@ -25,7 +25,7 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, 
 			*v_data = i;
 			elements[*v_data] = bh_insert(UINT_MAX, v_data, h);
 			//printf("inserted %d with key: %d, got index %d\n", *v_data, UINT_MAX, elements[*v_data]->index);	
-			dist[i] = UINT_MAX;
+			dist[i] = UINT_MAX+1;
 		}
 	}
 	unsigned int v_num;
@@ -43,6 +43,10 @@ void dijkstra(unsigned int num_vertices, unsigned int source, unsigned int * w, 
 			 }
 		 }
 	}
+	for (i = 0; i < num_vertices; i++)
+		printf("distance from %d to %d: %d\n", source, i, dist[i]);
 	// for (i = 0; i < num_vertices; i++)
 	// 	printf("distance from %d to %d: %d\n", source, i, dist[i]);
+	//for (i = 0; i < num_vertices; i++)
+	//	printf("distance from %d to %d: %d\n", source, i, dist[i]);
 }
