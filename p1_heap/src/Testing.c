@@ -34,12 +34,10 @@ int main(int argc, char **argv)
 		int i, j;
 		for (i = 0; i < n; i++){
 			count = 0;
-			for (j = 0; j < n; j++) {
-				if (dist[(i * n) + j]) {
-					t_edges[count+1] = j;
-					count++;
-				}
-			}
+			for (j = 0; j < n; j++)
+				if (dist[(i * n) + j])
+					t_edges[++count] = j;
+			
 			edges[i] = malloc((count+1) * sizeof(unsigned int));
 			edges[i][0] = count;
 			for (j = 1; j <= count; j++)
@@ -47,11 +45,11 @@ int main(int argc, char **argv)
 		}
 		clock_t start;
 		if(strcmp(argv[2], "bin") == 0) {
-			printf("Timing exeuction of Dijkstra SSSP with binary heap (%d vertices)\n", n);
+			printf("Timing execution of Dijkstra SSSP with binary heap (%d vertices)\n", n);
 			start = clock();
 			dijkstra_bin(n, *source, dist, edges);
 		} else if(strcmp(argv[2], "fib") == 0) {
-			printf("Timing exeuction of Dijkstra SSSP with fibonacci heap (%d vertices)\n", n);
+			printf("Timing execution of Dijkstra SSSP with fibonacci heap (%d vertices)\n", n);
 			start = clock();
 			dijkstra_fib(n, *source, dist, edges);
 		} else {

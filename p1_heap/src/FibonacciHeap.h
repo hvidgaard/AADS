@@ -20,12 +20,13 @@ typedef struct FibHeap {
 FibHeap *fib_make_heap();
 FibNode *fib_find_min(FibHeap *heap);
 FibNode *fib_insert(unsigned int key, void *data, FibHeap *heap);
+void *fib_delete_min(FibHeap *heap);
+void *fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap);
+void *fib_delete(FibNode *node, FibHeap *heap);
 void *fib_meld(FibHeap *heap1, FibHeap *heap2);
 void *fib_link(FibNode *left, FibNode *right);
 void *fib_union(FibNode *node1, FibNode *node2);
-void *fib_delete_min(FibHeap *heap);
+void *fib_extract_rootnode(FibNode *node);
 void *fib_extract_childnode(FibNode *node, FibHeap *heap);
-void *fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap);
-void *fib_delete(FibNode *node, FibHeap *heap);
 
 #endif
