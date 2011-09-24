@@ -201,8 +201,8 @@ void *fib_extract_childnode(FibNode *node, FibHeap *heap)
 		fib_link(node, node);
 	}
 	/* Decrease rank of parent by node rank plus one. */
-	assert((int)parent->rank - (int)node->rank - 1 >= 0);
-	parent->rank -= (node->rank + 1);
+	assert((int)parent->rank - 1 >= 0);
+	parent->rank--;
 	
 	/* Node does not have a parent now. */
 	node->parent = NULL;
