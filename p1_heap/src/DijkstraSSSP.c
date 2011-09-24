@@ -86,7 +86,6 @@ void dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int *
 				 fib_decrease_key(dist[u_num], elements[u_num], h);
 			 }
 		 }
-		 free(v);
 	}
 	// for (i = 0; i < num_vertices; i++)
 	// 	printf("distance from %d to %d: %d\n", source, i, dist[i]);

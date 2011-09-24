@@ -47,6 +47,10 @@ FibNode *fib_insert(unsigned int key, void *data, FibHeap *heap)
 /* Melds two heaps together, maintaining the minimum pointers */
 void *fib_meld(FibHeap *heap1, FibHeap *heap2)
 {
+	assert(heap1->min);
+	assert(heap2->min);
+	assert(!heap1->min->parent);
+	assert(!heap2->min->parent);
 	fib_union(heap1->min, heap2->min);
 	if (heap1->min->key > heap2->min->key)
 		heap1->min = heap2->min;
@@ -59,7 +63,8 @@ void *fib_meld(FibHeap *heap1, FibHeap *heap2)
 /* Links two nodes, by setting the left node to be to the left of the right node. */
 void *fib_link(FibNode *left, FibNode *right)
 {
-	assert(left && right);
+	assert(left);
+	assert(right);
 	left->right = right;
 	right->left = left;
 }
@@ -80,8 +85,7 @@ void *fib_union(FibNode *node1, FibNode *node2)
 }
 
 /* Deletes the minimum node of the heap and finds the new minimum.
-Also does all other kinds of shit.
-It does not however free the memory of the old minimum. */
+Also does all other kinds of shit. */
 void *fib_delete_min(FibHeap *heap)
 {
 	printf("dmin s\n");
@@ -93,17 +97,20 @@ void *fib_delete_min(FibHeap *heap)
 	
 	FibNode *oldMin = heap->min;
 	if (oldMin->left == oldMin) {
-		/* If the minimum is the only rootNode set the entire
-		set of childNodes of min to be the new root. */
-		heap->min = oldMin->child;
 		/* Cut out the old minimum */
 		fib_extract_rootnode(oldMin);
-		/* If the heap was set to NULL, we are done. */
+		/* If oldMin does not have any children we are done. */
 		if (!oldMin->child) {
+			heap->min = NULL;
+			free(oldMin);
 			heap->nodes--;
 			printf("nodes: %d\n", heap->nodes);
 			return;
 		}
+		/* If the minimum is the only rootNode set the entire
+		set of childNodes of min to be the new root. */
+		heap->min = oldMin->child;
+		assert(oldMin);
 	} else {
 		/* If the old minimum had children, make them root nodes,
 		->parent will be set to NULL, when iterating. */
@@ -113,6 +120,7 @@ void *fib_delete_min(FibHeap *heap)
 		heap->min = oldMin->left;
 		/* Cut out the old minimum */
 		fib_extract_rootnode(oldMin);
+		assert(oldMin);
 	}
 	heap->nodes--;
 
@@ -120,8 +128,8 @@ void *fib_delete_min(FibHeap *heap)
 	while we iterate, we simply remember the node we started at instead.
 	The list is circular, so we arrive at the start node when we are done. */
 	FibNode *start;
-	FibNode *next;
 	FibNode *node;
+	FibNode *other;
 	node = start = heap->min;
 
 	/* Allocate a zero initialized array, to check if any two nodes have the same rank. */
@@ -129,54 +137,75 @@ void *fib_delete_min(FibHeap *heap)
 	/* heap->nodes is actually too large, this can be smaller. */
 	roots = calloc(heap->nodes,sizeof(struct FibNode*));
 	do {
-		next = node->left;
 		/* Remove parent pointer. The node could be a child from the min node. */
-		node->parent = NULL;
+		if(node->parent == oldMin)
+			node->parent = NULL;
+		assert(!node->parent);
 		/* If there already is a node with the same rank, merge the two.
 		Only do that when it is not the same node of course. */
-		while (roots[node->rank]) {
-			FibNode *other = roots[node->rank];
+		while ((other = roots[node->rank]) && other != node) {
+			// printf("join%d\n", node->rank);
+			assert(other != node);
+			assert(!other->parent);
+			assert(!node->parent);
+			assert(!start->parent);
 			/* Make one node the child of the other, depending on the key*/
 			if (node->key < other->key) {
+				/* If the other node is the start, make the next node
+				assume this role. Otherwise the outer loop won't end.*/
+				if (other == start) {
+					start = other->left;
+					assert(!start->parent);
+					// printf("reassign %d\n", start->key);
+				}
 				/* We only want the node to adopt the other node,
 				not the entire list of rootNodes */
 				fib_extract_rootnode(other);
 				// Adopt the other node
-				if(node->child)
+				if (node->child)
 					fib_union(node->child, other);
 				else
 					node->child = other;
 				other->parent = node;
 			} else {
-				/* If the current node is the start, make the next node
-				assume this role. Otherwise the outer loop won't end.*/
-				if(node == start)
+				/* Same as above but for the current node */
+				if (node == start) {
 					start = node->left;
+					assert(!start->parent);
+					// printf("reassign %d\n", start->key);
+				}
 				/* We only want the other node to adopt the current node,
 				not the entire list of rootNodes */
 				fib_extract_rootnode(node);
 				// Adopt the node
-				if(other->child)
+				if (other->child)
 					fib_union(other->child, node);
 				else
 					other->child = node;
 				node->parent = other;
 				/* The other node has for all intents and purposes
 				assumed the position of the original node. Make it official*/
+				assert(!other->parent);
 				node = other;
+				assert(!node->parent);
 			}
 			/* The rank of the node we merged with has changed,
 			it does not occupy this position any longer. */
 			roots[node->rank] = NULL;
 			node->rank++;
+			assert(!node->parent);
 		}
 		roots[node->rank] = node;
 		/* Update the minimum of the heap. */
 		if (node->key < heap->min->key)
 			heap->min = node;
-		node = next;
-	} while (next != start);
+		node = node->left;
+		// printf("next\n");
+	} while (node != start);
 	free(roots);
+	printf("free oldMin %d %d\n", oldMin->key, oldMin->rank);
+	assert(oldMin);
+	free(oldMin);
 	printf("dmin e\n");
 }
 
