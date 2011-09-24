@@ -200,7 +200,7 @@ void *fib_extract_childnode(FibNode *node, FibHeap *heap)
 		so make sure left & right pointers are correct */
 		fib_link(node, node);
 	}
-	/* Decrease rank of parent by node rank plus one. */
+	/* Decrease rank of parent 1 */
 	assert((int)parent->rank - 1 >= 0);
 	parent->rank--;
 	
