@@ -5,6 +5,7 @@ typedef struct FibNode {
 	unsigned int key;
 	unsigned int rank;
 	unsigned int marked;
+	unsigned int deleted;
 	void *data;
 	struct FibNode* parent;
 	struct FibNode* child;
