@@ -1,6 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
 #include <FibonacciHeap.h>
 
 /* Initialize a new Fibonacci heap. */
@@ -73,41 +71,11 @@ void fib_union(FibNode *node1, FibNode *node2)
 	node1->left = node2;
 }
 
-int is_linked_list(FibNode *node)
-{
-	int max = 8000;
-	FibNode *end = node->right;
-	FibNode *current = node;
-	int i;
-	for(i = 0; i < max; i++) {
-		assert(current->left);
-		assert(current->right);
-		assert(current == current->left->right);
-		assert(current == current->right->left);
-		if(current == end)
-			break;
-		if(current == current->left)
-			return 0;
-		current = current->left;
-	}
-	end = node->left;
-	current = node;
-	for(i = 0; i < max; i++) {
-		if(current == end)
-			return i+1;
-		if(current == current->right)
-			return 0;
-		current = current->right;
-	}
-	return 0;
-}
-
 /* Deletes the minimum node of the heap and finds the new minimum.
 Also does all other kinds of shit. */
 void fib_delete_min(FibHeap *heap)
 {
-	printf("del_min start (%d nodes)\n", heap->nodes);
-	// Nothing to do if there is no minimum to begin with;
+	/* Nothing to do if there is no minimum to begin with */
 	if (!heap->min)
 		return;
 	
@@ -137,7 +105,6 @@ void fib_delete_min(FibHeap *heap)
 		oldMin->deleted = 1;
 	}
 	heap->nodes--;
-	printf("delete %d\n", (int)oldMin);
 
 	/* Since we don't know the size of the list and it changes,
 	while we iterate, we simply remember the node we started at instead.
@@ -148,76 +115,45 @@ void fib_delete_min(FibHeap *heap)
 	FibNode *next;
 	end = heap->min->right;
 	node = heap->min;
-	int size = is_linked_list(heap->min);
-	printf("size %d end %d\n", size, (int)end);
-	assert(size);
 	/* Allocate a zero initialized array, to check if any two nodes have the same rank. */
 	struct FibNode **roots;
 	/* heap->nodes is actually too large, this can be smaller. */
 	roots = calloc(heap->nodes,sizeof(struct FibNode*));
-	int i = 0;
 	do {
 		next = node->left;
-		printf("index %d\n", i++);
-		if(size <= 11) {
-			FibNode *current = node;
-			do {
-				printf("node %d left %d right %d rank %d key %d parent %d child %d\n", (int)current, (int)current->left, (int)current->right, current->rank, current->key, (int)current->parent, (int)current->child);
-				current = current->left;
-			} while(node != current);
-			printf("end %d\n", (int)end);
-			printf("next %d\n", (int)next);
-			// abort();
-		}
 		/* Remove parent pointer. The node could be a child from the min node. */
 		if(node->parent == oldMin)
 			node->parent = NULL;
-		assert(!node->parent);
 		/* If there already is a node with the same rank, merge the two.
 		Only do that when it is not the same node of course. */
 		while ((other = roots[node->rank]) && other != node) {
-			assert(is_linked_list(node));
-			assert(other != node);
-			// assert(other != end);
-			// assert(other != next);
-			assert(!other->parent);
-			assert(!node->parent);
 			/* Make one node the child of the other, depending on the key*/
 			if (node->key <= other->key) {
-				printf("current (%d) adopts other (%d))\n", (int)node, (int)other);
 				/* If the other node is the next node, make the left node
 				of that assume this role. Otherwise the outer loop won't end.*/
 				if (other == next) {
 					next = next->left;
 				}
-				if (other == end) {
-					// end = end->right;
-					end = next->right->right;
-					printf("Reassign end (other) to %d\n", (int)end);
-					assert(!end->parent);
-				}
+				if (other == end)
+					end = end->right;
 				/* We only want the node to adopt the other node,
 				not the entire list of rootNodes */
 				fib_extract_rootnode(other);
-				// Adopt the other node
+				/* Adopt the other node */
 				if (node->child)
 					fib_union(node->child, other);
 				else
 					node->child = other;
 				other->parent = node;
 			} else {
-				printf("other (%d) adopts current (%d))\n", (int)other, (int)node);
 				/* If the current node is the tail, make the previous node
 				assume this role. Otherwise the outer loop won't end.*/
-				if (node == end) {
-					end = next->right->right;
-					printf("Reassign end (current) to %d\n", (int)end);
-					assert(!end->parent);
-				}
+				if (node == end)
+					end = end->right;
 				/* We only want the other node to adopt the current node,
 				not the entire list of rootNodes */
 				fib_extract_rootnode(node);
-				// Adopt the node
+				/* Adopt the node */
 				if (other->child)
 					fib_union(other->child, node);
 				else
@@ -231,19 +167,14 @@ void fib_delete_min(FibHeap *heap)
 			it does not occupy this position any longer. */
 			roots[node->rank] = NULL;
 			node->rank++;
-			assert(!node->parent);
 		}
 		roots[node->rank] = node;
 		/* Update the minimum of the heap. */
 		if (node->key <= heap->min->key)
 			heap->min = node;
 		node = next;
-		// size = is_linked_list(node);
-		assert(is_linked_list(node));
-		assert(!end->parent || end->parent == oldMin);
 	} while (node->right != end);
 	free(roots);
-	// free(oldMin);
 }
 
 /* Extracts a node from a list of child nodes.
@@ -271,7 +202,6 @@ void fib_extract_childnode(FibNode *node, FibHeap *heap)
 	node->parent = NULL;
 	/* Repeat process for the parent, if it was marked. */
 	if (parent->marked && parent->parent) {
-		printf("extract recurse\n");
 		fib_extract_childnode(parent, heap);
 		parent->parent == NULL;
 		fib_union(heap->min, parent);
@@ -291,19 +221,14 @@ void fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap)
 {
 	if(node->deleted)
 		return;
-	assert(!node->deleted);
-	printf("decrease %d\n", (int)node);
 	node->key -= delta;
 	/* Make the node a root node, if it isn't already. */
 	if (node->parent && node->parent->key > node->key) {
-			printf("make root\n");
 			fib_extract_childnode(node, heap);
 			node->parent = NULL;
 			fib_union(heap->min, node);
 	}
-	printf("size %d\n", is_linked_list(node));
 	if (heap->min->key > node->key) {
-		assert(!node->parent);
 		heap->min = node;
 	}
 }

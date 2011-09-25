@@ -21,7 +21,6 @@ typedef struct FibHeap {
 FibHeap *fib_make_heap();
 FibNode *fib_find_min(FibHeap *heap);
 FibNode *fib_insert(unsigned int key, void *data, FibHeap *heap);
-int is_linked_list(FibNode *node);
 void fib_delete_min(FibHeap *heap);
 void fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap);
 void fib_delete(FibNode *node, FibHeap *heap);

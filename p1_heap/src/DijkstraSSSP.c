@@ -43,8 +43,8 @@ void dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int *
 			 }
 		 }
 	}
-	// for (i = 0; i < num_vertices; i++)
-	// 	printf("distance from %d to %d: %d\n", source, i, dist[i]);
+	for (i = 0; i < num_vertices; i++)
+		printf("distance from %d to %d: %d\n", source, i, dist[i]);
 }
 
 void dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges)
@@ -75,8 +75,8 @@ void dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int *
 	unsigned int v_num;
 	unsigned int u_num;
 	while (v = fib_find_min(h)) {
-		v_num = *(unsigned int *)v->data;
 		fib_delete_min(h);
+		v_num = *(unsigned int *)v->data;
 		//printf("del_min : %d\n", v_num); 
 		for (i = 1; i <= edges[v_num][0]; i++) {
 			 u_num = edges[v_num][i];
@@ -87,6 +87,6 @@ void dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int *
 			 }
 		 }
 	}
-	// for (i = 0; i < num_vertices; i++)
-	// 	printf("distance from %d to %d: %d\n", source, i, dist[i]);
+	for (i = 0; i < num_vertices; i++)
+		printf("distance from %d to %d: %d\n", source, i, dist[i]);
 }
