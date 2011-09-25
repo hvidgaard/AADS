@@ -32,5 +32,6 @@ void fib_extract_childnode(FibNode *node, FibHeap *heap);
 FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert);
 void fib_orphanize(FibNode *child);
 int fib_count_nodes(FibNode *root);
+FibNode* fib_find_real_min(FibNode *root);
 
 #endif

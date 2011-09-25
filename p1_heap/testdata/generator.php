@@ -9,7 +9,7 @@ for($i = 0; file_exists(__DIR__.'/'.$i.'.test'); $i++);
 $testFile = __DIR__.'/'.$i.'.test';
 $dotFile = __DIR__.'/'.$i.'.png';
 
-$useDot = false;
+$useDot = true;
 
 $numVertices = $argv[1];
 // The chance an edge exists between two vertices, in percent

@@ -118,16 +118,15 @@ void fib_delete_min(FibHeap *heap)
 	FibNode *root;
 	
 	int i = 0;
-	unsigned int min = 429496729;
 	do {
 		current = current->left;
-		i++;
-		if(current->key < min)
-			min = current->key;
-		assert(i <= heap->nodes);
+		assert(++i <= heap->nodes);
 	} while(current != heap->min);
-	printf("min is %d\n", min);
 	current = heap->min;
+	
+	FibNode* minNode = fib_find_real_min(heap->min);
+	printf("min is %d parent %d\n", (int)minNode->key);
+	
 	do {
 		i--;
 		next = current->left;
@@ -139,8 +138,8 @@ void fib_delete_min(FibHeap *heap)
 		current = next;
 	} while (1);
 	assert(i == 0);
-	printf("delmin says min is %d\n", heap->min->key);
-	assert(min == heap->min->key);
+	printf("delmin says min is %d\n", (int)heap->min);
+	assert(minNode == heap->min);
 	assert(count-1 == fib_count_nodes(heap->min));
 	printf("%d nodes\n", count);
 	free(ranks);
@@ -149,13 +148,31 @@ void fib_delete_min(FibHeap *heap)
 int fib_count_nodes(FibNode *root) {
 	int count = 0;
 	FibNode *current = root;
+	FibNode *parent = current->parent;
 	do {
+		assert(current->parent == parent);
 		if(current->child)
 			count += fib_count_nodes(current->child);
 		count++;
 		current = current->left;
 	} while(current != root);
 	return count;
+}
+
+FibNode* fib_find_real_min(FibNode *root) {
+	FibNode *minNode = root;
+	FibNode *current = root;
+	do {
+		if(current->key <= minNode->key)
+			minNode = current;
+		if(current->child) {
+			FibNode* minChild = fib_find_real_min(current->child);
+			if(minChild->key < minNode->key)
+				minNode = minChild;
+		}
+		current = current->left;
+	} while(current != root);
+	return minNode;
 }
 
 FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert) {
@@ -215,7 +232,7 @@ void fib_extract_childnode(FibNode *node, FibHeap *heap)
 	/* Repeat process for the parent, if it was marked. */
 	if (parent->marked && parent->parent) {
 		fib_extract_childnode(parent, heap);
-		parent->parent == NULL;
+		parent->parent = NULL;
 		fib_union(heap->min, parent);
 	}
 	parent->marked = !parent->marked;
