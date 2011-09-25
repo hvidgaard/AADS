@@ -10,135 +10,79 @@
 #include <FibonacciHeap.h>
 #include <DijkstraSSSP.h>
 
-unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsigned int * source);
-
 int main(int argc, char **argv)
 {
-	printf("Commence testing...\n");
-	unsigned int * num_vertices = malloc(sizeof(unsigned int));
-	unsigned int * source = malloc(sizeof(unsigned int));
-	unsigned int * t_edges;
-	unsigned int ** edges;
-	unsigned int * dist;
-	unsigned int n, count;
-	
-	dist = parse_testfile(fopen(argv[1], "r"), num_vertices, source);
-	n = *num_vertices;
-	t_edges = malloc(n * sizeof(unsigned int));
-	edges = malloc(n * sizeof(unsigned int *));
-	if (dist){
-		int i, j;
-		for (i = 0; i < n; i++){
-			count = 0;
-			for (j = 0; j < n; j++)
-				if (dist[(i * n) + j])
-					t_edges[++count] = j;
-			
-			edges[i] = malloc((count+1) * sizeof(unsigned int));
-			edges[i][0] = count;
-			for (j = 1; j <= count; j++)
-				edges[i][j] = t_edges[j];
-		}
-		clock_t start;
-		clock_t end;
-		unsigned int *distances;
-		if(strcmp(argv[2], "bin") == 0) {
-			printf("Timing execution of Dijkstra SSSP with binary heap (%d vertices)\n", n);
-			start = clock();
-			distances = dijkstra_bin(n, *source, dist, edges);
-			end = clock();
-		} else if(strcmp(argv[2], "fib") == 0) {
-			printf("Timing execution of Dijkstra SSSP with fibonacci heap (%d vertices)\n", n);
-			start = clock();
-			distances = dijkstra_fib(n, *source, dist, edges);
-			end = clock();
-		} else {
-			printf("Unknown heap type '%s'", argv[2]);
-			exit(2);
-		}
-		for (i = 0; i < n; i++)
-			printf("distance from %d to %d: %d\n", *(unsigned int *)source, i, distances[i]);
-		printf("Executed in %g\n", (double) (end-start) / (double) CLOCKS_PER_SEC);
-	}
-	else {
-		printf("Failed, testfile could not be opened or was malformed\n");
-			exit(3);
-	}
-	if(argc != 3){
-		printf("wrong # of arguments\n");
+	if(argc == 1) {
+		printf("Usage\n    test heap [seed] [vertices] [edgechance] [maxweight] [source]\n");
 		exit(1);
 	}
-}
-
-unsigned int * parse_testfile(FILE * testfile, unsigned int * num_vertices, unsigned int * source) {
-	if (testfile) {
-		unsigned int n;
-		//used for getline and strtoul.
-		char *buf = (char *)malloc(n*10 * sizeof(char));
-		char *buf_t = buf;
-		if (!buf)
-			exit(-1);
-		char **buf_p = &buf;
-		//size_t *line_buf_len = malloc(sizeof(size_t));
-		//*line_buf_len = 5000 * 4;
-		char **tailptr;
-		
-		unsigned int line_buf_i = 0;
-		unsigned int int_buf_i = 0;
-		unsigned int edges_i = 0;
-		
-		//note that the use of 'getline' is GNU libs non-standard function.
-		//it's used because it makes it significantly easier to read lines
-		//reliably
-		
-		//get the number of vertecies;
-		if (fgets(*buf_p, n*10, testfile)) {
-			*num_vertices = strtoul(*buf_p, NULL, 10);
-			n = *num_vertices;
-		}
-		else {
-			//free(line_buf_p);
-			//free(line_buf_len);
-			return NULL;
-		}
-		//then the source
-		buf = buf_t;
-		if (fgets(*buf_p, n*10, testfile))
-			*source = strtoul(*buf_p, NULL, 10);
-		else {
-			//free(line_buf_p);
-			//free(line_buf_len);
-			return NULL;
-		}
-		int i, j; //used to index in loops
-		
-		//create an array with size not known before runtime.
-		unsigned int * dist_array = malloc(n * n * sizeof(unsigned int));
-		unsigned int value;
-		//i is the source vertex, j is the destination vertex.
-		for (i = 0; i < n; i++) {
-			buf = buf_t;
-			fgets(*buf_p, n*10, testfile);
-			//the first time around tailptr doesn't point to anything
-			//after strtoul is called the first time, tailptr will
-			//always point to the next char that is not part of a number
-			//i.e. a whitespace or linebreak.
-			tailptr = buf_p;
-			for (j = 0; j < n; j++) {
-				value = strtoul(*tailptr, tailptr, 10);
-				dist_array[(i * n) + j] = value;
-				//printf("dist[%d][%d] = %d og value er %d og index %d\n", i, j, dist_array[(i*n)+j], value, (i*n)+j);
-			}
-		}
-		/*for (i = 0; i < n; i++) {
-			for (j = 0; j < n; j++) {
-				printf("dist2[%d][%d] = %d, index: %d\n", i, j, dist_array[i * n + j], i * n + j);
-			}
-		}*/
-		//free(line_buf_p);
-		//free(line_buf_len);
-		return dist_array;
+	
+	unsigned int seed;
+	if(argc > 2 && argv[2]) {
+		seed = (unsigned int)strtoul(argv[2], NULL, 10);
+		srandom(seed);
+	} else {
+		srandom(time(NULL));
+		unsigned int seed = random()%99999999;
 	}
-	else
-		return NULL;
+	
+	unsigned int vertices = 20;
+	if(argc > 3)
+		vertices = (unsigned int)strtoul(argv[3], NULL, 10);
+	
+	unsigned int edge_chance = 15;
+	if(argc > 4)
+		edge_chance = (unsigned int)strtoul(argv[4], NULL, 10);
+	
+	unsigned int max_weight = 20;
+	if(argc > 5)
+		max_weight = (unsigned int)strtoul(argv[5], NULL, 10);
+	
+	unsigned int source = random()%vertices;
+	if(argc > 6)
+		source = (unsigned int)strtoul(argv[6], NULL, 10);
+		
+	unsigned int *weights = generate_graph(vertices, edge_chance, max_weight, seed);
+	
+	unsigned int * t_edges;
+	unsigned int ** edges;
+	unsigned int count;
+	
+	t_edges = malloc(vertices * sizeof(unsigned int));
+	edges = malloc(vertices * sizeof(unsigned int *));
+	int i, j;
+	for (i = 0; i < vertices; i++) {
+		count = 0;
+		for (j = 0; j < vertices; j++)
+			if (weights[(i * vertices) + j])
+				t_edges[++count] = j;
+		
+		edges[i] = malloc((count+1) * sizeof(unsigned int));
+		edges[i][0] = count;
+		for (j = 1; j <= count; j++)
+			edges[i][j] = t_edges[j];
+	}
+	clock_t start;
+	clock_t end;
+	unsigned int *distances;
+	if(strcmp(argv[1], "bin") == 0) {
+		printf("Calculating distances.\n");
+		printf("    Heap:             Binary    Source: %6d\n", source);
+		start = clock();
+		distances = dijkstra_bin(vertices, source, weights, edges);
+		end = clock();
+	} else if(strcmp(argv[1], "fib") == 0) {
+		printf("Calculating distances.\n");
+		printf("    Heap:          Fibonacci    Source: %6d\n", source);
+		start = clock();
+		distances = dijkstra_fib(vertices, source, weights, edges);
+		end = clock();
+	} else {
+		printf("Unknown heap type '%s'", argv[2]);
+		exit(2);
+	}
+	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
+	printf("    Running time: %10gs\n", running_time);
+	for (i = 0; i < vertices; i++)
+		printf("distance from %d to %d: %d\n", source, i, distances[i]);
 }
