@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 #include <FibonacciHeap.h>
 
 /* Initialize a new Fibonacci heap. */
@@ -79,6 +81,7 @@ void fib_delete_min(FibHeap *heap)
 	if (!heap->min)
 		return;
 	
+	int count = fib_count_nodes(heap->min);
 	FibNode *oldMin = heap->min;
 	if (oldMin->left == oldMin) {
 		/* Cut out the old minimum */
@@ -92,12 +95,14 @@ void fib_delete_min(FibHeap *heap)
 		}
 		/* If the minimum is the only rootNode set the entire
 		set of childNodes of min to be the new root. */
+		fib_orphanize(oldMin->child);
 		heap->min = oldMin->child;
 	} else {
-		/* If the old minimum had children, make them root nodes,
-		->parent will be set to NULL, when iterating. */
-		if(oldMin->child)
+		/* If the old minimum had children, make them root nodes */
+		if(oldMin->child) {
+			fib_orphanize(oldMin->child);
 			fib_union(oldMin->child, oldMin->left);
+		}
 		/* Set the minimum to be just something, will be updated later. */
 		heap->min = oldMin->left;
 		/* Cut out the old minimum */
@@ -106,75 +111,82 @@ void fib_delete_min(FibHeap *heap)
 	}
 	heap->nodes--;
 
-	/* Since we don't know the size of the list and it changes,
-	while we iterate, we simply remember the node we started at instead.
-	The list is circular, so we arrive at the start node when we are done. */
-	FibNode *end;
-	FibNode *node;
-	FibNode *other;
+	struct FibNode **ranks = calloc(heap->nodes,sizeof(struct FibNode*));
+	FibNode *current = heap->min;
 	FibNode *next;
-	end = heap->min->right;
-	node = heap->min;
-	/* Allocate a zero initialized array, to check if any two nodes have the same rank. */
-	struct FibNode **roots;
-	/* heap->nodes is actually too large, this can be smaller. */
-	roots = calloc(heap->nodes,sizeof(struct FibNode*));
+	FibNode *end = heap->min->right;
+	FibNode *root;
+	
+	int i = 0;
+	unsigned int min = 429496729;
 	do {
-		next = node->left;
-		/* Remove parent pointer. The node could be a child from the min node. */
-		if(node->parent == oldMin)
-			node->parent = NULL;
-		/* If there already is a node with the same rank, merge the two.
-		Only do that when it is not the same node of course. */
-		while ((other = roots[node->rank]) && other != node) {
-			/* Make one node the child of the other, depending on the key*/
-			if (node->key <= other->key) {
-				/* If the other node is the next node, make the left node
-				of that assume this role. Otherwise the outer loop won't end.*/
-				if (other == next) {
-					next = next->left;
-				}
-				if (other == end)
-					end = end->right;
-				/* We only want the node to adopt the other node,
-				not the entire list of rootNodes */
-				fib_extract_rootnode(other);
-				/* Adopt the other node */
-				if (node->child)
-					fib_union(node->child, other);
-				else
-					node->child = other;
-				other->parent = node;
-			} else {
-				/* If the current node is the tail, make the previous node
-				assume this role. Otherwise the outer loop won't end.*/
-				if (node == end)
-					end = end->right;
-				/* We only want the other node to adopt the current node,
-				not the entire list of rootNodes */
-				fib_extract_rootnode(node);
-				/* Adopt the node */
-				if (other->child)
-					fib_union(other->child, node);
-				else
-					other->child = node;
-				node->parent = other;
-				/* The other node has for all intents and purposes
-				assumed the position of the original node. Make it official*/
-				node = other;
-			}
-			/* The rank of the node we merged with has changed,
-			it does not occupy this position any longer. */
-			roots[node->rank] = NULL;
-			node->rank++;
+		current = current->left;
+		i++;
+		if(current->key < min)
+			min = current->key;
+		assert(i <= heap->nodes);
+	} while(current != heap->min);
+	printf("min is %d\n", min);
+	current = heap->min;
+	do {
+		i--;
+		next = current->left;
+		root = fib_insert_rank(ranks, current);
+		if (root->key <= heap->min->key)
+			heap->min = root;
+		if(current == end)
+			break;
+		current = next;
+	} while (1);
+	assert(i == 0);
+	printf("delmin says min is %d\n", heap->min->key);
+	assert(min == heap->min->key);
+	assert(count-1 == fib_count_nodes(heap->min));
+	printf("%d nodes\n", count);
+	free(ranks);
+}
+
+int fib_count_nodes(FibNode *root) {
+	int count = 0;
+	FibNode *current = root;
+	do {
+		if(current->child)
+			count += fib_count_nodes(current->child);
+		count++;
+		current = current->left;
+	} while(current != root);
+	return count;
+}
+
+FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert) {
+	FibNode *root = insert;
+	FibNode *child = ranks[root->rank];
+	if(child) {
+		if(child->key < root->key) {
+			root = child;
+			child = insert;
 		}
-		roots[node->rank] = node;
-		/* Update the minimum of the heap. */
-		if (node->key <= heap->min->key)
-			heap->min = node;
-		node = next;
-	} while (node->right != end);
-	free(roots);
+		fib_extract_rootnode(child);
+		if (root->child)
+			fib_union(root->child, child);
+		else
+			root->child = child;
+		child->parent = root;
+		
+		ranks[root->rank] = NULL;
+		root->rank++;
+		return fib_insert_rank(ranks, root);
+	} else {
+		return ranks[root->rank] = root;
+	}
+}
+
+void fib_orphanize(FibNode *child) {
+	FibNode *current = child;
+	do {
+		current->parent = NULL;
+		current = current->left;
+	} while(current != child);
 }
 
 /* Extracts a node from a list of child nodes.

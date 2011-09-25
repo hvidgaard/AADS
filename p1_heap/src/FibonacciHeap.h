@@ -29,5 +29,8 @@ void fib_link(FibNode *left, FibNode *right);
 void fib_union(FibNode *node1, FibNode *node2);
 void fib_extract_rootnode(FibNode *node);
 void fib_extract_childnode(FibNode *node, FibHeap *heap);
+FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert);
+void fib_orphanize(FibNode *child);
+int fib_count_nodes(FibNode *root);
 
 #endif
