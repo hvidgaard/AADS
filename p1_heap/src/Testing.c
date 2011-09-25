@@ -40,19 +40,25 @@ int main(int argc, char **argv)
 				edges[i][j] = t_edges[j];
 		}
 		clock_t start;
+		clock_t end;
+		unsigned int *distances;
 		if(strcmp(argv[2], "bin") == 0) {
 			printf("Timing execution of Dijkstra SSSP with binary heap (%d vertices)\n", n);
 			start = clock();
-			dijkstra_bin(n, *source, dist, edges);
+			distances = dijkstra_bin(n, *source, dist, edges);
+			end = clock();
 		} else if(strcmp(argv[2], "fib") == 0) {
 			printf("Timing execution of Dijkstra SSSP with fibonacci heap (%d vertices)\n", n);
 			start = clock();
-			dijkstra_fib(n, *source, dist, edges);
+			distances = dijkstra_fib(n, *source, dist, edges);
+			end = clock();
 		} else {
 			printf("Unknown heap type '%s'", argv[2]);
 			exit(2);
 		}
-		printf("Executed in %g\n", (double) (clock()-start) / (double) CLOCKS_PER_SEC);
+		for (i = 0; i < n; i++)
+			printf("distance from %d to %d: %d\n", *(unsigned int *)source, i, distances[i]);
+		printf("Executed in %g\n", (double) (end-start) / (double) CLOCKS_PER_SEC);
 	}
 	else {
 		printf("Failed, testfile could not be opened or was malformed\n");

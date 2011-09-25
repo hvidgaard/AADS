@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <assert.h>
-#include <stdio.h>
 #include <FibonacciHeap.h>
 
 /* Initialize a new Fibonacci heap. */
@@ -81,28 +80,23 @@ void fib_delete_min(FibHeap *heap)
 	if (!heap->min)
 		return;
 	
-	int count = fib_count_nodes(heap->min);
 	FibNode *oldMin = heap->min;
 	if (oldMin->left == oldMin) {
 		/* Cut out the old minimum */
 		fib_extract_rootnode(oldMin);
-		oldMin->deleted = 1;
 		/* If oldMin does not have any children we are done. */
 		if (!oldMin->child) {
-			heap->min = NULL;
 			heap->nodes--;
+			heap->min = NULL;
 			return;
 		}
 		/* If the minimum is the only rootNode set the entire
 		set of childNodes of min to be the new root. */
-		fib_orphanize(oldMin->child);
 		heap->min = oldMin->child;
 	} else {
 		/* If the old minimum had children, make them root nodes */
-		if(oldMin->child) {
-			fib_orphanize(oldMin->child);
+		if(oldMin->child)
 			fib_union(oldMin->child, oldMin->left);
-		}
 		/* Set the minimum to be just something, will be updated later. */
 		heap->min = oldMin->left;
 		/* Cut out the old minimum */
@@ -117,18 +111,8 @@ void fib_delete_min(FibHeap *heap)
 	FibNode *end = heap->min->right;
 	FibNode *root;
 	
-	int i = 0;
 	do {
-		current = current->left;
-		assert(++i <= heap->nodes);
-	} while(current != heap->min);
-	current = heap->min;
-	
-	FibNode* minNode = fib_find_real_min(heap->min);
-	printf("min is %d parent %d\n", (int)minNode->key);
-	
-	do {
-		i--;
+		current->parent == NULL;
 		next = current->left;
 		root = fib_insert_rank(ranks, current);
 		if (root->key <= heap->min->key)
@@ -137,42 +121,7 @@ void fib_delete_min(FibHeap *heap)
 			break;
 		current = next;
 	} while (1);
-	assert(i == 0);
-	printf("delmin says min is %d\n", (int)heap->min);
-	assert(minNode == heap->min);
-	assert(count-1 == fib_count_nodes(heap->min));
-	printf("%d nodes\n", count);
 	free(ranks);
-}
-
-int fib_count_nodes(FibNode *root) {
-	int count = 0;
-	FibNode *current = root;
-	FibNode *parent = current->parent;
-	do {
-		assert(current->parent == parent);
-		if(current->child)
-			count += fib_count_nodes(current->child);
-		count++;
-		current = current->left;
-	} while(current != root);
-	return count;
-}
-
-FibNode* fib_find_real_min(FibNode *root) {
-	FibNode *minNode = root;
-	FibNode *current = root;
-	do {
-		if(current->key <= minNode->key)
-			minNode = current;
-		if(current->child) {
-			FibNode* minChild = fib_find_real_min(current->child);
-			if(minChild->key < minNode->key)
-				minNode = minChild;
-		}
-		current = current->left;
-	} while(current != root);
-	return minNode;
 }
 
 FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert) {
@@ -196,14 +145,6 @@ FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert) {
 	} else {
 		return ranks[root->rank] = root;
 	}
-}
-
-void fib_orphanize(FibNode *child) {
-	FibNode *current = child;
-	do {
-		current->parent = NULL;
-		current = current->left;
-	} while(current != child);
 }
 
 /* Extracts a node from a list of child nodes.
@@ -248,8 +189,6 @@ void fib_extract_rootnode(FibNode *node)
 /* Decreases the key of specified node */
 void fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap)
 {
-	if(node->deleted)
-		return;
 	node->key -= delta;
 	/* Make the node a root node, if it isn't already. */
 	if (node->parent && node->parent->key > node->key) {

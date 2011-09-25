@@ -4,50 +4,43 @@
 #include <FibonacciHeap.h>
 #include <BinaryHeap.h>
 
-void dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges){
+unsigned int *dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges){
 	unsigned int * dist = malloc(num_vertices * sizeof(unsigned int));
 	
-	binary_heap * h = bh_init_heap(num_vertices);
-	bh_element ** elements = malloc(num_vertices * sizeof(bh_element *));
-	bh_element * v;
+	binary_heap * heap = bh_init_heap(num_vertices);
+	bh_element ** vertices = malloc(num_vertices * sizeof(bh_element *));
+	bh_element * sourceNode;
 	
-	dist[source] = 0;
-	unsigned int i;
-	unsigned int * v_data;
-	v_data = malloc(sizeof(unsigned int));
-	*v_data = source;
-	
-	elements[source] = bh_insert(0, v_data, h);
-	//printf("inserted source, got index %d\n", elements[source]->index);	
+	unsigned int distance;
+	unsigned int *data;
+	int i;
 	for (i = 0; i < num_vertices; i++){
-		if (i != source) {
-			v_data = malloc(sizeof(unsigned int));
-			*v_data = i;
-			elements[*v_data] = bh_insert(UINT_MAX, v_data, h);
-			//printf("inserted %d with key: %d, got index %d\n", *v_data, UINT_MAX, elements[*v_data]->index);	
-			dist[i] = UINT_MAX+1;
-		}
+		if(i == source)
+			distance = 0;
+		else
+			distance = UINT_MAX;
+		dist[i] = distance;
+		data = malloc(sizeof(unsigned int));
+		*data = i;
+		vertices[i] = bh_insert(distance, data, heap);
 	}
-	unsigned int v_num;
-	unsigned int u_num;
-	while (bh_find_min(h)) {
-		v = bh_delete_min(h);
-		v_num = *(unsigned int *)v->data;
-		//printf("del_min : %d\n", v_num); 
-		for (i = 1; i <= edges[v_num][0]; i++){
-			 u_num = edges[v_num][i];
-			 //printf("u: %d - dist[v]: %d, dist[u]: %d, w(u,v): %d\n", u_num, dist[v_num], dist[u_num], w[v_num * num_vertices + u_num]);
-			 if (dist[v_num] + w[v_num * num_vertices + u_num] < dist[u_num] ){
-				 dist[u_num] = dist[v_num] + w[v_num * num_vertices + u_num];
-				 bh_decrease_key(dist[u_num], elements[u_num], h);
+	bh_element *node;
+	while (node = bh_find_min(heap)) {
+		bh_delete_min(heap);
+		unsigned int u = *(unsigned int *)node->data;
+		for (i = 1; i <= edges[u][0]; i++) {
+			 unsigned int v = edges[u][i];
+			 unsigned int alt = dist[u] + w[u * num_vertices + v];
+			 if (alt < dist[v]) {
+				 bh_decrease_key(dist[v] - alt, vertices[v], heap);
+				 dist[v] = alt;
 			 }
 		 }
 	}
-	for (i = 0; i < num_vertices; i++)
-		printf("distance from %d to %d: %d\n", source, i, dist[i]);
+	return dist;
 }
 
-void dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges)
+unsigned int *dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges)
 {
 	unsigned int * dist = malloc(num_vertices * sizeof(unsigned int));
 	
@@ -81,6 +74,5 @@ void dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int *
 			 }
 		 }
 	}
-	for (i = 0; i < num_vertices; i++)
-		printf("distance from %d to %d: %d\n", source, i, dist[i]);
+	return dist;
 }
