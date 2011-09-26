@@ -36,7 +36,7 @@ ObjectSwitch           :=-o
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E 
 MakeDirCommand         :=mkdir -p
-CmpOptions             := -g -std=gnu99 -fno-builtin $(Preprocessors)
+CmpOptions             := -g -std=c99 $(Preprocessors)
 LinkOptions            :=  
 IncludePath            :=  "$(IncludeSwitch)." "$(IncludeSwitch)." "$(IncludeSwitch)./src" 
 RcIncludePath          :=
@@ -48,7 +48,7 @@ LibPath                := "$(LibraryPathSwitch)."
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects=$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) $(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/src_Testing$(ObjectSuffix) 
+Objects=$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) $(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/src_Testing$(ObjectSuffix) $(IntermediateDirectory)/src_PrimitiveQueue$(ObjectSuffix) 
 
 ##
 ## Main Build Targets 
@@ -100,6 +100,14 @@ $(IntermediateDirectory)/src_Testing$(DependSuffix): src/Testing.c
 $(IntermediateDirectory)/src_Testing$(PreprocessSuffix): src/Testing.c
 	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Testing$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/Testing.c"
 
+$(IntermediateDirectory)/src_PrimitiveQueue$(ObjectSuffix): src/PrimitiveQueue.c $(IntermediateDirectory)/src_PrimitiveQueue$(DependSuffix)
+	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/PrimitiveQueue.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_PrimitiveQueue$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_PrimitiveQueue$(DependSuffix): src/PrimitiveQueue.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_PrimitiveQueue$(ObjectSuffix) -MF$(IntermediateDirectory)/src_PrimitiveQueue$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/PrimitiveQueue.c"
+
+$(IntermediateDirectory)/src_PrimitiveQueue$(PreprocessSuffix): src/PrimitiveQueue.c
+	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_PrimitiveQueue$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/PrimitiveQueue.c"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
@@ -118,6 +126,9 @@ clean:
 	$(RM) $(IntermediateDirectory)/src_Testing$(ObjectSuffix)
 	$(RM) $(IntermediateDirectory)/src_Testing$(DependSuffix)
 	$(RM) $(IntermediateDirectory)/src_Testing$(PreprocessSuffix)
+	$(RM) $(IntermediateDirectory)/src_PrimitiveQueue$(ObjectSuffix)
+	$(RM) $(IntermediateDirectory)/src_PrimitiveQueue$(DependSuffix)
+	$(RM) $(IntermediateDirectory)/src_PrimitiveQueue$(PreprocessSuffix)
 	$(RM) $(OutputFile)
 
 

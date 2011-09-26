@@ -6,6 +6,19 @@
 #include <PrimitiveQueue.h>
 #include <DijkstraSSSP.h>
 
+unsigned int *generate_decrease_key_max(unsigned int vertices){
+	int i, j;
+	unsigned int *weights = calloc(1+((2*vertices) * (2* vertices)),sizeof(unsigned int));
+	for (i = 0; i < vertices; i++) {
+		weights[i+1] = i;
+	}
+	for (i = 1; i < vertices; i++) {
+		for (j = vertices +1; j < vertices*2; j++)
+			weights[i * (2*vertices) +j] = 2*i+1;
+	}
+	return weights;
+}
+
 unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, unsigned int max_weight, unsigned int seed)
 {
 	printf("Generating random graph.\n", seed);
@@ -15,7 +28,7 @@ unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, un
 	int i, j;
 	unsigned int *weights = calloc(vertices * vertices,sizeof(unsigned int));
 	for(i = 0; i < vertices; i++) {
-		printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
+		//printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
 		for(j = 0; j < vertices; j++)
 			if(j == i+1 || (i != j && random()%101 < edge_chance))
 				weights[i * vertices + j] = random()%max_weight+1;

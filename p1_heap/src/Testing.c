@@ -42,7 +42,8 @@ int main(int argc, char **argv)
 	if(argc > 6)
 		source = (unsigned int)strtoul(argv[6], NULL, 10);
 		
-	unsigned int *weights = generate_graph(vertices, edge_chance, max_weight, seed);
+	//unsigned int *weights = generate_graph(vertices, edge_chance, max_weight, seed);
+	unsigned int *weights = generate_decrease_key_max(vertices);
 	
 	unsigned int * t_edges;
 	unsigned int ** edges;
