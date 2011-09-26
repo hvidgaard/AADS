@@ -86,6 +86,7 @@ void fib_delete_min(FibHeap *heap)
 		fib_extract_rootnode(oldMin);
 		/* If oldMin does not have any children we are done. */
 		if (!oldMin->child) {
+			oldMin->deleted = 1;
 			heap->nodes--;
 			heap->min = NULL;
 			return;
@@ -101,11 +102,14 @@ void fib_delete_min(FibHeap *heap)
 		heap->min = oldMin->left;
 		/* Cut out the old minimum */
 		fib_extract_rootnode(oldMin);
-		oldMin->deleted = 1;
 	}
+	oldMin->deleted = 1;
 	heap->nodes--;
 
-	struct FibNode **ranks = calloc(heap->nodes,sizeof(struct FibNode*));
+	struct FibNode **ranks = malloc(heap->nodes*sizeof(struct FibNode*));
+	int i;
+	for(i=0;i<heap->nodes;i++)
+		ranks[i] = NULL;
 	FibNode *current = heap->min;
 	FibNode *next;
 	FibNode *end = heap->min->right;
@@ -186,6 +190,9 @@ void fib_extract_rootnode(FibNode *node)
 /* Decreases the key of specified node */
 void fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap)
 {
+	if(node->deleted)
+		return;
+	assert(!node->deleted);
 	node->key -= delta;
 	/* Make the node a root node, if it isn't already. */
 	if (node->parent && node->parent->key > node->key) {
