@@ -21,7 +21,10 @@ int main(int argc, char **argv)
 	}
 	
 	if (strcmp(argv[1], "maxdk") == 0){
-		test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
+		//test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
+		int i;
+		for (i = 16; i < 25000; i = i*2)
+			test_dk_max(i+1);
 		exit(0);
 	}
 	
@@ -121,27 +124,29 @@ void test_dk_max(unsigned int vertices){
 	clock_t start;
 	clock_t end;
 	unsigned int decrease_key_calls;
-	printf("\nCalculating distances.\n");
-	printf("    Heap: %10s   Source:         %8d\n", "Primivite", 0);
 	start = clock();
-	decrease_key_calls = dijkstra_pq(vertices, 0, weights, edges);
+	decrease_key_calls = 0;
+	for (i = 0; i < 20; i++)
+		decrease_key_calls += dijkstra_pq(vertices, 0, weights, edges);
 	end = clock();
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	printf("    Time: %10gs  dec. key calls: %8d %9d clock cycles\n", running_time, decrease_key_calls, (end-start));
 	
 	printf("\nCalculating distances.\n");
-	printf("    Heap: %10s   Source:         %8d\n", "Binary", 0);
+	printf("%5d nodes, %10d decrease key calls\n", vertices, decrease_key_calls);
+	printf("    Heap: %10s, Time: %10gs\n", "Primitive", running_time);
 	start = clock();
-	decrease_key_calls = dijkstra_bin(vertices, 0, weights, edges);
+	decrease_key_calls = 0;
+	for (i = 0; i < 20; i++)
+		decrease_key_calls += dijkstra_bin(vertices, 0, weights, edges);
 	end = clock();
 	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	printf("    Time: %10gs  dec. key calls: %8d %9d clock cycles\n", running_time, decrease_key_calls, (end-start));
-	
-	printf("\nCalculating distances.\n");
-	printf("    Heap: %10s   Source:         %8d\n", "Fibonacci", 0);
+	printf("    Heap: %10s, Time: %10gs\n", "Binary", running_time);
+
 	start = clock();
-	decrease_key_calls = dijkstra_fib(vertices, 0, weights, edges);
+	decrease_key_calls = 0;
+	for (i = 0; i < 20; i++)
+		decrease_key_calls += dijkstra_fib(vertices, 0, weights, edges);
 	end = clock();
 	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	printf("    Time: %10gs  dec. key calls: %8d %9d clock cycles\n", running_time, decrease_key_calls, (end-start));
+	printf("    Heap: %10s, Time: %10gs\n", "Fibonaci", running_time);
 }
