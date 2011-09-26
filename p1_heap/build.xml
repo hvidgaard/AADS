@@ -14,7 +14,6 @@
 		
 		<cpptasks:cc outfile="test" outtype="executable"
 			subsystem="console" objdir="${objectdir}" debug="${debug}">
-			<compilerarg value="-std=c99" />
 			<includepath>
 				<pathelement path="${src}"/>
 				<pathelement path="/usr/include"/>
