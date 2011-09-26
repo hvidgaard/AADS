@@ -106,16 +106,17 @@ void fib_delete_min(FibHeap *heap)
 	oldMin->deleted = 1;
 	heap->nodes--;
 
-	struct FibNode **ranks = calloc(heap->nodes,sizeof(struct FibNode*));
+	struct FibNode **ranks = malloc(heap->nodes*sizeof(struct FibNode*));
 	FibNode *current = heap->min;
 	FibNode *next;
 	FibNode *end = heap->min->right;
 	FibNode *root;
+	unsigned int max_rank = 0;
 	
 	do {
 		current->parent = NULL;
 		next = current->left;
-		root = fib_insert_rank(ranks, current);
+		root = fib_insert_rank(ranks, current, &max_rank);
 		if (root->key <= heap->min->key)
 			heap->min = root;
 		if(current == end)
@@ -125,10 +126,13 @@ void fib_delete_min(FibHeap *heap)
 	free(ranks);
 }
 
-FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert) {
+FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert, unsigned int *max_rank) {
 	FibNode *root = insert;
 	FibNode *child;
 	while (child = ranks[root->rank]) {
+		for(; *max_rank <= root->rank; *max_rank++)
+			ranks[*max_rank] = NULL;
+		
 		if(child->key < root->key) {
 			FibNode *tmp = root;
 			root = child;
