@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Peter Hvidgaard
-Date                   :=09/23/2011
+Date                   :=09/26/2011
 CodeLitePath           :="/home/hvidgaard/.codelite"
 LinkerName             :=gcc
 ArchiveTool            :=ar rcus
@@ -36,7 +36,7 @@ ObjectSwitch           :=-o
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E 
 MakeDirCommand         :=mkdir -p
-CmpOptions             := -g $(Preprocessors)
+CmpOptions             := -g -std=gnu99 -fno-builtin $(Preprocessors)
 LinkOptions            :=  
 IncludePath            :=  "$(IncludeSwitch)." "$(IncludeSwitch)." "$(IncludeSwitch)./src" 
 RcIncludePath          :=
@@ -48,7 +48,7 @@ LibPath                := "$(LibraryPathSwitch)."
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects=$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix) $(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) $(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/src_Testing$(ObjectSuffix) 
+Objects=$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IntermediateDirectory)/src_DijkstraSSSP$(ObjectSuffix) $(IntermediateDirectory)/src_FibonacciHeap$(ObjectSuffix) $(IntermediateDirectory)/src_Testing$(ObjectSuffix) 
 
 ##
 ## Main Build Targets 
@@ -68,14 +68,6 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix): src/AbstractHeap.c $(IntermediateDirectory)/src_AbstractHeap$(DependSuffix)
-	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/AbstractHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_AbstractHeap$(DependSuffix): src/AbstractHeap.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) -MT$(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix) -MF$(IntermediateDirectory)/src_AbstractHeap$(DependSuffix) -MM "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/AbstractHeap.c"
-
-$(IntermediateDirectory)/src_AbstractHeap$(PreprocessSuffix): src/AbstractHeap.c
-	@$(C_CompilerName) $(CmpOptions) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_AbstractHeap$(PreprocessSuffix) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/AbstractHeap.c"
-
 $(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix): src/BinaryHeap.c $(IntermediateDirectory)/src_BinaryHeap$(DependSuffix)
 	$(C_CompilerName) $(SourceSwitch) "/home/hvidgaard/Desktop/Dropbox/2011q1+2 AADS/p1_heap/src/BinaryHeap.c" $(CmpOptions) $(ObjectSwitch)$(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/src_BinaryHeap$(DependSuffix): src/BinaryHeap.c
@@ -114,9 +106,6 @@ $(IntermediateDirectory)/src_Testing$(PreprocessSuffix): src/Testing.c
 ## Clean
 ##
 clean:
-	$(RM) $(IntermediateDirectory)/src_AbstractHeap$(ObjectSuffix)
-	$(RM) $(IntermediateDirectory)/src_AbstractHeap$(DependSuffix)
-	$(RM) $(IntermediateDirectory)/src_AbstractHeap$(PreprocessSuffix)
 	$(RM) $(IntermediateDirectory)/src_BinaryHeap$(ObjectSuffix)
 	$(RM) $(IntermediateDirectory)/src_BinaryHeap$(DependSuffix)
 	$(RM) $(IntermediateDirectory)/src_BinaryHeap$(PreprocessSuffix)

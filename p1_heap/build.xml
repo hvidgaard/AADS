@@ -14,33 +14,18 @@
 		
 		<cpptasks:cc outfile="test" outtype="executable"
 			subsystem="console" objdir="${objectdir}" debug="${debug}">
+			<compilerarg value="-std=c99" />
 			<includepath>
 				<pathelement path="${src}"/>
+				<pathelement path="/usr/include"/>
 			</includepath>
 			<fileset dir="${src}" includes="*.c" />
-		</cpptasks:cc>
-	</target>
-
-	<target name="generate">
-		<mkdir dir="${objectdir}"/>
-		
-		<cpptasks:cc outfile="generate" outtype="executable"
-			subsystem="console" objdir="${objectdir}" debug="${debug}">
-			<includepath>
-				<pathelement path="${src}"/>
-			</includepath>
-			<fileset dir="${src}" includes="Generate.c" />
 		</cpptasks:cc>
 	</target>
 
 	<target name="clean">
 		<delete dir="${objectdir}"/>
 		<delete file="test"/>
-		<delete file="generate"/>
-<!-- 		<delete includeEmptyDirs="true">
-			<fileset dir="${objectdir}" includes="*.o" />
-			<file name="main"/>
-		</delete> -->
 	</target>
 	
 </project>
