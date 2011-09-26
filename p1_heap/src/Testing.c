@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 		srandom(seed);
 	} else {
 		srandom(time(NULL));
-		unsigned int seed = random()%99999999;
+		seed = random()%99999999;
 	}
 	
 	unsigned int vertices = 20;
@@ -84,6 +84,6 @@ int main(int argc, char **argv)
 	}
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Running time: %10gs\n", running_time);
-	// for (i = 0; i < vertices; i++)
-	// 	printf("distance from %d to %d: %d\n", source, i, distances[i]);
+	for (i = 0; i < vertices; i++)
+		printf("distance from %d to %d: %d\n", source, i, distances[i]);
 }
