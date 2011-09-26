@@ -18,8 +18,7 @@ unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, un
 			if(j == i+1 || (i != j && random()%101 < edge_chance))
 				weights[i * vertices + j] = random()%max_weight+1;
 	}
-	printf("\rProgress: 100%%");
-	printf("\n");
+	printf("\rProgress: 100%%\n");
 	return weights;
 }
 

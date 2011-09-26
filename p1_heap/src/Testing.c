@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 	unsigned int ** edges;
 	unsigned int count;
 	
+	printf("Reticulating splines.\n");
 	t_edges = malloc(vertices * sizeof(unsigned int));
 	edges = malloc(vertices * sizeof(unsigned int *));
 	int i, j;
@@ -83,6 +84,6 @@ int main(int argc, char **argv)
 	}
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Running time: %10gs\n", running_time);
-	for (i = 0; i < vertices; i++)
-		printf("distance from %d to %d: %d\n", source, i, distances[i]);
+	// for (i = 0; i < vertices; i++)
+	// 	printf("distance from %d to %d: %d\n", source, i, distances[i]);
 }
