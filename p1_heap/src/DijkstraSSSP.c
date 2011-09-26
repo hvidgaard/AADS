@@ -48,7 +48,7 @@ unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, un
 	return weights;
 }
 
-unsigned int *dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
 {
 	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
 	
@@ -71,6 +71,7 @@ unsigned int *dijkstra_bin(unsigned int num_vertices, unsigned int source, unsig
 		vertices[i] = bh_insert(distance, data, heap);
 	}
 	bh_element *node;
+	unsigned int decrease_key_calls = 0;
 	while (node = bh_find_min(heap)) {
 		bh_delete_min(heap);
 		unsigned int u = *(unsigned int *)node->data;
@@ -80,13 +81,14 @@ unsigned int *dijkstra_bin(unsigned int num_vertices, unsigned int source, unsig
 			if (alt < distances[v]) {
 				bh_decrease_key(distances[v] - alt, vertices[v], heap);
 				distances[v] = alt;
+				decrease_key_calls++;
 			}
 		}
 	}
-	return distances;
+	return decrease_key_calls;
 }
 
-unsigned int *dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+unsigned int dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
 {
 	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
 	
@@ -108,6 +110,7 @@ unsigned int *dijkstra_fib(unsigned int num_vertices, unsigned int source, unsig
 		vertices[i] = fib_insert(distance, data, heap);
 	}
 	FibNode *node;
+	unsigned int decrease_key_calls = 0;
 	while (node = fib_find_min(heap)) {
 		fib_delete_min(heap);
 		unsigned int u = *(unsigned int *)node->data;
@@ -117,13 +120,14 @@ unsigned int *dijkstra_fib(unsigned int num_vertices, unsigned int source, unsig
 			if (alt < distances[v]) {
 				fib_decrease_key(distances[v] - alt, vertices[v], heap);
 				distances[v] = alt;
+				decrease_key_calls++;
 			}
 		 }
 	}
-	return distances;
+	return decrease_key_calls;
 }
 
-unsigned int *dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+unsigned int dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
 {
 	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
 	
@@ -145,6 +149,7 @@ unsigned int *dijkstra_pq(unsigned int num_vertices, unsigned int source, unsign
 		vertices[i] = pq_insert(distance, data, queue);
 	}
 	PrimitiveNode *node;
+	unsigned int decrease_key_calls = 0;
 	while (node = pq_find_min(queue)) {
 		pq_delete_min(queue);
 		unsigned int u = *(unsigned int *)node->data;
@@ -154,8 +159,9 @@ unsigned int *dijkstra_pq(unsigned int num_vertices, unsigned int source, unsign
 			if (alt < distances[v]) {
 				pq_decrease_key(distances[v] - alt, vertices[v], queue);
 				distances[v] = alt;
+				decrease_key_calls++;
 			}
 		}
 	}
-	return distances;
+	return decrease_key_calls;
 }
