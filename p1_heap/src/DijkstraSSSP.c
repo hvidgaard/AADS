@@ -39,7 +39,7 @@ unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, un
 	int i, j;
 	unsigned int *weights = calloc(vertices * vertices,sizeof(unsigned int));
 	for(i = 0; i < vertices; i++) {
-		//printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
+		printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
 		for(j = 0; j < vertices; j++)
 			if(j == i+1 || (i != j && random()%101 < edge_chance))
 				weights[i * vertices + j] = random()%max_weight+1;
@@ -67,7 +67,6 @@ unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsign
 		distances[i] = distance;
 		data = malloc(sizeof(unsigned int));
 		*data = i;
-		//printf("inserting vertex: %i, with key: %d\n", *data, distance);
 		vertices[i] = bh_insert(distance, data, heap);
 	}
 	bh_element *node;

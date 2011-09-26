@@ -23,7 +23,7 @@ FibNode *fib_find_min(FibHeap *heap);
 FibNode *fib_insert(unsigned int key, void *data, FibHeap *heap);
 void fib_delete_min(FibHeap *heap);
 void fib_decrease_key(unsigned int delta, FibNode *node, FibHeap *heap);
-FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert, unsigned int *max_rank);
+FibNode *fib_insert_rank(struct FibNode **ranks, FibNode *insert);
 void fib_delete(FibNode *node, FibHeap *heap);
 void fib_meld(FibHeap *heap1, FibHeap *heap2);
 void fib_link(FibNode *left, FibNode *right);
