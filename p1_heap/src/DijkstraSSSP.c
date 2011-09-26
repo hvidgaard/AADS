@@ -89,6 +89,8 @@ unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsign
 			}
 		}
 	}
+	free(heap);
+	free(vertices);
 	return decrease_key_calls;
 }
 
@@ -130,6 +132,9 @@ unsigned int dijkstra_fib(unsigned int num_vertices, unsigned int source, unsign
 			}
 		 }
 	}
+	free(vertices);
+	free(heap);
+	free(distances);
 	return decrease_key_calls;
 }
 
@@ -172,5 +177,9 @@ unsigned int dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigne
 			}
 		}
 	}
+	free(distances);
+	free(queue);
+	free(vertices);
+	free(data);
 	return decrease_key_calls;
 }

@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	if (strcmp(argv[1], "maxdk") == 0){
 		//test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
 		int i;
-		for (i = 16; i < 25000; i = i*2)
+		for (i = 16; i < 35000; i = i*2)
 			test_dk_max(i+1);
 		exit(0);
 	}
@@ -149,4 +149,6 @@ void test_dk_max(unsigned int vertices){
 	end = clock();
 	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Heap: %10s, Time: %10gs\n", "Fibonaci", running_time);
+	free(weights);
+	free(edges);
 }
