@@ -36,12 +36,12 @@ bh_element * bh_insert(unsigned int key, void *data, binary_heap *h) {
 		bh_element * e = malloc(sizeof(struct bh_element));
 		if (!e)
 			return 0;
-		e->key = key;
+		e->key  = key;
 		e->data = data;
 		e->index = h->size;
 		h->data[h->size] = e;
 		bh_decrease_key(0, e, h);
-		//printf("inserted key %d, got index %d\n\n", key, result);
+		//printf("inserted key %d, got index %d\n\n", key, e->index);
 		return e;
 	}
 	else
@@ -53,26 +53,33 @@ bh_element * bh_insert(unsigned int key, void *data, binary_heap *h) {
  * Will return the new index in the array, or 0 if something went wrong.
  */
 unsigned int bh_decrease_key(unsigned int delta, bh_element * e, binary_heap *h) {
+	//printf("decreasing: node: %d, key: %d, delta %d\n", *	(unsigned int*)e->data, e->key, delta);
 	unsigned int parent;
 	//error, cannot decrease key to a negative value.
-	if (delta >= h->data[e->index]->key)
+	if (delta > e->key)
 		return 0;
-	if (e->index <= h->size) {
-		h->data[e->index]->key -= delta;
+	if (e->index != 1) {
+		e->key -= delta;
 		parent = e->index / 2;
-		while (e->index > 1 && h->data[parent]->key > h->data[e->index]->key) {
+		while (e->index > 1 && h->data[parent]->key > e->key) {
 			bh_exchange(e->index, parent, h);
-			e->index = parent;
+			//e->index = parent;
 			parent = e->index / 2;
 		}
 	}
+	else if (e->index == 1)
+		e->key -= delta;
 	return e->index;
 }
 
 void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h) {
+	//printf("Exchanging %d key %d and %d key %d\n", e1, h->data[e1]->key, e2, h->data[e2]->key);
 	bh_element * t = h->data[e1];
 	h->data[e1] = h->data[e2];
+	h->data[e1]->index = e1;
 	h->data[e2] = t;
+	h->data[e2]->index = e2;
+	
 	/*unsigned int t_key = h->data[e1].key;
 	unsigned int t_index = h->data[e1].index;
 	void *t_data = h->data[e1].data;
@@ -88,7 +95,7 @@ void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h) {
 
 bh_element *bh_delete_element(unsigned int e, binary_heap *h){
 	bh_element * result = malloc(sizeof(struct bh_element));
-	//printf("Deleting: %d, with key %d\n", e, h->data[e].key);
+	//printf("Deleting index %d, with key %d\n", e, h->data[e]->key);
 	if (h->size > 1 && e <= h->size) {
 		bh_exchange(e, h->size, h);
 		h->size--;
