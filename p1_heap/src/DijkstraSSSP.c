@@ -7,15 +7,26 @@
 #include <DijkstraSSSP.h>
 
 unsigned int *generate_decrease_key_max(unsigned int vertices){
+	if (!(vertices % 2)) {
+		printf("must be an odd number of vertices");
+		exit(0);
+	}
+	int num = vertices / 2;
 	int i, j;
-	unsigned int *weights = calloc(1+((2*vertices) * (2* vertices)),sizeof(unsigned int));
-	for (i = 0; i < vertices; i++) {
-		weights[i+1] = i;
+	unsigned int *weights = calloc(vertices * vertices,sizeof(unsigned int));
+	for (i = 0; i < num; i++) {
+		weights[i+1] = i+1;
 	}
-	for (i = 1; i < vertices; i++) {
-		for (j = vertices +1; j < vertices*2; j++)
-			weights[i * (2*vertices) +j] = 2*i+1;
+	for (i = 1; i < num+1; i++) {
+		for (j = num +1; j < vertices; j++)
+			weights[i * vertices +j] = 2*(num-i+1)+1;
 	}
+	/*for (i = 0; i < vertices; i++){
+		for (j = 0; j < vertices; j++)
+			printf("%2d ", weights[i*vertices + j]);
+		printf("\n");
+	}*/
+	
 	return weights;
 }
 
