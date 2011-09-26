@@ -3,6 +3,7 @@
 #include <math.h>
 #include <BinaryHeap.h>
 #include <FibonacciHeap.h>
+#include <PrimitiveQueue.h>
 #include <DijkstraSSSP.h>
 
 unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, unsigned int max_weight, unsigned int seed)
@@ -62,13 +63,13 @@ unsigned int *dijkstra_bin(unsigned int num_vertices, unsigned int source, unsig
 		bh_delete_min(heap);
 		unsigned int u = *(unsigned int *)node->data;
 		for (i = 1; i <= edges[u][0]; i++) {
-			 unsigned int v = edges[u][i];
-			 unsigned int alt = distances[u] + weights[u * num_vertices + v];
-			 if (alt < distances[v]) {
-				 bh_decrease_key(distances[v] - alt, vertices[v], heap);
-				 distances[v] = alt;
-			 }
-		 }
+			unsigned int v = edges[u][i];
+			unsigned int alt = distances[u] + weights[u * num_vertices + v];
+			if (alt < distances[v]) {
+				bh_decrease_key(distances[v] - alt, vertices[v], heap);
+				distances[v] = alt;
+			}
+		}
 	}
 	return distances;
 }
@@ -99,13 +100,50 @@ unsigned int *dijkstra_fib(unsigned int num_vertices, unsigned int source, unsig
 		fib_delete_min(heap);
 		unsigned int u = *(unsigned int *)node->data;
 		for (i = 1; i <= edges[u][0]; i++) {
-			 unsigned int v = edges[u][i];
-			 unsigned int alt = distances[u] + weights[u * num_vertices + v];
-			 if (alt < distances[v]) {
-				 fib_decrease_key(distances[v] - alt, vertices[v], heap);
-				 distances[v] = alt;
-			 }
+			unsigned int v = edges[u][i];
+			unsigned int alt = distances[u] + weights[u * num_vertices + v];
+			if (alt < distances[v]) {
+				fib_decrease_key(distances[v] - alt, vertices[v], heap);
+				distances[v] = alt;
+			}
 		 }
+	}
+	return distances;
+}
+
+unsigned int *dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+{
+	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
+	
+	PrimitiveQueue * queue = pq_make_heap();
+	PrimitiveNode ** vertices = malloc(num_vertices * sizeof(PrimitiveNode *));
+	PrimitiveNode * sourceNode;
+	
+	unsigned int distance;
+	unsigned int *data;
+	int i;
+	for (i = 0; i < num_vertices; i++) {
+		if(i == source)
+			distance = 0;
+		else
+			distance = UINT_MAX;
+		distances[i] = distance;
+		data = malloc(sizeof(unsigned int));
+		*data = i;
+		vertices[i] = pq_insert(distance, data, queue);
+	}
+	PrimitiveNode *node;
+	while (node = pq_find_min(queue)) {
+		pq_delete_min(queue);
+		unsigned int u = *(unsigned int *)node->data;
+		for (i = 1; i <= edges[u][0]; i++) {
+			unsigned int v = edges[u][i];
+			unsigned int alt = distances[u] + weights[u * num_vertices + v];
+			if (alt < distances[v]) {
+				pq_decrease_key(distances[v] - alt, vertices[v], queue);
+				distances[v] = alt;
+			}
+		}
 	}
 	return distances;
 }

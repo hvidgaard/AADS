@@ -78,6 +78,12 @@ int main(int argc, char **argv)
 		start = clock();
 		distances = dijkstra_fib(vertices, source, weights, edges);
 		end = clock();
+	} else if(strcmp(argv[1], "pq") == 0) {
+		printf("Calculating distances.\n");
+		printf("    Heap:          Primitive    Source: %6d\n", source);
+		start = clock();
+		distances = dijkstra_pq(vertices, source, weights, edges);
+		end = clock();
 	} else {
 		printf("Unknown heap type '%s'", argv[2]);
 		exit(2);

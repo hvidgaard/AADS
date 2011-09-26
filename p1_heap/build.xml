@@ -19,7 +19,7 @@
 				<pathelement path="${src}"/>
 				<pathelement path="/usr/include"/>
 			</includepath>
-			<fileset dir="${src}" includes="FibonacciHeap.c,BinaryHeap.c,DijkstraSSSP.c,Testing.c" />
+			<fileset dir="${src}" includes="*.c" />
 		</cpptasks:cc>
 	</target>
 
