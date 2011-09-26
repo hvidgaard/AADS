@@ -106,10 +106,7 @@ void fib_delete_min(FibHeap *heap)
 	oldMin->deleted = 1;
 	heap->nodes--;
 
-	struct FibNode **ranks = malloc(heap->nodes*sizeof(struct FibNode*));
-	int i;
-	for(i=0;i<heap->nodes;i++)
-		ranks[i] = NULL;
+	struct FibNode **ranks = calloc(heap->nodes,sizeof(struct FibNode*));
 	FibNode *current = heap->min;
 	FibNode *next;
 	FibNode *end = heap->min->right;
