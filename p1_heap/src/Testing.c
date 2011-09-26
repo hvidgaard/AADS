@@ -64,31 +64,31 @@ int main(int argc, char **argv)
 		for (j = 1; j <= count; j++)
 			edges[i][j] = t_edges[j];
 	}
-	clock_t start;
-	clock_t end;
-	unsigned int decrease_key_calls;
+	
+	char *heap_name = malloc(10*sizeof(char));
+	unsigned int (*dijkstra)(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges);
 	if(strcmp(argv[1], "bin") == 0) {
-		printf("Calculating distances.\n");
-		printf("    Heap:             Binary    Source:         %8d\n", source);
-		start = clock();
-		decrease_key_calls = dijkstra_bin(vertices, source, weights, edges);
-		end = clock();
+		heap_name = "Binary";
+		dijkstra = dijkstra_bin;
 	} else if(strcmp(argv[1], "fib") == 0) {
-		printf("Calculating distances.\n");
-		printf("    Heap:          Fibonacci    Source:         %8d\n", source);
-		start = clock();
-		decrease_key_calls = dijkstra_fib(vertices, source, weights, edges);
-		end = clock();
+		heap_name = "Fibonacci";
+		dijkstra = dijkstra_fib;
 	} else if(strcmp(argv[1], "pq") == 0) {
-		printf("Calculating distances.\n");
-		printf("    Heap:          Primitive    Source:         %8d\n", source);
-		start = clock();
-		decrease_key_calls = dijkstra_pq(vertices, source, weights, edges);
-		end = clock();
+		heap_name = "Primitive";
+		dijkstra = dijkstra_pq;
 	} else {
 		printf("Unknown heap type '%s'", argv[2]);
 		exit(2);
 	}
+	
+	clock_t start;
+	clock_t end;
+	unsigned int decrease_key_calls;
+	printf("Calculating distances.\n");
+	printf("    Heap: %10s   Source:         %8d\n", heap_name, source);
+	start = clock();
+	decrease_key_calls = dijkstra(vertices, source, weights, edges);
+	end = clock();
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	printf("    Running time: %10gs   dec. key calls: %8d\n", running_time, decrease_key_calls);
+	printf("    Time: %10gs  dec. key calls: %8d\n", running_time, decrease_key_calls);
 }
