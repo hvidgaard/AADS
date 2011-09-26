@@ -11,11 +11,18 @@
 #include <FibonacciHeap.h>
 #include <DijkstraSSSP.h>
 
+void test_dk_max(unsigned int vertices);
+
 int main(int argc, char **argv)
 {
 	if(argc == 1) {
 		printf("Usage\n    test heap [seed] [vertices] [edgechance] [maxweight] [source]\n");
 		exit(1);
+	}
+	
+	if (strcmp(argv[1], "maxdk") == 0){
+		test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
+		exit(0);
 	}
 	
 	unsigned int seed;
@@ -89,4 +96,52 @@ int main(int argc, char **argv)
 	end = clock();
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Time: %10gs  dec. key calls: %8d\n", running_time, decrease_key_calls);
+}
+
+void test_dk_max(unsigned int vertices){
+	unsigned int *weights = generate_decrease_key_max(vertices);
+	
+	printf("Reticulating splines.\n");
+	unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
+	unsigned int **edges = malloc(vertices * sizeof(unsigned int *));
+	int i, j;
+	for (i = 0; i < (vertices/2)+1; i++) {
+		unsigned int count = 0;
+		for (j = 0; j < vertices; j++)
+			if (weights[(i * vertices) + j])
+				t_edges[++count] = j;
+		
+		edges[i] = malloc((count+1) * sizeof(unsigned int));
+		edges[i][0] = count;
+		for (j = 1; j <= count; j++)
+			edges[i][j] = t_edges[j];
+	}
+	free(t_edges);
+	
+	clock_t start;
+	clock_t end;
+	unsigned int decrease_key_calls;
+	printf("\nCalculating distances.\n");
+	printf("    Heap: %10s   Source:         %8d\n", "Primivite", 0);
+	start = clock();
+	decrease_key_calls = dijkstra_pq(vertices, 0, weights, edges);
+	end = clock();
+	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
+	printf("    Time: %10gs  dec. key calls: %8d %9d clock cycles\n", running_time, decrease_key_calls, (end-start));
+	
+	printf("\nCalculating distances.\n");
+	printf("    Heap: %10s   Source:         %8d\n", "Binary", 0);
+	start = clock();
+	decrease_key_calls = dijkstra_bin(vertices, 0, weights, edges);
+	end = clock();
+	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
+	printf("    Time: %10gs  dec. key calls: %8d %9d clock cycles\n", running_time, decrease_key_calls, (end-start));
+	
+	printf("\nCalculating distances.\n");
+	printf("    Heap: %10s   Source:         %8d\n", "Fibonacci", 0);
+	start = clock();
+	decrease_key_calls = dijkstra_fib(vertices, 0, weights, edges);
+	end = clock();
+	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
+	printf("    Time: %10gs  dec. key calls: %8d %9d clock cycles\n", running_time, decrease_key_calls, (end-start));
 }
