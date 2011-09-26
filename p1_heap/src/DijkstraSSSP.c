@@ -19,13 +19,13 @@ unsigned int *generate_decrease_key_max(unsigned int vertices){
 	}
 	for (i = 1; i < num+1; i++) {
 		for (j = num +1; j < vertices; j++)
-			weights[i * vertices +j] = 2*i+1;
+			weights[i * vertices +j] = 2*(num-i+1)+1;
 	}
-	for (i = 0; i < vertices; i++){
+	/*for (i = 0; i < vertices; i++){
 		for (j = 0; j < vertices; j++)
 			printf("%2d ", weights[i*vertices + j]);
 		printf("\n");
-	}
+	}*/
 	
 	return weights;
 }
