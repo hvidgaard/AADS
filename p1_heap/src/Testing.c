@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <time.h>
+#include <string.h>
 #include <BinaryHeap.h>
 #include <FibonacciHeap.h>
 #include <DijkstraSSSP.h>

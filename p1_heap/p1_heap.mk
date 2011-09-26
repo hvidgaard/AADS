@@ -36,7 +36,7 @@ ObjectSwitch           :=-o
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E 
 MakeDirCommand         :=mkdir -p
-CmpOptions             := -g -std=c99 $(Preprocessors)
+CmpOptions             := -g -std=gnu99 $(Preprocessors)
 LinkOptions            :=  
 IncludePath            :=  "$(IncludeSwitch)." "$(IncludeSwitch)." "$(IncludeSwitch)./src" 
 RcIncludePath          :=
