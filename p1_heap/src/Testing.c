@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 	}
 	
 	char *heap_name = malloc(10*sizeof(char));
-	unsigned int (*dijkstra)(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges);
+	unsigned int (*dijkstra)(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges, unsigned int *bops);
 	if(strcmp(argv[2], "bin") == 0) {
 		heap_name = "Binary";
 		dijkstra = dijkstra_bin;
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 		printf("Reticulating splines.\n");
 		unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
 		int i, j;
-		for (i = 0; i < (vertices/2)+1; i++) {
+		for (i = 0; i < vertices; i++) {
 			unsigned int count = 0;
 			for (j = 0; j < vertices; j++)
 				if (weights[(i * vertices) + j])
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	printf("Calculating distances.\n");
 	printf("    Heap: %10s   Source:         %8d\n", heap_name, source);
 	start = clock();
-	decrease_key_calls = dijkstra(vertices, source, weights, edges);
+	decrease_key_calls = dijkstra(vertices, source, weights, edges, NULL);
 	end = clock();
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Time: %10gs  dec. key calls: %8d\n", running_time, decrease_key_calls);
