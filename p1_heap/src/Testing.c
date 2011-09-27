@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 		printf("Reticulating splines.\n");
 		unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
 		int i, j;
-		for (i = 0; i < (vertices/2)+1; i++) {
+		for (i = 0; i < (vertices)+1; i++) {
 			unsigned int count = 0;
 			for (j = 0; j < vertices; j++)
 				if (weights[(i * vertices) + j])
@@ -99,8 +99,29 @@ int main(int argc, char **argv)
 			for (j = 1; j <= count; j++)
 				edges[i][j] = t_edges[j];
 		}
-		free(t_edges);
-	} else {
+		//free(t_edges);
+	} else if (strcmp(argv[1], "dkmax2") == 0){
+		weights = generate_decrease_key_max2(vertices);
+
+		printf("Reticulating splines.\n");
+		unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
+		edges = malloc(vertices * sizeof(unsigned int *));
+		int i, j;
+		for (i = 0; i < vertices; i++) {
+			unsigned int count = 0;
+		for (j = 0; j < vertices; j++){
+			if (weights[(i * vertices) + j])
+				t_edges[++count] = j;
+		}
+
+		edges[i] = malloc((count+1) * sizeof(unsigned int));
+		edges[i][0] = count;
+		for (j = 1; j <= count; j++)
+			edges[i][j] = t_edges[j];
+	}
+	//free(t_edges);
+	}
+	else {
 		printf("Unknown graph algorithm '%s'\n", argv[1]);
 		exit(3);
 	}
