@@ -120,7 +120,8 @@ int main(int argc, char **argv)
 
 void log_results(char *filename, char *graphtype, unsigned int vertices, unsigned int dk_calls, double running_time) {
 	FILE *handle = fopen(filename, "a+");
-	fprintf(handle, "%s\t%d\t%d\t%10g\n", graphtype, vertices, dk_calls, running_time);
+	// INSERT INTO `data` (`type`, `vertices`, `dk_calls`, `running_time`) VALUES 
+	fprintf(handle, "('%s',%d,%d,%10g),\n", graphtype, vertices, dk_calls, running_time);
 	fclose(handle);
 	printf("Results have been logged to %s\n", filename);
 }
