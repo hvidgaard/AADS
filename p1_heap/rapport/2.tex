@@ -6,7 +6,7 @@ We use an array of pointers for our implementation, similar to maximum priority 
  \item{\em{decrease key}} takes a pointer to an element, and decrease the key. Then, as in insert, it will bubble up the element until the heap property is restored. This also takes $O(\log n)$ for the same reasons.
  \item{\em{find min}} is a simple operation due to the heap property, it will always be the root element of the tree, i.e. the first element in our array. This takes $O(1)$.
  \item{\em{delete element}} takes a pointer to an element to delete. It will move the last item to the index of the deleted element, and thus the heap property might be violoted. Then a call to the helper function \textit{min heapify} is made to restore the heap property. Therefore the time complexity is determined by \textit{min heapify} - and as we will see, this is $O(\log n)$.
- \item{\em{min heapify}} takes a pointer to the element that might violate the heap property. It works by comparing the the element to its parent
+ \item{\em{min heapify}} takes a pointer to the element that might violate the heap property. It works by comparing the the element to its parent first and
    \subitem if the parent is the same size we're done.
    \subitem if the parent is larger we need to bubble the element up.
    \subitem if the parent is smaller we may need to move the element down.
