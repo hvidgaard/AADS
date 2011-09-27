@@ -40,7 +40,7 @@ unsigned int *generate_decrease_key_max2(unsigned int vertices){
 	for (j = 1; j < vertices; j++) {
 		weights[j] = (vertices*vertices) - j;
 	}
-	weights[i] = 1;
+	weights[n-1] = 1;
 	for (i = n - 1; i > 1; i--){
 		for (j = 1; j < i; j++){
 			if (i != j)

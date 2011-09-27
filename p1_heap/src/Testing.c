@@ -17,8 +17,8 @@ int main(int argc, char **argv)
 {
 	if(argc < 4) {
 		printf("Usage\n");
-		printf("    test random <heap> <vertices> [seed] [edgechance] [maxweight] [source]\n");
-		printf("    test dkmax <heap> <vertices>\n");
+		printf("    p1_heap random <heap> <vertices> [seed] [edgechance] [maxweight] [source]\n");
+		printf("    p1_heap dkmax <heap> <vertices>\n");
 		printf("        Heaptypes:  bin, fib, pq\n");
 		exit(1);
 	}
