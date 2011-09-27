@@ -1,8 +1,8 @@
 \section*{Testing of implementations}
 \subsection*{Test Setup}
- -how do we test?
- -why?
- -pros/cons.
+  We test by generating the graph in memory, and then run Dijkstas algorithm as described in Fredman and Tarjan \cite{fibheap}. We measure the time it take for Dijkstras Algorithm to finish with each of the three different priority queues. The test machine was a 2x quad-core Intel Xeon 2.8 GHz with 8 GiB 800MHz DDR2 ram. The program was build using gcc version 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2335.15.00).
+
+  The program can be build by entering the folder \textbf{p1\_heap} and run the following command: \textit{make -f p1\_heap.mk all}. This requires MAKE and GCC to be installed. Then the compiled binary will be in the subfolder \textbf{Debug}, and can be run with \textit{./p1\_heap}.
 
 \subsection*{Test Data}
   \subsubsection*{Graphs with many \textit{decrease key} operations} 
@@ -26,4 +26,6 @@
 	\RETURN $weights$
 \end{algorithmic}
 \end{algorithm}
+
+This graph will call \textit{decrease key} on all edges that is outgoing from the node return by \textit{delete min}, and the node will have an edge to all remaining nodes in the graph. Further more, all \textit{decrease key} calls will force the Binary Heap to bubble the element from a leaf to the root for every call, and thus maximizing the work done.
  \subsubsection*{Random Graphs}
