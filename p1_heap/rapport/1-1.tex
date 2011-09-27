@@ -1,2 +1,4 @@
 \section*{Project}
-noget om projektet...
+This project is about priority queues based on the Binary Heap and Fibonacci Heap respectively. The main difference is that the Fibonacci Heap have a amotized $O(1)$ \textit{decrease key} operation, where the Binary Heap have $O(\log n)$.
+
+We will implement both heaps, and use them to implement Dijkstras Algorithm for Single Source Shortest Path. Then we will describe a class of graphs with many \textit{decrease key} operations to hopefully show that Fibonacci Heap is faster, despite the much larger constants hidden in the big-O notation.

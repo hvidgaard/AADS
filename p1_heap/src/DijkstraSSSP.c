@@ -43,7 +43,7 @@ unsigned int *generate_decrease_key_max2(unsigned int vertices){
 	weights[n-1] = 1;
 	max = n - 1;
 	for (i = max; i > 1; i--){
-		for (j = 1; j < n; j++){
+		for (j = 1; j < max; j++){
 			weights[i * n + j] = n*n - ((n - i) * n) - j + 1;
 		}
 		weights[i*n+max-1] = 1;
@@ -148,8 +148,8 @@ unsigned int dijkstra_fib(unsigned int num_vertices, unsigned int source, unsign
 	unsigned int decrease_key_calls = 0;
 	while (node = fib_find_min(heap)) {
 		fib_delete_min(heap);
-		if (*(unsigned int *)node->data > num_vertices / 2)
-			return decrease_key_calls;
+		//if (*(unsigned int *)node->data > num_vertices / 2)
+			//return decrease_key_calls;
 		unsigned int u = *(unsigned int *)node->data;
 		for (i = 1; i <= edges[u][0]; i++) {
 			unsigned int v = edges[u][i];
@@ -192,7 +192,7 @@ unsigned int dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigne
 	unsigned int decrease_key_calls = 0;
 	while (node = pq_find_min(queue)) {
 		pq_delete_min(queue);
-		if (*(unsigned int *)node->data > num_vertices / 2)
+		if (*(unsigned int *)node->data > num_vertices)
 			return decrease_key_calls;
 		unsigned int u = *(unsigned int *)node->data;
 		for (i = 1; i <= edges[u][0]; i++) {
