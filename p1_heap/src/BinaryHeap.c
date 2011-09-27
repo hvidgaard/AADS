@@ -63,8 +63,8 @@ unsigned int bh_decrease_key(unsigned int delta, bh_element * e, binary_heap *h,
 		parent = e->index / 2;
 		while (e->index > 1 && h->data[parent]->key > e->key) {
 			bh_exchange(e->index, parent, h);
-			if (bops)
-				(*bops)++;
+			//if (bops)
+				//(*bops)++;
 			//e->index = parent;
 			parent = e->index / 2;
 		}

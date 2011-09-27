@@ -72,7 +72,7 @@ unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, un
 	int i, j;
 	unsigned int *weights = calloc(vertices * vertices,sizeof(unsigned int));
 	for(i = 0; i < vertices; i++) {
-		printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
+		//printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
 		for(j = 0; j < vertices; j++)
 			if(j == i+1 || (i != j && random()%101 < edge_chance))
 				weights[i * vertices + j] = random()%max_weight+1;
