@@ -1,0 +1,7 @@
+INSERT INTO `fibonacci` (`graph`, `vertices`, `dk_calls`, `running_time`) VALUES
+('random',24577,82045,1.3905),
+('random',24577,82045,1.39864),
+('dkmax',24577,151007232,3.92543),
+('dkmax',24577,151007232,3.93527),
+('dkmax2',24577,152686177,31.1393),
+('dkmax2',24577,152686177,30.6412);

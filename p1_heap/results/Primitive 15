@@ -1,0 +1,7 @@
+INSERT INTO `primitive` (`graph`, `vertices`, `dk_calls`, `running_time`) VALUES
+('random',24577,82145,5.41455),
+('random',24577,82145,5.42729),
+('dkmax',24577,151007232,7.45856),
+('dkmax',24577,151007232,7.4707),
+('dkmax2',24577,152686177,18.939),
+('dkmax2',24577,152686177,18.1551);
