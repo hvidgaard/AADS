@@ -11,82 +11,98 @@
 #include <FibonacciHeap.h>
 #include <DijkstraSSSP.h>
 
-void test_dk_max(unsigned int vertices);
+void log_results(char *filename, unsigned int dk_calls, double running_time);
 
 int main(int argc, char **argv)
 {
-	if(argc == 1) {
-		printf("Usage\n    test heap [seed] [vertices] [edgechance] [maxweight] [source]\n");
+	if(argc < 4) {
+		printf("Usage\n");
+		printf("    test random <heap> <vertices> [seed] [edgechance] [maxweight] [source]\n");
+		printf("    test dkmax <heap> <vertices>\n");
+		printf("        Heaptypes:  bin, fib, pq\n");
 		exit(1);
-	}
-	
-	if (strcmp(argv[1], "maxdk") == 0){
-		//test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
-		int i;
-		for (i = 16; i < 35000; i = i*2)
-			test_dk_max(i+1);
-		exit(0);
-	}
-	
-	unsigned int seed;
-	if(argc > 2 && argv[2]) {
-		seed = (unsigned int)strtoul(argv[2], NULL, 10);
-		srandom(seed);
-	} else {
-		srandom(time(NULL));
-		seed = random()%99999999;
-	}
-	
-	unsigned int vertices = 20;
-	if(argc > 3)
-		vertices = (unsigned int)strtoul(argv[3], NULL, 10);
-	
-	unsigned int edge_chance = 15;
-	if(argc > 4)
-		edge_chance = (unsigned int)strtoul(argv[4], NULL, 10);
-	
-	unsigned int max_weight = 20;
-	if(argc > 5)
-		max_weight = (unsigned int)strtoul(argv[5], NULL, 10);
-	
-	unsigned int source = random()%vertices;
-	if(argc > 6)
-		source = (unsigned int)strtoul(argv[6], NULL, 10);
-		
-	unsigned int *weights = generate_graph(vertices, edge_chance, max_weight, seed);
-	// unsigned int *weights = generate_decrease_key_max(vertices);
-	
-	
-	printf("Reticulating splines.\n");
-	unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
-	unsigned int **edges = malloc(vertices * sizeof(unsigned int *));
-	int i, j;
-	for (i = 0; i < vertices; i++) {
-		unsigned int count = 0;
-		for (j = 0; j < vertices; j++)
-			if (weights[(i * vertices) + j])
-				t_edges[++count] = j;
-		
-		edges[i] = malloc((count+1) * sizeof(unsigned int));
-		edges[i][0] = count;
-		for (j = 1; j <= count; j++)
-			edges[i][j] = t_edges[j];
 	}
 	
 	char *heap_name = malloc(10*sizeof(char));
 	unsigned int (*dijkstra)(unsigned int num_vertices, unsigned int source, unsigned int * w, unsigned int ** edges);
-	if(strcmp(argv[1], "bin") == 0) {
+	if(strcmp(argv[2], "bin") == 0) {
 		heap_name = "Binary";
 		dijkstra = dijkstra_bin;
-	} else if(strcmp(argv[1], "fib") == 0) {
+	} else if(strcmp(argv[2], "fib") == 0) {
 		heap_name = "Fibonacci";
 		dijkstra = dijkstra_fib;
-	} else if(strcmp(argv[1], "pq") == 0) {
+	} else if(strcmp(argv[2], "pq") == 0) {
 		heap_name = "Primitive";
 		dijkstra = dijkstra_pq;
 	} else {
-		printf("Unknown heap type '%s'", argv[2]);
+		printf("Unknown heap type '%s'\n", argv[2]);
 		exit(2);
+	}
+	
+	unsigned int vertices = (unsigned int)strtoul(argv[3], NULL, 10);
+	unsigned int source = 0;
+	unsigned int *weights;
+	unsigned int **edges = malloc(vertices * sizeof(unsigned int *));
+	if(strcmp(argv[1], "random") == 0) {
+		unsigned int seed;
+		if(argc > 4 && argv[4]) {
+			seed = (unsigned int)strtoul(argv[4], NULL, 10);
+			srandom(seed);
+		} else {
+			srandom(time(NULL));
+			seed = random()%99999999;
+		}
+		
+		unsigned int edge_chance = 15;
+		if(argc > 5)
+			edge_chance = (unsigned int)strtoul(argv[5], NULL, 10);
+		
+		unsigned int max_weight = 20;
+		if(argc > 6)
+			max_weight = (unsigned int)strtoul(argv[6], NULL, 10);
+		
+		source = random()%vertices;
+		if(argc > 7)
+			source = (unsigned int)strtoul(argv[7], NULL, 10);
+		
+		weights = generate_graph(vertices, edge_chance, max_weight, seed);
+		
+		printf("Reticulating splines.\n");
+		unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
+		int i, j;
+		for (i = 0; i < vertices; i++) {
+			unsigned int count = 0;
+			for (j = 0; j < vertices; j++)
+				if (weights[(i * vertices) + j])
+					t_edges[++count] = j;
+			
+			edges[i] = malloc((count+1) * sizeof(unsigned int));
+			edges[i][0] = count;
+			for (j = 1; j <= count; j++)
+				edges[i][j] = t_edges[j];
+		}
+		free(t_edges);
+	} else if(strcmp(argv[1], "dkmax") == 0) {
+		weights = generate_decrease_key_max(vertices);
+		
+		printf("Reticulating splines.\n");
+		unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
+		int i, j;
+		for (i = 0; i < (vertices/2)+1; i++) {
+			unsigned int count = 0;
+			for (j = 0; j < vertices; j++)
+				if (weights[(i * vertices) + j])
+					t_edges[++count] = j;
+
+			edges[i] = malloc((count+1) * sizeof(unsigned int));
+			edges[i][0] = count;
+			for (j = 1; j <= count; j++)
+				edges[i][j] = t_edges[j];
+		}
+		free(t_edges);
+	} else {
+		printf("Unknown graph algorithm '%s'\n", argv[1]);
+		exit(3);
 	}
 	
 	clock_t start;
@@ -99,56 +115,12 @@ int main(int argc, char **argv)
 	end = clock();
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Time: %10gs  dec. key calls: %8d\n", running_time, decrease_key_calls);
+	log_results(heap_name, decrease_key_calls, running_time);
 }
 
-void test_dk_max(unsigned int vertices){
-	unsigned int *weights = generate_decrease_key_max(vertices);
-	
-	printf("Reticulating splines.\n");
-	unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
-	unsigned int **edges = malloc(vertices * sizeof(unsigned int *));
-	int i, j;
-	for (i = 0; i < (vertices/2)+1; i++) {
-		unsigned int count = 0;
-		for (j = 0; j < vertices; j++)
-			if (weights[(i * vertices) + j])
-				t_edges[++count] = j;
-		
-		edges[i] = malloc((count+1) * sizeof(unsigned int));
-		edges[i][0] = count;
-		for (j = 1; j <= count; j++)
-			edges[i][j] = t_edges[j];
-	}
-	free(t_edges);
-	
-	clock_t start;
-	clock_t end;
-	unsigned int decrease_key_calls;
-	start = clock();
-	decrease_key_calls = 0;
-	for (i = 0; i < 20; i++)
-		decrease_key_calls += dijkstra_pq(vertices, 0, weights, edges);
-	end = clock();
-	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	
-	printf("\nCalculating distances.\n");
-	printf("%5d nodes, %10d decrease key calls\n", vertices, decrease_key_calls);
-	printf("    Heap: %10s, Time: %10gs\n", "Primitive", running_time);
-	start = clock();
-	decrease_key_calls = 0;
-	for (i = 0; i < 20; i++)
-		decrease_key_calls += dijkstra_bin(vertices, 0, weights, edges);
-	end = clock();
-	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	printf("    Heap: %10s, Time: %10gs\n", "Binary", running_time);
-
-	start = clock();
-	decrease_key_calls = 0;
-	for (i = 0; i < 20; i++)
-		decrease_key_calls += dijkstra_fib(vertices, 0, weights, edges);
-	end = clock();
-	running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
-	printf("    Heap: %10s, Time: %10gs\n", "Fibonaci", running_time);
-	free(weights);
-	free(edges);
+void log_results(char *filename, unsigned int dk_calls, double running_time) {
+	FILE *handle = fopen(filename, "a+");
+	fprintf(handle, "%d\t%10g\n", dk_calls, running_time);
+	fclose(handle);
+	printf("Results have been logged to %s\n", filename);
 }

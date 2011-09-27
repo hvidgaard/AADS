@@ -11,6 +11,8 @@ unsigned int *generate_decrease_key_max(unsigned int vertices){
 		printf("must be an odd number of vertices");
 		exit(0);
 	}
+	printf("Generating graph for forcing a many decrease key calls.\n");
+	printf("    Number of vertices: %6d\n", vertices);
 	int num = vertices / 2;
 	int i, j;
 	unsigned int *weights = calloc(((num+1) * vertices),sizeof(unsigned int));
@@ -18,31 +20,26 @@ unsigned int *generate_decrease_key_max(unsigned int vertices){
 		weights[i] = i;
 	}
 	for (i = 1; i < num+1; i++) {
+		printf("\rProgress: %3d%%", (int)round(((double)i/(num+1))*100));
 		for (j = num +1; j < vertices; j++){
-			//printf("i: %d, j: %d\n", i, j);
 			weights[i * vertices +j] = 2*(num-i+1)+1;
 			
 		}
 	}
-	/*for (i = 0; i < vertices; i++){
-		for (j = 0; j < vertices; j++)
-			printf("%2d ", weights[i*vertices + j]);
-		printf("\n");
-	}*/
-	
+	printf("\rProgress: 100%%\n");
 	return weights;
 }
 
 unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, unsigned int max_weight, unsigned int seed)
 {
-	printf("Generating random graph.\n", seed);
+	printf("Generating random graph.\n");
 	printf("    Random seed:    %8d    Number of vertices: %6d\n", seed, vertices);
 	printf("    Chance of edge: %8d%%   Maximum weight:     %6d\n", edge_chance, max_weight);
 	srandom(seed);
 	int i, j;
 	unsigned int *weights = calloc(vertices * vertices,sizeof(unsigned int));
 	for(i = 0; i < vertices; i++) {
-		//printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
+		printf("\rProgress: %3d%%", (int)round(((double)i/vertices*100)));
 		for(j = 0; j < vertices; j++)
 			if(j == i+1 || (i != j && random()%101 < edge_chance))
 				weights[i * vertices + j] = random()%max_weight+1;
