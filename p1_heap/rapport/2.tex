@@ -1,52 +1,15 @@
 \section*{Binary Heap}
-Out binary heap implementation support the following operations:
-\begin{algorithm}
-\caption{\code{Binary Heap} - initialize}\label{alg:bin-init}
-\begin{algorithmic}[1]
-\STATE $h$ := allocate memory to heap
-\STATE $h.size$ := 0
-\STATE $h.data$ := allocate memory to an array of elements
-\RETURN pointer to heap $h$
-\end{algorithmic}
-\end{algorithm}
+We use an array of pointers for our implementation, similar to maximum priority queue in Cormen \cite{cormen}. Specifically family relations are easily expressed in the following way (assuming the array index start at 1): Given a node of index $i$: parent index $\lfloor i/2 \rfloor$, left child index $i*2$ and right child $i*2+1$. The important property of the heap is that given any node, i, we know that all nodes in the entire tree, with i as root, have key at most that of i. Our binary heap implementation support the following operations:
+\begin{itemize}
+ \item{\em{initialize}} is a simple matter of allocating memory and setting the current size to $0$. This is $O(1)$ if we assume that allocating the memory is a constant time operation.
+ \item{\em{insert}} the new element into the first available posistion, and then bubbled up by exchanging the element and its parent as long as the heap property is violated. Potentially the entire way upto the root, if it's the new minimum. This takes $O(\log n)$ if we need to move it the all way to the root of the tree.
+ \item{\em{decrease key}} takes a pointer to an element, and decrease the key. Then, as in insert, it will bubble up the element until the heap property is restored. This also takes $O(\log n)$ for the same reasons.
+ \item{\em{find min}} is a simple operation due to the heap property, it will always be the root element of the tree, i.e. the first element in our array. This takes $O(1)$.
+ \item{\em{delete element}} takes a pointer to an element to delete. It will move the last item to the index of the deleted element, and thus the heap property might be violoted. Then a call to the helper function \textit{min heapify} is made to restore the heap property. Therefore the time complexity is determined by \textit{min heapify} - and as we will see, this is $O(\log n)$.
+ \item{\em{min heapify}} takes a pointer to the element that might violate the heap property. It works by comparing the the element to its parent
+   \subitem if the parent is the same size we're done.
+   \subitem if the parent is larger we need to bubble the element up.
+   \subitem if the parent is smaller we may need to move the element down.
 
-TODO!
-
-\begin{algorithm}
-\caption{\code{Binary Heap} - insert}\label{alg:bin-ins}
-\begin{algorithmic}[1]
-\REQUIRE key $k$
-\REQUIRE pointer to data $data$
-\REQUIRE pointer to heap $h$
-\STATE $h.size$ := $h.size + 1$
-\STATE $e$ := allocate memory for one element
-\STATE $e.key$ := $k$
-\STATE $e.data$ := $data$
-\STATE $e.index$ := $h.size$
-\STATE $h.data[h.size]$ := $e$
-\STATE decrease-key($0$, $e$, $h$)
-\RETURN $e$;
-\end{algorithmic}
-\end{algorithm}
-
-TODO!
-
-\begin{algorithm}
-\caption{\code{Binary Heap} - decrease-key}\label{alg:bin-dk}
-\begin{algorithmic}[1]
-\REQUIRE delta $d$
-\REQUIRE pointer to element $e$
-\REQUIRE pointer to heap $h$
-\STATE $e.key$ := $e.key - delta$
-\STATE $parent$ = $e.index / 2$
-\WHILE {$e.index > 1$ \AND $h.data[parent].key > e.key$}
-    \STATE exchange($e.index$, $parent$, $h$)
-    \STATE parent = $e.index / 2$
-\ENDWHILE
-\end{algorithmic}
-\end{algorithm}
-
-delete-element
-min-heapify
-find-min
-exchange
+ In the cases where we have to move the item, we resursively call the procedure again on the new posistion until we terminate. The work that has to be done, is at most moving the element all the way from the root to a leaf, or from a leaf to the root. This gives a time complexity of $O(\log n)$.
+\end{itemize}
