@@ -7,7 +7,7 @@ This doubly linked list allows us to extract and insert nodes in very little (co
  \item{\em{initialize}} Extracting/deleting child nodes result in the parent being marked. If it is already marked, the parent itself has to be extracted and placed at in the root list. This cascades to the parent of that, marking it or recursing further if it is marked as well.
  \item{\em{initialize}} When deleting the minimum, the heap has to clean up the root list. After this operation there exist no two root nodes with the same rank.
 \end{itemize}
-Some of the more curious parts of the implementation also involve the delete_min operation. Since delete_min is iterating a doubly linked list, which is modified while looping, the pointer to the next node is saved before any other operations begin. The loop could otherwise continue in the child list of a node already registered in the scanning array, after the current node has been made a child of it, because it had the same rank.
+Some of the more curious parts of the implementation also involve the delete\_min operation. Since delete\_min is iterating a doubly linked list, which is modified while looping, the pointer to the next node is saved before any other operations begin. The loop could otherwise continue in the child list of a node already registered in the scanning array, after the current node has been made a child of it, because it had the same rank.
 
 A custom invariant in the fibonacci heap, set and maintained by us, is the fact that there not ever exists an invalid linked list. Once node is extracted from a list, it is immedeatly linked to itself on the left and the right. This way later union operations will always be able to link the node into a new list without any dangling pointers.
 
