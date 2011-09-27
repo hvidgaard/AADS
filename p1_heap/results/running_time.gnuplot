@@ -1,4 +1,4 @@
-set terminal png xFFFFFF nocrop enhanced font arial 8 size 1200,900
+set terminal png transparent nocrop enhanced font arial 8 size 1200,900
 set key left
 
 set xlabel 'vertices'
