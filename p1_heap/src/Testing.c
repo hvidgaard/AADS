@@ -109,17 +109,17 @@ int main(int argc, char **argv)
 		int i, j;
 		for (i = 0; i < vertices; i++) {
 			unsigned int count = 0;
-		for (j = 0; j < vertices; j++){
-			if (weights[(i * vertices) + j])
-				t_edges[++count] = j;
-		}
+			for (j = 0; j < vertices; j++){
+				if (weights[(i * vertices) + j])
+					t_edges[++count] = j;
+			}
 
-		edges[i] = malloc((count+1) * sizeof(unsigned int));
-		edges[i][0] = count;
-		for (j = 1; j <= count; j++)
-			edges[i][j] = t_edges[j];
-	}
-	//free(t_edges);
+			edges[i] = malloc((count+1) * sizeof(unsigned int));
+			edges[i][0] = count;
+			for (j = 1; j <= count; j++)
+				edges[i][j] = t_edges[j];
+		}
+		//free(t_edges);
 	}
 	else {
 		printf("Unknown graph algorithm '%s'\n", argv[1]);
@@ -141,8 +141,8 @@ int main(int argc, char **argv)
 
 void log_results(char *filename, char *graphtype, unsigned int vertices, unsigned int dk_calls, double running_time) {
 	FILE *handle = fopen(filename, "a+");
-	// INSERT INTO `data` (`type`, `vertices`, `dk_calls`, `running_time`) VALUES 
-	fprintf(handle, "('%s',%d,%d,%10g),\n", graphtype, vertices, dk_calls, running_time);
+	// INSERT INTO `data` (`graph`, `vertices`, `dk_calls`, `running_time`) VALUES 
+	fprintf(handle, "('%s',%d,%d,%g),\n", graphtype, vertices, dk_calls, running_time);
 	fclose(handle);
 	printf("Results have been logged to %s\n", filename);
 }
