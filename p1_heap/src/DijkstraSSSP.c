@@ -15,18 +15,20 @@ unsigned int *generate_decrease_key_max(unsigned int vertices){
 	printf("    Number of vertices: %6d\n", vertices);
 	int num = vertices / 2;
 	int i, j;
-	unsigned int *weights = calloc(((num+1) * vertices),sizeof(unsigned int));
-	for (i = 1; i <= num; i++) {
-		weights[i] = i;
+	unsigned int *weights = calloc(vertices * vertices,sizeof(unsigned int));
+	for (i = 0; i < num; i++) {
+		weights[i+1] = i+1;
 	}
 	for (i = 1; i < num+1; i++) {
-		printf("\rProgress: %3d%%", (int)round(((double)i/(num+1))*100));
-		for (j = num +1; j < vertices; j++){
+		for (j = num +1; j < vertices; j++)
 			weights[i * vertices +j] = 2*(num-i+1)+1;
-			
-		}
 	}
-	printf("\rProgress: 100%%\n");
+	/*for (i = 0; i < vertices; i++){
+		for (j = 0; j < vertices; j++)
+			printf("%2d ", weights[i*vertices + j]);
+		printf("\n");
+	}*/
+
 	return weights;
 }
 
@@ -41,32 +43,21 @@ unsigned int *generate_decrease_key_max2(unsigned int vertices){
 	weights[n-1] = 1;
 	max = n - 1;
 	for (i = max; i > 1; i--){
-		for (j = 1; j < max; j++){
+		for (j = 1; j < n; j++){
 			weights[i * n + j] = n*n - ((n - i) * n) - j + 1;
 		}
 		weights[i*n+max-1] = 1;
 		max--;
 	}
+	for (i = 0; i < n; i++)
+		weights[i*n+i] = 0;
 	
-	/*for (; max > 1; max--){
-		for (i = max; i > 1; i--){
-			for (j = 1; j < max; j++)
-				weights[i * vertices + j] = 
-			weights[i * vertices + max] = 1;
-		}
-	}
-	int t;
-	for (i = 1; i < vertices; i++){
-		for (j = 1; j < vertices; j++){
-			if (i != j){
-				weights[i*vertices+j] = vertices * vertices - j - i;
-			}
-		}
-	}*/
+	if (n < 12){
 	for (i = 0; i < vertices; i++){
 		for (j = 0; j < vertices; j++)
 			printf("%4d ", weights[i*vertices + j]);
 		printf("\n");
+	}
 	}
 	
 	return weights;
@@ -116,8 +107,6 @@ unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsign
 	unsigned int decrease_key_calls = 0;
 	while (node = bh_find_min(heap)) {
 		bh_delete_min(heap);
-		if (*(unsigned int *)node->data > num_vertices / 2)
-			return decrease_key_calls;
 		unsigned int u = *(unsigned int *)node->data;
 		for (i = 1; i <= edges[u][0]; i++) {
 			unsigned int v = edges[u][i];
