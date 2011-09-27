@@ -11,7 +11,7 @@
 #include <FibonacciHeap.h>
 #include <DijkstraSSSP.h>
 
-void log_results(char *filename, unsigned int dk_calls, double running_time);
+void log_results(char *filename, char *graphtype, unsigned int vertices, unsigned int dk_calls, double running_time);
 
 int main(int argc, char **argv)
 {
@@ -115,12 +115,12 @@ int main(int argc, char **argv)
 	end = clock();
 	double running_time = (double) (end-start) / (double) CLOCKS_PER_SEC;
 	printf("    Time: %10gs  dec. key calls: %8d\n", running_time, decrease_key_calls);
-	log_results(heap_name, decrease_key_calls, running_time);
+	log_results(heap_name, argv[1], vertices, decrease_key_calls, running_time);
 }
 
-void log_results(char *filename, unsigned int dk_calls, double running_time) {
+void log_results(char *filename, char *graphtype, unsigned int vertices, unsigned int dk_calls, double running_time) {
 	FILE *handle = fopen(filename, "a+");
-	fprintf(handle, "%d\t%10g\n", dk_calls, running_time);
+	fprintf(handle, "%s\t%d\t%d\t%10g\n", graphtype, vertices, dk_calls, running_time);
 	fclose(handle);
 	printf("Results have been logged to %s\n", filename);
 }
