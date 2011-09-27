@@ -1,6 +1,9 @@
 set terminal png xFFFFFF nocrop enhanced font arial 8 size 1200,900
 set key left
 
+set xlabel 'vertices'
+set ylabel 'time'
+
 set output 'binary-all.png'
 plot \
 'binary-random.dat' using 1:3 title 'random graph' with lines, \
