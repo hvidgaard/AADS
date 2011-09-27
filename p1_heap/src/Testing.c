@@ -19,6 +19,7 @@ int main(int argc, char **argv)
 		printf("Usage\n");
 		printf("    test random <heap> <vertices> [seed] [edgechance] [maxweight] [source]\n");
 		printf("    test dkmax <heap> <vertices>\n");
+		printf("    test dkmax2 <heap> <vertices>\n");
 		printf("        Heaptypes:  bin, fib, pq\n");
 		exit(1);
 	}
@@ -141,7 +142,7 @@ int main(int argc, char **argv)
 
 void log_results(char *filename, char *graphtype, unsigned int vertices, unsigned int dk_calls, double running_time) {
 	FILE *handle = fopen(filename, "a+");
-	// INSERT INTO `data` (`graph`, `vertices`, `dk_calls`, `running_time`) VALUES 
+	// INSERT INTO `data` (`graph`, `vertices`, `dk_calls`, `running_time`) VALUES
 	fprintf(handle, "('%s',%d,%d,%g),\n", graphtype, vertices, dk_calls, running_time);
 	fclose(handle);
 	printf("Results have been logged to %s\n", filename);
