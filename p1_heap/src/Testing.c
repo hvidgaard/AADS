@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	}
 	
 	if (strcmp(argv[1], "maxdk") == 0){
-		//test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
+		test_dk_max((unsigned int)strtoul(argv[2], NULL, 10));
 		test_dk_max2((unsigned int)strtoul(argv[2], NULL, 10));
 		/*int i;
 		for (i = 16; i < 3000; i = i*2)
@@ -161,11 +161,11 @@ void test_dk_max2(unsigned int vertices){
 void test_dk_max(unsigned int vertices){
 	unsigned int *weights = generate_decrease_key_max(vertices);
 	
-	printf("Reticulating splines.\n");
+		printf("Reticulating splines.\n");
 	unsigned int *t_edges = malloc(vertices * sizeof(unsigned int));
 	unsigned int **edges = malloc(vertices * sizeof(unsigned int *));
 	int i, j;
-	for (i = 0; i < (vertices/2)+1; i++) {
+	for (i = 0; i < vertices; i++) {
 		unsigned int count = 0;
 		for (j = 0; j < vertices; j++)
 			if (weights[(i * vertices) + j])
