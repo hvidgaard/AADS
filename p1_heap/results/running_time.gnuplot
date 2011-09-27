@@ -1,13 +1,104 @@
-set terminal png xFFFFFF nocrop enhanced font arial 8 size 800,600
+set terminal png xFFFFFF nocrop enhanced font arial 8 size 1200,900
+set key left
 
-# set output 'binary.png'
-# set ylabel "time in s"
-# set xlabel "vertices"
-# plot "< awk '$1==\"random\" {print $2,$3,$4} ' Binary" using 1:3 title 'Binary' with lines
+set output 'binary-all.png'
+plot \
+'binary-random.dat' using 1:3 title 'random graph' with lines, \
+'binary-random.dat' using 1:3:4 title 'random error margin' with yerrorbars, \
+'binary-dkmax.dat' using 1:3 title 'dkmax graph' with lines, \
+'binary-dkmax.dat' using 1:3:4 title 'dkmax error margin' with yerrorbars, \
+'binary-dkmax2.dat' using 1:3 title 'dkmax2 graph' with lines, \
+'binary-dkmax2.dat' using 1:3:4 title 'dkmax2 error margin' with yerrorbars
 
-# set output 'running_time.png'
-#, 'Fibonacci', 'Primitive'
+set output 'binary-random-dkmax.png'
+plot \
+'binary-random.dat' using 1:3 title 'random graph' with lines, \
+'binary-random.dat' using 1:3:4 title 'random error margin' with yerrorbars, \
+'binary-dkmax.dat' using 1:3 title 'dkmax graph' with lines, \
+'binary-dkmax.dat' using 1:3:4 title 'dkmax error margin' with yerrorbars
 
-set output 'binary.png'
-set logscale x2 
-plot 'binary-random.dat' using 1:3 title 'Binary heap' with lines,'binary-random.dat' using 1:3:4:5 title 'Binary heap errors' with yerrorbars
+
+set output 'fibonacci-all.png'
+plot \
+'fibonacci-random.dat' using 1:3 title 'random graph' with lines, \
+'fibonacci-random.dat' using 1:3:4 title 'random error margin' with yerrorbars, \
+'fibonacci-dkmax.dat' using 1:3 title 'dkmax graph' with lines, \
+'fibonacci-dkmax.dat' using 1:3:4 title 'dkmax error margin' with yerrorbars, \
+'fibonacci-dkmax2.dat' using 1:3 title 'dkmax2 graph' with lines, \
+'fibonacci-dkmax2.dat' using 1:3:4 title 'dkmax2 error margin' with yerrorbars
+
+set output 'fibonacci-random-dkmax.png'
+plot \
+'fibonacci-random.dat' using 1:3 title 'random graph' with lines, \
+'fibonacci-random.dat' using 1:3:4 title 'random error margin' with yerrorbars, \
+'fibonacci-dkmax.dat' using 1:3 title 'dkmax graph' with lines, \
+'fibonacci-dkmax.dat' using 1:3:4 title 'dkmax error margin' with yerrorbars
+
+
+set output 'primitive-all.png'
+plot \
+'primitive-random.dat' using 1:3 title 'random graph' with lines, \
+'primitive-random.dat' using 1:3:4 title 'random error margin' with yerrorbars, \
+'primitive-dkmax.dat' using 1:3 title 'dkmax graph' with lines, \
+'primitive-dkmax.dat' using 1:3:4 title 'dkmax error margin' with yerrorbars, \
+'primitive-dkmax2.dat' using 1:3 title 'dkmax2 graph' with lines, \
+'primitive-dkmax2.dat' using 1:3:4 title 'dkmax2 error margin' with yerrorbars
+
+set output 'primitive-random-dkmax.png'
+plot \
+'primitive-random.dat' using 1:3 title 'random graph' with lines, \
+'primitive-random.dat' using 1:3:4 title 'random error margin' with yerrorbars, \
+'primitive-dkmax.dat' using 1:3 title 'dkmax graph' with lines, \
+'primitive-dkmax.dat' using 1:3:4 title 'dkmax error margin' with yerrorbars
+
+
+
+set output 'fibonacci-binary-random.png'
+plot \
+'fibonacci-random.dat' using 1:3 title 'fibonacci heap' with lines, \
+'fibonacci-random.dat' using 1:3:4 title 'fibonacci error margin' with yerrorbars, \
+'binary-random.dat' using 1:3 title 'binary heap' with lines, \
+'binary-random.dat' using 1:3:4 title 'binary error margin' with yerrorbars
+
+set output 'fibonacci-binary-dkmax.png'
+plot \
+'fibonacci-dkmax.dat' using 1:3 title 'fibonacci heap' with lines, \
+'fibonacci-dkmax.dat' using 1:3:4 title 'fibonacci error margin' with yerrorbars, \
+'binary-dkmax.dat' using 1:3 title 'binary heap' with lines, \
+'binary-dkmax.dat' using 1:3:4 title 'binary error margin' with yerrorbars
+
+set output 'fibonacci-binary-dkmax2.png'
+plot \
+'fibonacci-dkmax2.dat' using 1:3 title 'fibonacci heap' with lines, \
+'fibonacci-dkmax2.dat' using 1:3:4 title 'fibonacci error margin' with yerrorbars, \
+'binary-dkmax2.dat' using 1:3 title 'binary heap' with lines, \
+'binary-dkmax2.dat' using 1:3:4 title 'binary error margin' with yerrorbars
+
+
+set output 'fibonacci-binary-primitive-random.png'
+plot \
+'fibonacci-random.dat' using 1:3 title 'fibonacci heap' with lines, \
+'fibonacci-random.dat' using 1:3:4 title 'fibonacci error margin' with yerrorbars, \
+'binary-random.dat' using 1:3 title 'binary heap' with lines, \
+'binary-random.dat' using 1:3:4 title 'binary error margin' with yerrorbars, \
+'primitive-random.dat' using 1:3 title 'primitive heap' with lines, \
+'primitive-random.dat' using 1:3:4 title 'primitive error margin' with yerrorbars
+
+set output 'fibonacci-binary-primitive-dkmax.png'
+plot \
+'fibonacci-dkmax.dat' using 1:3 title 'fibonacci heap' with lines, \
+'fibonacci-dkmax.dat' using 1:3:4 title 'fibonacci error margin' with yerrorbars, \
+'binary-dkmax.dat' using 1:3 title 'binary heap' with lines, \
+'binary-dkmax.dat' using 1:3:4 title 'binary error margin' with yerrorbars, \
+'primitive-dkmax.dat' using 1:3 title 'primitive heap' with lines, \
+'primitive-dkmax.dat' using 1:3:4 title 'primitive error margin' with yerrorbars
+
+set output 'fibonacci-binary-primitive-dkmax2.png'
+plot \
+'fibonacci-dkmax2.dat' using 1:3 title 'fibonacci heap' with lines, \
+'fibonacci-dkmax2.dat' using 1:3:4 title 'fibonacci error margin' with yerrorbars, \
+'binary-dkmax2.dat' using 1:3 title 'binary heap' with lines, \
+'binary-dkmax2.dat' using 1:3:4 title 'binary error margin' with yerrorbars, \
+'primitive-dkmax2.dat' using 1:3 title 'primitive heap' with lines, \
+'primitive-dkmax2.dat' using 1:3:4 title 'primitive error margin' with yerrorbars
+
