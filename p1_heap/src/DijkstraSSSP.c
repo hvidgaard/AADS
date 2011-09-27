@@ -33,6 +33,48 @@ unsigned int *generate_decrease_key_max(unsigned int vertices){
 	return weights;
 }
 
+unsigned int *generate_decrease_key_max2(unsigned int vertices){
+	int i, j, n;
+	n = vertices;
+	unsigned int *weights = calloc((vertices * vertices),sizeof(unsigned int));
+	unsigned int max, min, current;
+	for (j = 1; j < vertices; j++) {
+		weights[j] = (vertices*vertices) - j;
+	}
+	weights[n-1] = 1;
+	max = n - 1;
+	for (i = max; i > 1; i--){
+		for (j = 1; j < max; j++){
+			weights[i * n + j] = n*n - ((n - i) * n) - j + 1;
+		}
+		weights[i*n+max-1] = 1;
+		max--;
+	}
+	
+	/*for (; max > 1; max--){
+		for (i = max; i > 1; i--){
+			for (j = 1; j < max; j++)
+				weights[i * vertices + j] = 
+			weights[i * vertices + max] = 1;
+		}
+	}
+	int t;
+	for (i = 1; i < vertices; i++){
+		for (j = 1; j < vertices; j++){
+			if (i != j){
+				weights[i*vertices+j] = vertices * vertices - j - i;
+			}
+		}
+	}*/
+	for (i = 0; i < vertices; i++){
+		for (j = 0; j < vertices; j++)
+			printf("%4d ", weights[i*vertices + j]);
+		printf("\n");
+	}
+	
+	return weights;
+}
+
 unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, unsigned int max_weight, unsigned int seed)
 {
 	printf("Generating random graph.\n", seed);
@@ -51,7 +93,7 @@ unsigned int *generate_graph(unsigned int vertices, unsigned int edge_chance, un
 	return weights;
 }
 
-unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges, unsigned int *bops)
 {
 	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
 	
@@ -62,6 +104,7 @@ unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsign
 	unsigned int distance;
 	unsigned int *data;
 	unsigned int i;
+	unsigned long long bubbling;
 	for (i = 0; i < num_vertices; i++) {
 		if(i == source)
 			distance = 0;
@@ -83,7 +126,7 @@ unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsign
 			unsigned int v = edges[u][i];
 			unsigned int alt = distances[u] + weights[u * num_vertices + v];
 			if (alt < distances[v]) {
-				bh_decrease_key(distances[v] - alt, vertices[v], heap);
+				bh_decrease_key(distances[v] - alt, vertices[v], heap, bops);
 				distances[v] = alt;
 				decrease_key_calls++;
 			}
@@ -94,7 +137,7 @@ unsigned int dijkstra_bin(unsigned int num_vertices, unsigned int source, unsign
 	return decrease_key_calls;
 }
 
-unsigned int dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+unsigned int dijkstra_fib(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges, unsigned int *bops)
 {
 	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
 	
@@ -138,7 +181,7 @@ unsigned int dijkstra_fib(unsigned int num_vertices, unsigned int source, unsign
 	return decrease_key_calls;
 }
 
-unsigned int dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges)
+unsigned int dijkstra_pq(unsigned int num_vertices, unsigned int source, unsigned int * weights, unsigned int ** edges, unsigned int *bops)
 {
 	unsigned int *distances = malloc(num_vertices * sizeof(unsigned int));
 	
