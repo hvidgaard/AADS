@@ -1,2 +1,52 @@
 \section*{Binary Heap}
-om binary
+Out binary heap implementation support the following operations:
+\begin{algorithm}
+\caption{\code{Binary Heap} - initialize}\label{alg:bin-init}
+\begin{algorithmic}[1]
+\STATE $h$ := allocate memory to heap
+\STATE $h.size$ := 0
+\STATE $h.data$ := allocate memory to an array of elements
+\RETURN pointer to heap $h$
+\end{algorithmic}
+\end{algorithm}
+
+TODO!
+
+\begin{algorithm}
+\caption{\code{Binary Heap} - insert}\label{alg:bin-ins}
+\begin{algorithmic}[1]
+\REQUIRE key $k$
+\REQUIRE pointer to data $data$
+\REQUIRE pointer to heap $h$
+\STATE $h.size$ := $h.size + 1$
+\STATE $e$ := allocate memory for one element
+\STATE $e.key$ := $k$
+\STATE $e.data$ := $data$
+\STATE $e.index$ := $h.size$
+\STATE $h.data[h.size]$ := $e$
+\STATE decrease-key($0$, $e$, $h$)
+\RETURN $e$;
+\end{algorithmic}
+\end{algorithm}
+
+TODO!
+
+\begin{algorithm}
+\caption{\code{Binary Heap} - decrease-key}\label{alg:bin-dk}
+\begin{algorithmic}[1]
+\REQUIRE delta $d$
+\REQUIRE pointer to element $e$
+\REQUIRE pointer to heap $h$
+\STATE $e.key$ := $e.key - delta$
+\STATE $parent$ = $e.index / 2$
+\WHILE {$e.index > 1$ \AND $h.data[parent].key > e.key$}
+    \STATE exchange($e.index$, $parent$, $h$)
+    \STATE parent = $e.index / 2$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+delete-element
+min-heapify
+find-min
+exchange
