@@ -1,0 +1,57 @@
+% Dokumentklassen s�ttes til memoir
+\documentclass[12pt,a4paper]{report}
+
+% Sproget s�ttes til dansk og orddeling indl�ses
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amssymb, amsmath}
+\usepackage{cite}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{listings}
+\usepackage{enumerate}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Tabeller og s�jler
+\usepackage{array, booktabs, dcolumn}
+\newcolumntype{d}[1]{D{,}{,}{#1}} % Justering under komma
+
+% Figurer
+\usepackage{graphicx, caption, subfig}
+\captionsetup{font=small,labelfont=bf}
+
+\usepackage{fixme}
+
+\newcounter{problemnr}
+\newcounter{subproblemnr}
+\setcounter{problemnr}{0}
+
+\parindent 0pt
+\parskip 4mm
+
+\title{Advanced Data Structures: van Emde Boas Trees}
+\author{Anders Ingemann (20052979) \and Peter E. Hvidgaard (20062546)}
+
+\begin{document}
+\maketitle
+
+\include{1-1}
+\include{2}
+\include{3}
+\include{4}
+\include{5}
+\include{6}
+
+\pagebreak
+\begin{thebibliography}{3}
+
+\bibitem{cormen}
+Thomas H. Cormen et. al.,
+\emph{Introduction to algorithms},
+2nd Edition.
+
+\end{thebibliography}
+
+\end{document}
