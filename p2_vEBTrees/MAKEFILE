@@ -1,0 +1,31 @@
+workingpath				:= /home/hvidgaard/Desktop/Dropbox/2011q1+2_AADS/p2_vEBTrees
+sourcedir				:= src
+output					:= debug
+compileroptions			:= -g -Wall
+includes				:= -I $(workingpath)/$(sourcedir)
+outputfile				:= p2_vebt
+
+objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o RBTrees.o
+
+prebuild:
+	mkdir -p $(output)
+
+build: BinaryHeap.o FibonacciHeap.o RBTrees.o
+	gcc $^ -o ./$(output)/$(outputfile)
+
+all: prebuild build
+
+clean:
+	rm ./$(output)/BinaryHeap.o
+	rm ./$(output)/FibonacciHeap.o
+	rm ./$(output)/RBTrees.o
+	rm ./$(output)/outputfile
+
+BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c
+	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
+
+FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c
+	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
+
+RBTrees.o: ./$(sourcedir)/RBTrees.cpp
+	gcc $(compileroptions) $(includes) -c $< -o .	/$(output)/$@
