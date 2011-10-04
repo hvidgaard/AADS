@@ -10,7 +10,7 @@ prebuild:
 	mkdir -p $(output)
 
 build: $(objectfiles)
-	gcc ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile)
+	gcc ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) -lm
 
 all: prebuild build
 
@@ -19,18 +19,19 @@ clean:
 	rm -f ./$(output)/FibonacciHeap.o
 	#rm -f ./$(output)/RBTrees.o
 	rm -f ./$(output)/vebtrees.o
+	rm -f ./$(output)/main.o
 	rm -f ./$(output)/$(outputfile)
 
-BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c
+BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c ./$(sourcedir)/BinaryHeap.h
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 
-FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c
+FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c ./$(sourcedir)/FibonacciHeap.h
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 
 RBTrees.o: ./$(sourcedir)/RBTrees.cpp
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 
-vebtrees.o: ./$(sourcedir)/vebtrees.c
+vebtrees.o: ./$(sourcedir)/vebtrees.c ./$(sourcedir)/vebtrees.h
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 	
 main.o: ./$(sourcedir)/main.c
