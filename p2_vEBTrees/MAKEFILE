@@ -1,7 +1,7 @@
 sourcedir				:= src
 output					:= debug
 compileroptions			:= -g -Wall
-includes				:= -I $(workingpath)/$(sourcedir)
+includes				:= -I ./$(sourcedir)
 outputfile				:= p2_vebt
 
 objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o RBTrees.o
@@ -9,16 +9,17 @@ objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o RBTrees.o
 prebuild:
 	mkdir -p $(output)
 
-build: BinaryHeap.o FibonacciHeap.o RBTrees.o
+build: BinaryHeap.o FibonacciHeap.o RBTrees.o vebtrees.o
 	gcc $^ -o ./$(output)/$(outputfile)
 
 all: prebuild build
 
 clean:
-	rm ./$(output)/BinaryHeap.o
-	rm ./$(output)/FibonacciHeap.o
-	rm ./$(output)/RBTrees.o
-	rm ./$(output)/outputfile
+	rm -f ./$(output)/BinaryHeap.o
+	rm -f ./$(output)/FibonacciHeap.o
+	rm -f ./$(output)/RBTrees.o
+	rm -f ./$(output)/vebtrees.o
+	rm -f ./$(output)/$(outputfile)
 
 BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
@@ -27,4 +28,7 @@ FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 
 RBTrees.o: ./$(sourcedir)/RBTrees.cpp
+	gcc $(compileroptions) $(includes) -c $< -o .	/$(output)/$@
+
+vebtrees.o: ./$(sourcedir)/vebtrees.c
 	gcc $(compileroptions) $(includes) -c $< -o .	/$(output)/$@
