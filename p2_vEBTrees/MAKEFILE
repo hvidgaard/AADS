@@ -1,4 +1,3 @@
-workingpath				:= /home/hvidgaard/Desktop/Dropbox/2011q1+2_AADS/p2_vEBTrees
 sourcedir				:= src
 output					:= debug
 compileroptions			:= -g -Wall
