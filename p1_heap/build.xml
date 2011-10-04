@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AADS Project 1" default="all" basedir="."
-	xmlns:cpptasks="antlib:net.sf.antcontrib.cpptasks">
-
-	<property name="src" value="src" />
-	<property name="objectdir" value="obj" />
+	xmlns:cpp="antlib:net.sf.antcontrib.cpptasks"
+	xmlns:latex="antlib:de.dokutransdata.antlatex">
+	
+	<property name="src" value="${basedir}/src" />
+	<property name="report" value="${basedir}/rapport" />
+	<property name="objectdir" value="${basedir}/obj" />
 	<property name="debug" value="true" />
 
 	<target name="all" depends="test">
@@ -12,14 +14,19 @@
 	<target name="test">
 		<mkdir dir="${objectdir}"/>
 		
-		<cpptasks:cc outfile="test" outtype="executable"
+		<cpp:cc outfile="test" outtype="executable"
 			subsystem="console" objdir="${objectdir}" debug="${debug}">
 			<includepath>
 				<pathelement path="${src}"/>
 				<pathelement path="/usr/include"/>
 			</includepath>
 			<fileset dir="${src}" includes="*.c" />
-		</cpptasks:cc>
+		</cpp:cc>
+	</target>
+	
+	<target name="report">
+		<latex:latex latexfile="${report}/aadsrapport.tex"
+			verbose="off" clean="on" pdftex="on" workingDir="${report}" />
 	</target>
 
 	<target name="clean">
