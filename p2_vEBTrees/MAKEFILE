@@ -28,7 +28,7 @@ FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c
 	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 
 RBTrees.o: ./$(sourcedir)/RBTrees.cpp
-	gcc $(compileroptions) $(includes) -c $< -o .	/$(output)/$@
+	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
 
 vebtrees.o: ./$(sourcedir)/vebtrees.c
-	gcc $(compileroptions) $(includes) -c $< -o .	/$(output)/$@
+	gcc $(compileroptions) $(includes) -c $< -o ./$(output)/$@
