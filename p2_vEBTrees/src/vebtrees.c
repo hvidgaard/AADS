@@ -23,6 +23,7 @@ uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree);
 vebtree * veb_init_tree(int size, int threshold);
 vebtree * veb_init_leaf(int size, int threshold);
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b);
+void vebswap(uint32_t *index, void **data, vebelement * e);
 
 vebtree * veb_initialize(int w, int threshold){
 	//anything bigger will make the structure larger than 2 GiB
@@ -40,12 +41,12 @@ vebtree * veb_initialize(int w, int threshold){
 }
 vebtree * veb_init_tree(int w, int threshold){
 	vebtree * tree = malloc(sizeof(struct vebtree));
-	tree->max = malloc(sizeof(struct vebelement));
-	tree->max->value = 0;
-	tree->max->data = NULL;
-	tree->min = malloc(sizeof(struct vebelement));
-	tree->min->value = 0;
-	tree->min->data = NULL;
+	//tree->max = malloc(sizeof(struct vebelement));
+	tree->max.value = 0;
+	tree->max.data = NULL;
+	//tree->min = malloc(sizeof(struct vebelement));
+	tree->min.value = 0;
+	tree->min.data = NULL;
 	tree->w = w;
 	tree->size = pow(2,w);
 	tree->n = 0;
@@ -116,24 +117,32 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 		return veb_insert_node_trivial(index, data, tree);
 	//the insert is a recursive case.
 	//check if the new insert falls outside the current min/max span
-	vebelement* new_ele = malloc(sizeof(struct vebelement));
-	new_ele->data = data;
-	new_ele->value = index;
-	vebelement* tmp_ele;
-	if (index < tree->min->value) {
-		tmp_ele = tree->min;
-		tree->min = new_ele;
-		new_ele = tmp_ele;
+	if (index < tree->min.value) {
+		vebswap(&index, &data, &(tree->min));
+		/*void *tmp_data;
+		uint32_t tmp_idx;
+		tmp_data = tree->min.data;
+		tmp_idx = tree->min.value;
+		tree->min.data = data;
+		tree->min.value = index;
+		data = tmp_data;
+		index = tmp_idx;*/
 	}
-	else if (index > tree->max->value) {
-		tmp_ele = tree->max;
-		tree->max = new_ele;
-		new_ele = tmp_ele;
+	else if (index > tree->max.value) {
+		vebswap(&index, &data, &(tree->max));
+		/*void *tmp_data;
+		uint32_t tmp_idx;
+		tmp_data = tree->max.data;
+		tmp_idx = tree->max.value;
+		tree->max.data = data;
+		tree->max.value = index;
+		data = tmp_data;
+		index = tmp_idx;*/
 	}
 	uint32_t * a = malloc(sizeof(uint32_t));
 	uint32_t * b = malloc(sizeof(uint32_t));
 	vebfactor(tree->w, index, a, b);
-	printf("w: %d - i: %d - a: %d - b: %d\n", tree->w, index, *a, *b);
+	//printf("w: %d - i: %d - a: %d - b: %d\n", tree->w, index, *a, *b);
 	int result;
 	if (tree->bottom[*a]->n == 0) {
 		result = veb_insert(*a, NULL, tree->top);
@@ -158,59 +167,20 @@ uint32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree){
 	(tree->arr)[index].data = data;
 	tree->n++;
 	return 0;
-	
-	/*if (tree->n == 0) {
-		tree->max->value = index;
-		tree->max->data = data;
-		return 0;
-	}
-	else if (tree->n == 1){
-		if (index == tree->max->value)
-			return 2;
-		tree->min->value = index;
-		tree->min->value = data;
-		if (tree->min->value > tree->max->value) {
-			vebelement * tmp_ele = tree->min;
-			tree->min = tree->max
-			tree->max = tmp_ele;
-		}
-		return 0;
-	}
-	else if (tree->n == 2){
-		vebelement * new_ele = malloc(sizeof(struct vebelement));
-		new_ele->data = data;
-		new_ele->value = index;
-		if ()
-		//2 elements ( in min and max)
-	}
-	else{
-	if (tree->arr[index]->value)
-		return 0; //the element already exists, so return 0 to indicate error.
-	tree->arr[index] = data;
-	tree->n++;
-	return index;
-	}*/
 }
 uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
 	if (tree->n == 0){
 		tree->n = 1;
-		tree->max->value = index;
-		tree->max->data = data;
+		tree->max.value = index;
+		tree->max.data = data;
 		return 0;
 	}
-	else{
-		tree->n = 2;
-		tree->min = malloc(sizeof(struct vebelement *));
-		tree->min->value = index;
-		tree->min->data = data;
-		if (index > tree->max->value){
-			vebelement * tmp_ele = tree->min;
-			tree->min = tree->max;
-			tree->max = tmp_ele;
-			
-		}
-		return 0;
-	}
+	else if (index > tree->max.value)
+			vebswap(&index, &data, &(tree->max));
+	tree->n = 2;
+	tree->min.value = index;
+	tree->min.data = data;
+	return 0;
 }
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b){
 	*a = i >> (w-(w/2));
@@ -218,4 +188,12 @@ void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b){
 	*b = i << (32-(w-(w/2)));
 	//printf("what: %d", *b);
 	*b = *b >> (32-(w-(w/2)));
+}
+void vebswap(uint32_t *index, void **data, vebelement *e){
+	void *tmp_data = e->data;
+	uint32_t tmp_idx = e->value;
+	e->data = *data;
+	e->value = *index;
+	*data = tmp_data;
+	*index = tmp_idx;
 }

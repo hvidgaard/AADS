@@ -21,7 +21,7 @@ void printinfo(vebtree *tree){
 	printf("Size %d, using %d bits. Currently containing %d elements\n", tree->size, tree->w, tree->n);
 	if (tree->size > tree->threshold){
 		printf("Recursive with:\n");
-		printf("min: %d\nmax: %d\n", tree->min->value, tree->max->value);
+		printf("min: %d\nmax: %d\n", tree->min.value, tree->max.value);
 		printf("with TOP structure: ");
 		printinfo(tree->top);
 		printf("with BOTTOM structures: ");

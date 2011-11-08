@@ -1,8 +1,13 @@
 #include <stdint.h>
 
+typedef struct vebelement {
+	uint32_t value;
+	void *data;
+} vebelement;
+
 typedef struct vebtree {
-	struct vebelement *max;
-	struct vebelement *min;
+	struct vebelement max;
+	struct vebelement min;
 	struct vebtree *top;
 	struct vebtree **bottom;
 	uint32_t w;
@@ -12,10 +17,7 @@ typedef struct vebtree {
 	struct vebelement *arr;
 } vebtree;
 
-typedef struct vebelement {
-	uint32_t value;
-	void *data;
-} vebelement;
+
 
 /* this are the basic operations, other operations are combinations
  * hereof.
