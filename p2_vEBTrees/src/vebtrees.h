@@ -12,6 +12,7 @@ typedef struct vebtree {
 	struct vebtree **bottom;
 	uint32_t w;
 	uint32_t size;
+	uint32_t sqrtsize;
 	uint32_t n;
 	uint32_t threshold;
 	struct vebelement *arr;

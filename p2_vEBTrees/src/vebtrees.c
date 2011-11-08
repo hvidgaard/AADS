@@ -53,7 +53,7 @@ vebtree * veb_init_tree(int w, int threshold){
 	tree->threshold = threshold;
 	//w/2 is rounded down, which is what we want if w is odd.
 	int halfofw = w/2;
-	int squarerootofsize = pow(2, w/2);
+	tree->sqrtsize = pow(2, w/2);
 	/*printf("\n\
                 w := %d\n\
         threshold := %d\n\
@@ -66,9 +66,9 @@ vebtree * veb_init_tree(int w, int threshold){
 	/*printf("\n");
 	printf("Create BOTTOMS: ");
 	printf("\n");*/
-	tree->bottom = calloc(squarerootofsize, sizeof(struct vebtree *));
+	tree->bottom = calloc(tree->sqrtsize, sizeof(struct vebtree *));
 	int i;
-	for (i = 0; i < squarerootofsize; i++)
+	for (i = 0; i < tree->sqrtsize; i++)
 		tree->bottom[i] = veb_initialize(w-halfofw, threshold);
 	return tree;
 }
@@ -97,7 +97,35 @@ uint32_t veb_delete(uint32_t index, vebtree * tree){
 	return 0;
 }
 uint32_t veb_findsucc(uint32_t index, vebtree * tree){
-	return 0;
+	if (tree->size > tree->threshold) {
+		if (index > tree->max.value)
+			return NULL;
+		else if (index <= tree->min.value)
+			return tree->min.value;
+		else if (tree->n <= 2)
+			return tree->max.value;
+		uint32_t * t_a = malloc(sizeof(uint32_t));
+		uint32_t * t_b = malloc(sizeof(uint32_t));
+		vebfactor (tree->w, index, t_a, t_b);
+		uint32_t a = *t_a;
+		uint32_t b = *t_b;
+		free(t_a);
+		free(t_b);
+		if ((tree->bottom)[a]->n > 0 && (tree->bottom)[a]->max.value >= b)
+			return a * (tree->sqrtsize) * veb_findsucc(b, (tree->bottom)[a]);
+		else if (tree->top->max.value <= a)
+			return tree->max.value;
+		uint32_t c = veb_findsucc(a + 1, tree->top);
+		return c * (tree->sqrtsize) * (tree->bottom)[c]->min.value;
+	}
+	else{
+		int i;
+		for (i = 0; i < tree->size; i++){
+			if (tree->arr[i].value)
+				return i;
+		}
+		return NULL;
+	}
 }
 uint32_t veb_findpred(uint32_t index, vebtree * tree){
 	return 0;
@@ -158,6 +186,7 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 		veb_delete(*a, tree->top);
 	free(a);
 	free(b);
+	tree->n++;
 	return result;
 }
 uint32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree){
@@ -170,16 +199,16 @@ uint32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree){
 }
 uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
 	if (tree->n == 0){
-		tree->n = 1;
 		tree->max.value = index;
 		tree->max.data = data;
+		tree->n++;
 		return 0;
 	}
 	else if (index > tree->max.value)
 			vebswap(&index, &data, &(tree->max));
-	tree->n = 2;
 	tree->min.value = index;
 	tree->min.data = data;
+	tree->n++;
 	return 0;
 }
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b){

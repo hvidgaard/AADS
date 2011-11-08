@@ -10,8 +10,17 @@ int main(int argc, char **argv)
 	vebtree *tree = veb_initialize(6, 4);
 	veb_insert(10, NULL, tree);
 	veb_insert(5, NULL, tree);
-	veb_insert(15, NULL, tree);
 	veb_insert(18, NULL, tree);
+	veb_insert(15, NULL, tree);
+	printf("succ(2): %d\n", veb_findsucc(2, tree));
+	printf("succ(5): %d\n", veb_findsucc(5, tree));
+	printf("succ(7): %d\n", veb_findsucc(7, tree));
+	printf("succ(10): %d\n", veb_findsucc(10, tree));
+	printf("succ(12): %d\n", veb_findsucc(12, tree));
+	printf("succ(15): %d\n", veb_findsucc(15, tree));
+	printf("succ(17): %d\n", veb_findsucc(17, tree));
+	printf("succ(18): %d\n", veb_findsucc(18, tree));
+	printf("succ(20): %d\n", veb_findsucc(20, tree));
 	printinfo(tree);
 }
 
