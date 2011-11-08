@@ -1,6 +1,7 @@
 #include <vebtrees.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 
 /*size is number of bits to use for the elements. Note
  *that the size of the entire datastructure will be 
@@ -27,10 +28,15 @@ vebtree * veb_initialize(int w, int threshold){
 	//anything bigger will make the structure larger than 2 GiB
 	if (w > 28)
 		return NULL;
-	if (w > threshold)
+	if (pow(2, w) > threshold){
+		//printf("recursive structure: ");
 		return veb_init_tree(w, threshold);
-	else
+	}
+	else {
+		//printf("leaf structure: ");
 		return veb_init_leaf(w, threshold);
+		
+	}
 }
 vebtree * veb_init_tree(int w, int threshold){
 	vebtree * tree = malloc(sizeof(struct vebtree));
@@ -47,9 +53,18 @@ vebtree * veb_init_tree(int w, int threshold){
 	//w/2 is rounded down, which is what we want if w is odd.
 	int halfofw = w/2;
 	int squarerootofsize = pow(2, w/2);
+	/*printf("\n\
+                w := %d\n\
+        threshold := %d\n\
+          halfofw := %d\n\
+       sqrtofsize := %d\n", w, threshold, halfofw, squarerootofsize);*/
 	//sorry about the two above names - I had no idea what to
 	//call them :(
+	//printf("Create TOP: ");
 	tree->top = veb_initialize(halfofw, threshold);
+	/*printf("\n");
+	printf("Create BOTTOMS: ");
+	printf("\n");*/
 	tree->bottom = calloc(squarerootofsize, sizeof(struct vebtree *));
 	int i;
 	for (i = 0; i < squarerootofsize; i++)
@@ -58,19 +73,23 @@ vebtree * veb_init_tree(int w, int threshold){
 }
 vebtree * veb_init_leaf(int w, int threshold){
 	vebtree * tree = malloc(sizeof(struct vebtree));
-	tree->max = malloc(sizeof(struct vebelement));
-	tree->max->value = 0;
-	tree->max->data = NULL;
-	tree->min = malloc(sizeof(struct vebelement));
-	tree->min->value = 0;
-	tree->min->data = NULL;
+	//tree->max = calloc(1, sizeof(struct vebelement));
+	//tree->max->value = 0;
+	//tree->max->data = NULL;
+	//tree->min = calloc(1, sizeof(struct vebelement));
+	//tree->min->value = 0;
+	//tree->min->data = NULL;
 	tree->w = w;
 	tree->size = pow(2,w);
 	tree->n = 0;
 	tree->threshold = threshold;
 	tree->bottom = NULL;
 	tree->top = NULL;
-	tree->arr = calloc(tree->size, sizeof(struct vebelement *));
+	//printf("size: %d", tree->size);
+	tree->arr = calloc(tree->size, sizeof(struct vebelement));
+	/*printf("\n\
+                w := %d\n\
+        threshold := %d\n", w, threshold);*/
 	return tree;
 }
 uint32_t veb_delete(uint32_t index, vebtree * tree){	
@@ -98,6 +117,8 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 	//the insert is a recursive case.
 	//check if the new insert falls outside the current min/max span
 	vebelement* new_ele = malloc(sizeof(struct vebelement));
+	new_ele->data = data;
+	new_ele->value = index;
 	vebelement* tmp_ele;
 	if (index < tree->min->value) {
 		tmp_ele = tree->min;
@@ -112,6 +133,7 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 	uint32_t * a = malloc(sizeof(uint32_t));
 	uint32_t * b = malloc(sizeof(uint32_t));
 	vebfactor(tree->w, index, a, b);
+	printf("w: %d - i: %d - a: %d - b: %d\n", tree->w, index, *a, *b);
 	int result;
 	if (tree->bottom[*a]->n == 0) {
 		result = veb_insert(*a, NULL, tree->top);
@@ -193,6 +215,7 @@ uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b){
 	*a = i >> (w-(w/2));
 	//we want to clear the upper bits.
-	*b = i << (w/2);
-	*b = *b >> (w/2);
+	*b = i << (32-(w-(w/2)));
+	//printf("what: %d", *b);
+	*b = *b >> (32-(w-(w/2)));
 }
