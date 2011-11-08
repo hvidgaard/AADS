@@ -96,10 +96,10 @@ vebtree * veb_init_leaf(int w, int threshold){
 uint32_t veb_delete(uint32_t index, vebtree * tree){	
 	return 0;
 }
-uint32_t veb_findsucc(uint32_t index, vebtree * tree){
+int32_t veb_findsucc(uint32_t index, vebtree * tree){
 	if (tree->size > tree->threshold) {
-		if (index > tree->max.value)
-			return NULL;
+		if (index > tree->max.value && tree->n > 0)
+			return -1;
 		else if (index <= tree->min.value)
 			return tree->min.value;
 		else if (tree->n <= 2)
@@ -112,11 +112,11 @@ uint32_t veb_findsucc(uint32_t index, vebtree * tree){
 		free(t_a);
 		free(t_b);
 		if ((tree->bottom)[a]->n > 0 && (tree->bottom)[a]->max.value >= b)
-			return a * (tree->sqrtsize) * veb_findsucc(b, (tree->bottom)[a]);
+			return a * (tree->sqrtsize) + veb_findsucc(b, (tree->bottom)[a]);
 		else if (tree->top->max.value <= a)
 			return tree->max.value;
 		uint32_t c = veb_findsucc(a + 1, tree->top);
-		return c * (tree->sqrtsize) * (tree->bottom)[c]->min.value;
+		return c * (tree->sqrtsize) + (tree->bottom)[c]->min.value;
 	}
 	else{
 		int i;
@@ -124,11 +124,43 @@ uint32_t veb_findsucc(uint32_t index, vebtree * tree){
 			if (tree->arr[i].value)
 				return i;
 		}
-		return NULL;
+		return -1;
 	}
 }
-uint32_t veb_findpred(uint32_t index, vebtree * tree){
-	return 0;
+int32_t veb_findpred(uint32_t index, vebtree * tree){
+	if (tree->size > tree->threshold){
+		if (index < tree->min.value)
+			return -1;
+		else if (index >= tree->max.value && tree->n > 0)
+			return tree->max.value;
+		else if (tree->n <= 2)
+			return tree->min.value;
+		uint32_t * t_a = malloc(sizeof(uint32_t));
+		uint32_t * t_b = malloc(sizeof(uint32_t));
+		vebfactor (tree->w, index, t_a, t_b);
+		uint32_t a = *t_a;
+		uint32_t b = *t_b;
+		free(t_a);
+		free(t_b);
+		if ((tree->bottom)[a]->n > 0 && (tree->bottom)[a]->min.value <= b)
+			return a * (tree->sqrtsize) + veb_findpred(b, (tree->bottom)[a]);
+		else if (tree->top->min.value >= a)
+			return tree->min.value;
+		int32_t c = veb_findpred(a + 1, tree->top);
+		return c * (tree->sqrtsize) + (tree->bottom[c]->max.value);
+	}
+	else {
+		int i;
+		for (i = 0; i < tree->size; i++){
+			if (tree->arr[i].value){
+				if (tree->arr[i].value > index)
+					return -1;
+				else
+					return tree->arr[i].value;
+			}
+		}
+		return NULL;
+	}
 }
 /* return 0 if the insert succeded. Any other value 
  * indicated an error
