@@ -3,16 +3,84 @@
 #include <math.h>
 
 void printinfo(vebtree *tree);
+void printtest(vebtree *tree);
+void print_n(vebtree *tree);
 
 int main(int argc, char **argv)
 {
 	printf("\nmaking vEB tree\n");
 	vebtree *tree = veb_initialize(6, 4);
+	print_n(tree);
 	veb_insert(10, NULL, tree);
+	print_n(tree);
 	veb_insert(5, NULL, tree);
+	print_n(tree);
 	veb_insert(18, NULL, tree);
+	print_n(tree);
 	veb_insert(15, NULL, tree);
-	printf("succ(2): %d\n", veb_findsucc(2, tree));
+	print_n(tree);
+	printf("\n5, 10, 15, 18");
+	printtest(tree);
+	veb_delete(5, tree);
+	print_n(tree);
+	printf("\n10, 15, 18");
+	printtest(tree);
+	veb_insert(5, NULL, tree);
+	print_n(tree);
+	printf("\n5, 10, 15, 18");
+	printtest(tree);
+	veb_delete(10, tree);
+	print_n(tree);
+	printf("\n5, 15, 18");
+	printtest(tree);
+	veb_insert(10, NULL, tree);
+	print_n(tree);
+	printf("\n5, 10, 15, 18");
+	printtest(tree);
+	veb_delete(15, tree);
+	print_n(tree);
+	printf("\n5, 10, 18");
+	printtest(tree);
+	veb_insert(15, NULL, tree);
+	print_n(tree);
+	printf("\n5, 10, 15, 18");
+	printtest(tree);
+	veb_delete(18, tree);
+	print_n(tree);
+	printf("\n5, 10, 15");
+	printtest(tree);
+	veb_insert(18, NULL, tree);
+	printf("\n5, 10, 15, 18");
+	printtest(tree);
+	veb_delete(5, tree);
+	veb_delete(18, tree);
+	printf("\n10, 15");
+	printtest(tree);
+}
+
+void print_n(vebtree *tree){
+	if (tree->size < tree->threshold){
+		printf("leaf! n=%d \n", tree->n);
+		fflush(stdout);	
+	}
+	else {
+		printf("recursive! n=%d \n", tree->n);
+		printf("TOP:\n");
+		fflush(stdout);
+		print_n(tree->top);
+		printf("BOTTOM:\n");
+		fflush(stdout);
+		int i;
+		for (i = 0; i < tree->sqrtsize; i++)
+			printf(" b%d:", i);
+			fflush(stdout);
+			print_n((tree->bottom)[i]);
+	}
+	fflush(stdout);
+}
+
+void printtest(vebtree *tree){
+	printf("\nsucc(2): %d\n", veb_findsucc(2, tree));
 	printf("succ(5): %d\n", veb_findsucc(5, tree));
 	printf("succ(7): %d\n", veb_findsucc(7, tree));
 	printf("succ(10): %d\n", veb_findsucc(10, tree));
@@ -29,8 +97,8 @@ int main(int argc, char **argv)
 	printf("pred(15): %d\n", veb_findpred(15, tree));
 	printf("pred(17): %d\n", veb_findpred(17, tree));
 	printf("pred(18): %d\n", veb_findpred(18, tree));
-	printf("pred(20): %d\n", veb_findpred(20, tree));
-	//printinfo(tree);
+	printf("pred(20): %d\n\n", veb_findpred(20, tree));
+	fflush(stdout); 
 }
 
 void printinfo(vebtree *tree){
@@ -56,5 +124,5 @@ void printinfo(vebtree *tree){
 		}
 		printf("\n\n");
 	}
-	
+	fflush(stdout); 
 }

@@ -66,7 +66,7 @@ vebtree * veb_init_tree(int w, int threshold){
 	/*printf("\n");
 	printf("Create BOTTOMS: ");
 	printf("\n");*/
-	tree->bottom = calloc(tree->sqrtsize, sizeof(struct vebtree *));
+	tree->bottom = malloc(tree->sqrtsize * sizeof(struct vebtree *));
 	int i;
 	for (i = 0; i < tree->sqrtsize; i++)
 		tree->bottom[i] = veb_initialize(w-halfofw, threshold);
@@ -93,8 +93,60 @@ vebtree * veb_init_leaf(int w, int threshold){
         threshold := %d\n", w, threshold);*/
 	return tree;
 }
-uint32_t veb_delete(uint32_t index, vebtree * tree){	
-	return 0;
+void veb_delete(uint32_t index, vebtree * tree){	
+	printf("\ndeleting %d in tree size %d\n", index, tree->size);
+	if (tree->size < tree->threshold){
+		if ((tree->arr)[index].value && tree->n > 0) {
+			tree->n--;
+			(tree->arr)[index].value = 0;
+		}
+		return;
+	}
+	else {
+		switch (tree->n){
+			case 0:
+				break;
+			case 1:
+				if (tree->max.value == index)
+					tree->n--;
+				break;
+			case 2:
+				if (tree->min.value == index){
+					tree->min.value = tree->max.value;
+					tree->min.data = tree->max.data;
+					tree->n--;
+				}
+				else if (tree->max.value == index){
+					tree->max.value = tree->min.value;
+					tree->max.data = tree->min.data;
+					tree->n--;
+				}
+				break;
+			default:
+				if (tree->min.value == index){
+					tree->min.value = tree->top->min.value * tree->sqrtsize + (tree->bottom)[tree->top->min.value]->min.value;
+					tree->min.data = (tree->bottom)[tree->top->min.value]->min.data;
+				}
+				else if (tree->max.value == index){
+					tree->max.value = tree->top->max.value * tree->sqrtsize + (tree->bottom)[tree->top->max.value]->max.value;
+					tree->max.data = (tree->bottom)[tree->top->max.value]->max.data;
+				}
+				uint32_t * t_a = malloc(sizeof(uint32_t));
+				uint32_t * t_b = malloc(sizeof(uint32_t));
+				vebfactor (tree->w, index, t_a, t_b);
+				uint32_t a = *t_a;
+				uint32_t b = *t_b;
+				free(t_a);
+				free(t_b);
+				veb_delete(b, (tree->bottom)[a]);
+				if ((tree->bottom)[a]->size == 0)
+					veb_delete(a, tree->top);
+				tree->n--;
+				return;
+		}
+		return;
+	}
+	
 }
 int32_t veb_findsucc(uint32_t index, vebtree * tree){
 	if (tree->size > tree->threshold) {
@@ -128,7 +180,19 @@ int32_t veb_findsucc(uint32_t index, vebtree * tree){
 	}
 }
 int32_t veb_findpred(uint32_t index, vebtree * tree){
-	if (tree->size > tree->threshold){
+	if (tree->size < tree->threshold){
+		int i;
+		for (i = 0; i < tree->size; i++){
+			if (tree->arr[i].value){
+				if (tree->arr[i].value > index)
+					return -1;
+				else
+					return i;
+			}
+		}
+		return -1;
+	}
+	else {
 		if (index < tree->min.value)
 			return -1;
 		else if (index >= tree->max.value && tree->n > 0)
@@ -149,18 +213,6 @@ int32_t veb_findpred(uint32_t index, vebtree * tree){
 		int32_t c = veb_findpred(a + 1, tree->top);
 		return c * (tree->sqrtsize) + (tree->bottom[c]->max.value);
 	}
-	else {
-		int i;
-		for (i = 0; i < tree->size; i++){
-			if (tree->arr[i].value){
-				if (tree->arr[i].value > index)
-					return -1;
-				else
-					return tree->arr[i].value;
-			}
-		}
-		return NULL;
-	}
 }
 /* return 0 if the insert succeded. Any other value 
  * indicated an error
@@ -179,25 +231,9 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 	//check if the new insert falls outside the current min/max span
 	if (index < tree->min.value) {
 		vebswap(&index, &data, &(tree->min));
-		/*void *tmp_data;
-		uint32_t tmp_idx;
-		tmp_data = tree->min.data;
-		tmp_idx = tree->min.value;
-		tree->min.data = data;
-		tree->min.value = index;
-		data = tmp_data;
-		index = tmp_idx;*/
 	}
 	else if (index > tree->max.value) {
 		vebswap(&index, &data, &(tree->max));
-		/*void *tmp_data;
-		uint32_t tmp_idx;
-		tmp_data = tree->max.data;
-		tmp_idx = tree->max.value;
-		tree->max.data = data;
-		tree->max.value = index;
-		data = tmp_data;
-		index = tmp_idx;*/
 	}
 	uint32_t * a = malloc(sizeof(uint32_t));
 	uint32_t * b = malloc(sizeof(uint32_t));
@@ -233,6 +269,8 @@ uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
 	if (tree->n == 0){
 		tree->max.value = index;
 		tree->max.data = data;
+		tree->min.value = index;
+		tree->min.data = data;
 		tree->n++;
 		return 0;
 	}

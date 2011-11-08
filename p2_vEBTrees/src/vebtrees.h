@@ -23,7 +23,7 @@ typedef struct vebtree {
 /* this are the basic operations, other operations are combinations
  * hereof.
  */
-uint32_t veb_delete(uint32_t index, vebtree * tree);
+void veb_delete(uint32_t index, vebtree * tree);
 uint32_t veb_insert(uint32_t index, void * data, vebtree * tree);
 int32_t veb_findsucc(uint32_t index, vebtree * tree);
 int32_t veb_findpred(uint32_t index, vebtree * tree);
