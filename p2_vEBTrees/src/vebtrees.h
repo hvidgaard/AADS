@@ -6,8 +6,8 @@ typedef struct vebelement {
 } vebelement;
 
 typedef struct vebtree {
-	struct vebelement max;
-	struct vebelement min;
+	struct vebelement *max;
+	struct vebelement *min;
 	struct vebtree *top;
 	struct vebtree **bottom;
 	uint32_t w;
