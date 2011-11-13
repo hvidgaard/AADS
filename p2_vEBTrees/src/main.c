@@ -2,81 +2,74 @@
 #include <vebtrees.h>
 #include <math.h>
 
-void printinfo(vebtree *tree);
+void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
-void print_n(vebtree *tree);
+void indent(int in);
 
 int main(int argc, char **argv)
 {
 	printf("\nmaking vEB tree\n");
 	vebtree *tree = veb_initialize(6, 4);
-	print_n(tree);
+	printinfo(0, tree);
+	printf("inserting 10\n");
 	veb_insert(10, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
+	printf("inserting 5\n");
 	veb_insert(5, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
+	printf("inserting 18\n");
 	veb_insert(18, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
+	printf("inserting 15\n");
 	veb_insert(15, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 10, 15, 18");
 	printtest(tree);
+	printf("deleting 5\n");
 	veb_delete(5, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n10, 15, 18");
 	printtest(tree);
+	printf("inserting 5\n");
 	veb_insert(5, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 10, 15, 18");
 	printtest(tree);
+	printf("deleting 10\n");
 	veb_delete(10, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 15, 18");
 	printtest(tree);
+	printf("inserting 10\n");
 	veb_insert(10, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 10, 15, 18");
 	printtest(tree);
+	printf("deleting 15\n");
 	veb_delete(15, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 10, 18");
 	printtest(tree);
+	printf("inserting 15\n");
 	veb_insert(15, NULL, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 10, 15, 18");
 	printtest(tree);
+	printf("deleting 18\n");
 	veb_delete(18, tree);
-	print_n(tree);
+	printinfo(0, tree);
 	printf("\n5, 10, 15");
 	printtest(tree);
+	printf("inserting 18\n");
 	veb_insert(18, NULL, tree);
 	printf("\n5, 10, 15, 18");
 	printtest(tree);
+	printf("deleting 5\n");
 	veb_delete(5, tree);
+	printf("deleting 18\n");
 	veb_delete(18, tree);
 	printf("\n10, 15");
 	printtest(tree);
-}
-
-void print_n(vebtree *tree){
-	if (tree->size < tree->threshold){
-		printf("leaf! n=%d \n", tree->n);
-		fflush(stdout);	
-	}
-	else {
-		printf("recursive! n=%d \n", tree->n);
-		printf("TOP:\n");
-		fflush(stdout);
-		print_n(tree->top);
-		printf("BOTTOM:\n");
-		fflush(stdout);
-		int i;
-		for (i = 0; i < tree->sqrtsize; i++)
-			printf(" b%d:", i);
-			fflush(stdout);
-			print_n((tree->bottom)[i]);
-	}
-	fflush(stdout);
 }
 
 void printtest(vebtree *tree){
@@ -101,28 +94,36 @@ void printtest(vebtree *tree){
 	fflush(stdout); 
 }
 
-void printinfo(vebtree *tree){
-	if (tree->n == 0)
-		return;
-	printf("Size %d, using %d bits. Currently containing %d elements\n", tree->size, tree->w, tree->n);
+void printinfo(int in, vebtree *tree){
+	//if (tree->n == 0)
+	//	return;
+	/*indent(in); printf("Size %d, using %d bits. Currently containing %d elements\n", tree->size, tree->w, tree->n);
 	if (tree->size > tree->threshold){
-		printf("Recursive with:\n");
-		printf("min: %d\nmax: %d\n", tree->min.value, tree->max.value);
-		printf("with TOP structure: ");
-		printinfo(tree->top);
-		printf("with BOTTOM structures: ");
+		indent(in);printf("Recursive with:\n");
+		indent(in);printf("min: %d\n", tree->min.value);
+		indent(in);printf("max: %d\n", tree->max.value);
+		indent(in);printf("with TOP structure: \n");
+		printinfo(in+4, tree->top);
+		indent(in);printf("with BOTTOM structures: \n");
 		int i;
 		for (i = 0; i < pow(2, (tree->w)/2); i++){
-			printinfo((tree->bottom)[i]);
+			printinfo(in+4, (tree->bottom)[i]);
 		}
 	}
 	else {
 		int i;
-		printf("Leaf with elements: ");
+		indent(in);printf("Leaf with elements: \n");
+		indent(in);
 		for (i = 0; i < tree->size; i++){
 			printf("index %d: %d ;", i, (tree->arr)[i].value);
 		}
-		printf("\n\n");
+		indent(in);printf("\n\n");
 	}
-	fflush(stdout); 
+	fflush(stdout); */
+}
+void indent(int in){
+	int i;
+	for (i = 0; i < in; i++){
+		printf(" ");
+	}
 }

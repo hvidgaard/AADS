@@ -27,7 +27,7 @@ void vebswap(uint32_t *index, void **data, vebelement * e);
 
 vebtree * veb_initialize(int w, int threshold){
 	//anything bigger will make the structure larger than 2 GiB
-	if (w > 28)
+	if (w > 24)
 		return NULL;
 	if (pow(2, w) > threshold){
 		//printf("recursive structure: ");
@@ -53,7 +53,7 @@ vebtree * veb_init_tree(int w, int threshold){
 	tree->threshold = threshold;
 	//w/2 is rounded down, which is what we want if w is odd.
 	int halfofw = w/2;
-	tree->sqrtsize = pow(2, w/2);
+	tree->sqrtsize = pow(2, halfofw);
 	/*printf("\n\
                 w := %d\n\
         threshold := %d\n\
@@ -74,12 +74,12 @@ vebtree * veb_init_tree(int w, int threshold){
 }
 vebtree * veb_init_leaf(int w, int threshold){
 	vebtree * tree = malloc(sizeof(struct vebtree));
-	//tree->max = calloc(1, sizeof(struct vebelement));
-	//tree->max->value = 0;
-	//tree->max->data = NULL;
-	//tree->min = calloc(1, sizeof(struct vebelement));
-	//tree->min->value = 0;
-	//tree->min->data = NULL;
+	/*tree->max = calloc(1, sizeof(struct vebelement));
+	tree->max->value = 0;
+	tree->max->data = NULL;
+	tree->min = calloc(1, sizeof(struct vebelement));
+	tree->min->value = 0;
+	tree->min->data = NULL;*/
 	tree->w = w;
 	tree->size = pow(2,w);
 	tree->n = 0;
@@ -95,7 +95,7 @@ vebtree * veb_init_leaf(int w, int threshold){
 }
 void veb_delete(uint32_t index, vebtree * tree){	
 	printf("\ndeleting %d in tree size %d\n", index, tree->size);
-	if (tree->size < tree->threshold){
+	if (tree->size <= tree->threshold){
 		if ((tree->arr)[index].value && tree->n > 0) {
 			tree->n--;
 			(tree->arr)[index].value = 0;
@@ -124,11 +124,14 @@ void veb_delete(uint32_t index, vebtree * tree){
 				break;
 			default:
 				if (tree->min.value == index){
-					tree->min.value = tree->top->min.value * tree->sqrtsize + (tree->bottom)[tree->top->min.value]->min.value;
+					index = tree->min.value = tree->top->min.value * tree->sqrtsize + (tree->bottom)[tree->top->min.value]->min.value;
 					tree->min.data = (tree->bottom)[tree->top->min.value]->min.data;
+					
+					/*a = tree->top->min.value;
+					b = (tree->bottom)[tree->top->min.value]->min.value;*/
 				}
 				else if (tree->max.value == index){
-					tree->max.value = tree->top->max.value * tree->sqrtsize + (tree->bottom)[tree->top->max.value]->max.value;
+					index = tree->max.value = tree->top->max.value * tree->sqrtsize + (tree->bottom)[tree->top->max.value]->max.value;
 					tree->max.data = (tree->bottom)[tree->top->max.value]->max.data;
 				}
 				uint32_t * t_a = malloc(sizeof(uint32_t));
@@ -142,7 +145,7 @@ void veb_delete(uint32_t index, vebtree * tree){
 				if ((tree->bottom)[a]->size == 0)
 					veb_delete(a, tree->top);
 				tree->n--;
-				return;
+				break;
 		}
 		return;
 	}
@@ -238,7 +241,7 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 	uint32_t * a = malloc(sizeof(uint32_t));
 	uint32_t * b = malloc(sizeof(uint32_t));
 	vebfactor(tree->w, index, a, b);
-	//printf("w: %d - i: %d - a: %d - b: %d\n", tree->w, index, *a, *b);
+	if (index == 10) printf("w: %d - i: %d - a: %d - b: %d\n", tree->w, index, *a, *b);
 	int result;
 	if (tree->bottom[*a]->n == 0) {
 		result = veb_insert(*a, NULL, tree->top);
