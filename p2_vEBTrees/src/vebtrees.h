@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 typedef struct vebelement {
-	uint32_t value;
+	int32_t value;
 	void *data;
 } vebelement;
 

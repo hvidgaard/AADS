@@ -18,8 +18,8 @@
 /* declerations of internal functions not intented for
  * external use.
  */
-uint32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree);
-uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree);
+int32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree);
+int32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree);
 vebtree * veb_init_tree(int size, int threshold);
 vebtree * veb_init_leaf(int size, int threshold);
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b);
@@ -28,7 +28,7 @@ void veb_delete_tree(uint32_t, vebtree *);
 
 vebtree * veb_initialize(int w, int threshold){
 	//anything bigger will make the structure larger than 2 GiB
-	if (w > 24)
+	if (w > 26)
 		return NULL;
 	if (pow(2, w) > threshold){
 		//printf("recursive structure: ");
@@ -69,11 +69,12 @@ vebtree * veb_init_tree(int w, int threshold){
 	return tree;
 }
 vebtree * veb_init_leaf(int w, int threshold){
-	//no need to initialize the top/bottom/min/max
+	//no need to initialize the top/bottom
 	//since it's a leaf and will never be accessed.
 
 	vebtree * tree = malloc(sizeof(struct vebtree));
-	
+//	tree->min = malloc(sizeof(struct vebelement));
+//	tree->max = malloc(sizeof(struct vebelement));
 	tree->w = w;
 	tree->size = pow(2,w);
 	tree->n = 0;
@@ -84,9 +85,11 @@ vebtree * veb_init_leaf(int w, int threshold){
 }
 void veb_delete(uint32_t index, vebtree * tree){	
 	//delete in leaf, not large enough to warrant it's own function.
-	if (tree->size <= tree->threshold && tree->n > 0 && (tree->arr)[index].value){
-		tree->n--;
-		(tree->arr)[index].value = 0;
+	if (tree->size <= tree->threshold){
+		if (tree->n > 0 && (tree->arr)[index].value) {
+			tree->n--;
+			(tree->arr)[index].value = 0;
+		}
 	}
 	else
 		veb_delete_tree(index, tree);
@@ -208,7 +211,7 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 	if (index > tree->size)
 		return 1;
 	//the tree is at the threshold, thus it's just a simple array
-	if (tree->size < tree->threshold)
+	if (tree->size <= tree->threshold)
 		return veb_insert_leaf(index, data, tree);
 	//the insert is a trivial case with no recursion
 	else if (tree->n < 2)
@@ -242,15 +245,25 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree){
 	tree->n++;
 	return 0;
 }
-uint32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree){
+int32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree){
 	if ((tree->arr)[index].value)
-		return 3;
-	(tree->arr)[index].value = 1;
+		return 1;
+	(tree->arr)[index].value = index;
 	(tree->arr)[index].data = data;
+	if (tree->n){
+		if (index > tree->max->value){
+			tree->max = &(tree->arr)[index];
+		}
+		else if (index < tree->min->value){
+			tree->min = &(tree->arr)[index];
+		}
+	}
+	else
+		tree->min = tree->max = &(tree->arr)[index];
 	tree->n++;
 	return 0;
 }
-uint32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
+int32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
 	if (tree->n == 0){
 		tree->max->value = tree->min->value = index;
 		tree->max->data = tree->min->data = data;

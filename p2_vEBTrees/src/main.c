@@ -9,8 +9,8 @@ void indent(int in);
 int main(int argc, char **argv)
 {
 	printf("\nmaking vEB tree\n");
-	vebtree *tree = veb_initialize(6, 4);
-	printinfo(0, tree);
+	vebtree *tree = veb_initialize(26, 16);
+	/*printinfo(0, tree);
 	printf("inserting 10\n");
 	veb_insert(10, NULL, tree);
 	printinfo(0, tree);
@@ -69,7 +69,12 @@ int main(int argc, char **argv)
 	printf("deleting 18\n");
 	veb_delete(18, tree);
 	printf("\n10, 15");
-	printtest(tree);
+	printtest(tree);*/
+	int i;
+	for (i = 0; i < tree->size; i++)
+		veb_insert(i, NULL, tree);
+	for (i = 0; i < tree->size; i++)
+		veb_delete(i,tree);
 }
 
 void printtest(vebtree *tree){
