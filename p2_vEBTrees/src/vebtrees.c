@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <unistd.h>
 
 /*size is number of bits to use for the elements. Note
  *that the size of the entire datastructure will be 
@@ -26,19 +27,29 @@ void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b);
 void vebswap(uint32_t *, void **, vebelement *);
 void veb_delete_tree(uint32_t, vebtree *);
 
-vebtree * veb_initialize(int w, int threshold){
+int elementsInAPage = 0;
+
+vebtree * veb_initialize(int w){
 	//anything bigger will make the structure larger than 2 GiB
+	
+	//the threashold is designed such than a leaf tree fits entirely in a single
+	//page.
+	if (!elementsInAPage){
+		elementsInAPage = (sysconf(_SC_PAGESIZE) - sizeof(struct vebtree)) / sizeof(struct vebelement);
+		//elementsInAPage = 28;
+		/*printf("size of tree is %d\n", sizeof(struct vebtree));
+		printf("size of element is %d\n", sizeof(struct vebelement));
+		printf("size of element pointer is %d\n", sizeof(struct vebelement *));
+		printf("size of tree pointer is %d\n", sizeof(struct vebtree *));
+		printf("size of element pointer pointer is %d\n", sizeof(struct vebelement **));
+		printf("threshold is %d\n", elementsInAPage);*/
+	}
 	if (w > 26)
 		return NULL;
-	if (pow(2, w) > threshold){
-		//printf("recursive structure: ");
-		return veb_init_tree(w, threshold);
-	}
-	else {
-		//printf("leaf structure: ");
-		return veb_init_leaf(w, threshold);
-		
-	}
+	if (pow(2, w) > elementsInAPage)
+		return veb_init_tree(w, elementsInAPage);
+	else
+		return veb_init_leaf(w, elementsInAPage);
 }
 vebtree * veb_init_tree(int w, int threshold){
 	vebtree * tree = malloc(sizeof(struct vebtree));
@@ -59,19 +70,18 @@ vebtree * veb_init_tree(int w, int threshold){
 	int halfofw = w/2;
 	tree->sqrtsize = pow(2, halfofw);
 	
-	tree->top = veb_initialize(halfofw, threshold);
+	tree->top = veb_initialize(halfofw);
 	
 	tree->bottom = malloc(tree->sqrtsize * sizeof(struct vebtree *));
 	int i;
 	for (i = 0; i < tree->sqrtsize; i++)
-		tree->bottom[i] = veb_initialize(w-halfofw, threshold);
+		tree->bottom[i] = veb_initialize(w-halfofw);
 	
 	return tree;
 }
 vebtree * veb_init_leaf(int w, int threshold){
 	//no need to initialize the top/bottom
 	//since it's a leaf and will never be accessed.
-
 	vebtree * tree = malloc(sizeof(struct vebtree));
 //	tree->min = malloc(sizeof(struct vebelement));
 //	tree->max = malloc(sizeof(struct vebelement));
@@ -199,7 +209,9 @@ int32_t veb_findpred(uint32_t index, vebtree * tree){
 			return a * (tree->sqrtsize) + veb_findpred(b, (tree->bottom)[a]);
 		else if (tree->top->min->value >= a)
 			return tree->min->value;
-		int32_t c = veb_findpred(a + 1, tree->top);
+		int32_t c = veb_findpred(a, tree->top);
+		if (c == -1)
+			return tree->min->value;
 		return c * (tree->sqrtsize) + (tree->bottom[c]->max->value);
 	}
 }

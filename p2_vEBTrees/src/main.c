@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <vebtrees.h>
+#include "vebtrees.h"
 #include <math.h>
+#include <stdlib.h>
 
 void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
@@ -9,7 +10,7 @@ void indent(int in);
 int main(int argc, char **argv)
 {
 	printf("\nmaking vEB tree\n");
-	vebtree *tree = veb_initialize(26, 16);
+	vebtree *tree = veb_initialize(24);
 	/*printinfo(0, tree);
 	printf("inserting 10\n");
 	veb_insert(10, NULL, tree);
@@ -70,11 +71,17 @@ int main(int argc, char **argv)
 	veb_delete(18, tree);
 	printf("\n10, 15");
 	printtest(tree);*/
+	srand(100);
+
 	int i;
+	for (i = 0; i < (tree->size)/4; i++)
+		veb_insert(rand() % tree->size, NULL, tree);
 	for (i = 0; i < tree->size; i++)
-		veb_insert(i, NULL, tree);
+		veb_findsucc(rand() % tree->size, tree);
 	for (i = 0; i < tree->size; i++)
-		veb_delete(i,tree);
+		veb_findpred(rand() % tree->size, tree);
+	//for (i = 0; i < tree->size; i++)
+	//	veb_delete(i,tree);
 }
 
 void printtest(vebtree *tree){

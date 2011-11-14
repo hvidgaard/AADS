@@ -28,6 +28,6 @@ uint32_t veb_insert(uint32_t index, void * data, vebtree * tree);
 int32_t veb_findsucc(uint32_t index, vebtree * tree);
 int32_t veb_findpred(uint32_t index, vebtree * tree);
 /********************************************************************/
-vebtree * veb_initialize(int size, int threshold);
-vebelement * veb_deletemin(vebtree * tree);
+vebtree * veb_initialize(int);
+vebelement * veb_deletemin(vebtree *);
 /********************************************************************/
