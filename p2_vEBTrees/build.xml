@@ -36,7 +36,7 @@
 				<pathelement path="${src}"/>
 				<pathelement path="/usr/include"/>
 			</includepath>
-			<fileset dir="${src}" includes="main.c" />
+			<fileset dir="${src}" includes="main.c, vebtrees.c" />
 		</cc>
 		<cc outfile="${bin}/benchmark" outtype="executable"
 			subsystem="console" objdir="${obj}" debug="${debug}">
@@ -49,7 +49,7 @@
 			<libset libs="m" if="isUnix" />
 			<libset libs="stdc++" />
 			<compilerarg value="-Wall" />
-			<fileset dir="${src}" includes="benchmark.cpp" />
+			<fileset dir="${src}" includes="benchmark.cpp, graph_generators.c, dijkstra.c, vebtrees.c, BinaryHeap.c, FibonacciHeap.c" />
 		</cc>
 	</target>
 	
