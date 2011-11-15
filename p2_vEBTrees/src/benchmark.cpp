@@ -23,8 +23,7 @@ int main(int argc, char **argv) {
 	}
 
 	Options opt;
-	opt.min = 0;
-	opt.max = 0xffffffff;
+	opt.max = 4294967295;
 	opt.log_graph = argv[1];
 	opt.log_algo = argv[2];
 	opt.seed = (uint) strtoul(argv[3], NULL, 10);
@@ -62,7 +61,6 @@ int main(int argc, char **argv) {
 }
 
 void serialBenchmarks (Options opt) {
-	struct timeval start, end;
 
 	FILE *logfilehandle = fopen(opt.logfile, "a+");
 	if(!logfilehandle) {
@@ -70,14 +68,16 @@ void serialBenchmarks (Options opt) {
 		exit(2);
 	}
 	uint size;
-	uint i;
+	uint remaining;
 	uint total = ((opt.end-opt.start)/opt.step+1)*opt.repeat;
 	uint progress = 0;
+	uint previous_progress = 0;
 	
 	uint* weights;
 	for (size = opt.start ; size <= opt.end ; size += opt.step) {
-		for (i = opt.repeat ; i > 0 ; i--) {
-			weights = opt.generate_graph(size, opt.min, opt.max, opt.seed++);
+		opt.seed++;
+		for (remaining = opt.repeat ; remaining > 0 ; remaining--) {
+			weights = opt.generate_graph(size, opt.max, opt.seed);
 			
 			uint** edges = (uint**) malloc((size+1) * sizeof(uint*));
 			uint *t_edges = (uint*) malloc(size * sizeof(uint));
@@ -95,20 +95,30 @@ void serialBenchmarks (Options opt) {
 			}
 			delete[] t_edges;
 			
-			gettimeofday(&start, NULL);
+			struct timeval start_time, end_time;
+			clock_t start_clock, end_clock;
+			gettimeofday(&start_time, NULL);
+			start_clock = clock();
 			opt.dijkstra(size, opt.source, weights, edges);
-			gettimeofday(&end, NULL);
+			end_clock = clock();
+			gettimeofday(&end_time, NULL);
+			double cyc_running_time = (double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC;
+			double abs_running_time = elapsedTime(start_time, end_time);
 			
 			delete[] edges;
 			delete[] weights;
 			
-			fprintf(logfilehandle, "\n%s\t%s\t%d\t%10.10f", opt.log_algo, opt.log_graph, size, elapsedTime(start, end));
-			progress = ((size-opt.start)/opt.step+1)*opt.repeat-i;
-			if((progress*100/total) % 10 == 0 && progress*100/total == (float)progress*100/total)
-				cout << progress*100/total << "%" << endl;
+			fprintf(logfilehandle, "\n%s\t%s\t%d\t%10.10f\t%10.10f",
+				opt.log_algo, opt.log_graph, size,
+				cyc_running_time, abs_running_time);
+			
+			progress = (((size-opt.start)/opt.step+1)*opt.repeat-remaining)*100/total;
+			if(progress > previous_progress)
+				cout << progress << "%" << endl;
+			previous_progress = progress;
 		}
 	}
-	if(progress*100/total % 10 != 0)
+	if(previous_progress != 100)
 		cout << "100%" << endl;
 	fclose(logfilehandle);
 }

@@ -9,7 +9,7 @@
 	<property name="benchmark" value="${basedir}/benchmark" />
 	<property name="report" value="${basedir}/report" />
 	
-	<include file="${benchmark}/benchmark.xml"/>
+	<include file="${benchmark}/benchmark.xml" />
 	
 	<property name="debug" value="true" />
 	
@@ -65,12 +65,26 @@
 		</delete>
 	</target>
 	
-	<target name="benchmark" description="Runs benchmarks on various algorithms" depends="benchmark.alone">
-		<benchmark-all       start="0"       end="50"       step="2" tests="100" />
- 		<benchmark-all      start="50"      end="500"      step="10" tests="100" />
-		<benchmark-all     start="500"     end="5000"     step="100" tests="100" />
-		<benchmark-all    start="4000"    end="50000"    step="1000" tests="100" />
+	<target name="small-benchmark" description="Runs benchmarks on various algorithms">
+		<small-benchmark graph="random" algorithm="fib" />
 	</target>
+	<macrodef name="small-benchmark">
+		<attribute name="graph"/>
+		<attribute name="algorithm"/>
+		<attribute name="seed" default="0"/>
+		<sequential>
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="0" end="48" step="2" tests="10" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="50" end="1077" step="13" tests="10" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="1090" end="19553" step="37" tests="10" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="19590" end="240697" step="443" tests="10" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="241090" end="1237093" step="997" tests="10" />
+		</sequential>
+	</macrodef>
 	
 	<target name="dist-bm" description="Runs the benchmark target on many computers at once">
 		<distribute-ssh-command command="ant -buildfile ${ant.file} benchmark" />

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="benchmark" basedir=".">
 	
-	<property file="build.properties"/>
-	<property name="benchmark" value="${basedir}" />
+	<property name="benchmark" value="${basedir}/benchmark" />
+	<property file="${benchmark}/build.properties"/>
 	<property name="logs" value="${benchmark}/logs" />
 	<property name="graphs" value="${benchmark}/graphs" />
 	
@@ -53,6 +53,7 @@
 	
 	<macrodef name="benchmark">
 		<attribute name="executable"/>
+		<attribute name="graph"/>
 		<attribute name="algorithm"/>
 		<attribute name="seed" default="0"/>
 		<attribute name="start" default="0"/>
@@ -72,6 +73,7 @@
 			<condition property="logfile" value="${logs}/${hostname}.log" else="@{logfile}">
 				<equals arg1="@{logfile}" arg2="" />
 			</condition>
+			<echo>graph @{graph}</echo>
 			<echo>algorithm @{algorithm}</echo>
 			<echo>seed ${seed}</echo>
 			<echo>start size @{start}</echo>
@@ -80,6 +82,7 @@
 			<echo>logging to ${logfile}</echo>
 			<echo></echo>
 			<exec executable="@{executable}" dir="${basedir}">
+				<arg value="@{graph}" />
 				<arg value="@{algorithm}" />
 				<arg value="${seed}" />
 				<arg value="@{start}" />

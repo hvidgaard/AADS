@@ -1,0 +1,12 @@
+ssh.username=
+ssh.passphrase=
+ssh.host.1=a01661
+ssh.host.2=a01662 ; unreachable
+ssh.host.3=a01663
+ssh.host.4=a01664
+ssh.host.5=a01665
+ssh.host.6=a01666 ; unreachable
+ssh.host.7=a01667
+ssh.host.8=a01668
+ssh.host.9=a01669
+ssh.host.10=a01670

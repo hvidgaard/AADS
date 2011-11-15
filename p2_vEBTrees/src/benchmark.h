@@ -3,7 +3,6 @@
 
 struct Options {
     uint source;
-    uint min;
     uint max;
     uint seed;
     uint start;
@@ -11,7 +10,7 @@ struct Options {
     uint step;
     uint repeat;
     char *logfile;
-    uint* (*generate_graph)(uint size, uint min, uint max, uint seed);
+    uint* (*generate_graph)(uint size, uint max, uint seed);
     uint (*dijkstra)(uint num_vertices, uint source, uint * weights, uint ** edges);
     char * log_algo;
     char * log_graph;
