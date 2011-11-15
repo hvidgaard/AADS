@@ -36,6 +36,7 @@
 				<pathelement path="${src}"/>
 				<pathelement path="/usr/include"/>
 			</includepath>
+			<libset libs="m" if="isUnix" />
 			<fileset dir="${src}" includes="main.c, vebtrees.c" />
 		</cc>
 		<cc outfile="${bin}/benchmark" outtype="executable"
