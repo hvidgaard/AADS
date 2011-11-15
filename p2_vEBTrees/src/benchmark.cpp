@@ -8,35 +8,53 @@
 #include <sys/types.h>
 
 #include "benchmark.h"
+extern "C" {
+	#include "graph_generators.h"
+	#include "dijkstra.h"
+}
 
 using namespace std;
 
 int main(int argc, char **argv) {
-	if(argc < 7) {
+	if(argc < 8) {
 		cout << "Usage" << endl
-			<< "  benchmark algo seed start end step tests logfile" << endl;
+			<< "  benchmark graph algo seed start end step tests logfile" << endl;
 		exit(1);
 	}
 
 	Options opt;
 	opt.min = 0;
 	opt.max = 0xffffffff;
-	opt.log_name = argv[1];
-	opt.seed = (uint) strtoul(argv[2], NULL, 10);
-	opt.start = (uint) strtoul(argv[3], NULL, 10);
-	opt.end = (uint) strtoul(argv[4], NULL, 10);
-	opt.step = (uint) strtoul(argv[5], NULL, 10);
-	opt.repeat = (uint) strtoul(argv[6], NULL, 10);
-	opt.logfile = argv[7];
-
-	if(strcmp(opt.log_name, "veb") == 0) {
-		// opt.algorithm = test_vanEmdeBoasTree;
-	} else if(strcmp(opt.log_name, "bin") == 0) {
-		// opt.algorithm = test_BinaryHeap;
-	} else if(strcmp(opt.log_name, "fib") == 0) {
-		// opt.algorithm = test_FibonacciHeap;
+	opt.log_graph = argv[1];
+	opt.log_algo = argv[2];
+	opt.seed = (uint) strtoul(argv[3], NULL, 10);
+	opt.start = (uint) strtoul(argv[4], NULL, 10);
+	opt.end = (uint) strtoul(argv[5], NULL, 10);
+	opt.step = (uint) strtoul(argv[6], NULL, 10);
+	opt.repeat = (uint) strtoul(argv[7], NULL, 10);
+	opt.logfile = argv[8];
+	
+	if(strcmp(opt.log_graph, "random") == 0) {
+		opt.generate_graph = generate_random_graph;
+	} else if(strcmp(opt.log_graph, "dkmax") == 0) {
+		opt.generate_graph = generate_decrease_key_max_graph;
+	} else if(strcmp(opt.log_graph, "dkmax2") == 0) {
+		opt.generate_graph = generate_decrease_key_max_graph_2;
 	} else {
-		printf("Unknown algorithm '%s'\n", opt.log_name);
+		printf("Unknown graph generator '%s'\n", opt.log_graph);
+		exit(2);
+	}
+	
+	if(strcmp(opt.log_algo, "veb") == 0) {
+		// opt.dijkstra = dijkstra_veb;
+	} else if(strcmp(opt.log_algo, "rb") == 0) {
+		// opt.dijkstra = dijkstra_rb;
+	} else if(strcmp(opt.log_algo, "bin") == 0) {
+		opt.dijkstra = dijkstra_bin;
+	} else if(strcmp(opt.log_algo, "fib") == 0) {
+		opt.dijkstra = dijkstra_fib;
+	} else {
+		printf("Unknown priority queue '%s'\n", opt.log_algo);
 		exit(2);
 	}
 	serialBenchmarks(opt);
@@ -55,17 +73,36 @@ void serialBenchmarks (Options opt) {
 	uint i;
 	uint total = ((opt.end-opt.start)/opt.step+1)*opt.repeat;
 	uint progress = 0;
-    
-    uint *tree;
+	
+	uint* weights;
 	for (size = opt.start ; size <= opt.end ; size += opt.step) {
 		for (i = opt.repeat ; i > 0 ; i--) {
-			// tree = generate_tree(size, opt.min, opt.max, opt.seed++);
+			weights = opt.generate_graph(size, opt.min, opt.max, opt.seed++);
+			
+			uint** edges = (uint**) malloc((size+1) * sizeof(uint*));
+			uint *t_edges = (uint*) malloc(size * sizeof(uint));
+			uint i, j;
+			for (i = 0; i < size; i++) {
+				uint count = 0;
+				for (j = 0; j < size; j++)
+					if (weights[(i * size) + j])
+						t_edges[++count] = j;
+				
+				edges[i] = (uint*) malloc((count+1) * sizeof(uint));
+				edges[i][0] = count;
+				for (j = 1; j <= count; j++)
+					edges[i][j] = t_edges[j];
+			}
+			delete[] t_edges;
+			
 			gettimeofday(&start, NULL);
-			opt.algorithm(tree, size);
+			opt.dijkstra(size, opt.source, weights, edges);
 			gettimeofday(&end, NULL);
-			if(!(size == opt.start && i == opt.repeat))
-				fprintf(logfilehandle, "\n%s\t%d\t%10.10f", opt.log_name, size, elapsedTime(start, end));
-			delete[] tree;
+			
+			delete[] edges;
+			delete[] weights;
+			
+			fprintf(logfilehandle, "\n%s\t%s\t%d\t%10.10f", opt.log_algo, opt.log_graph, size, elapsedTime(start, end));
 			progress = ((size-opt.start)/opt.step+1)*opt.repeat-i;
 			if((progress*100/total) % 10 == 0 && progress*100/total == (float)progress*100/total)
 				cout << progress*100/total << "%" << endl;

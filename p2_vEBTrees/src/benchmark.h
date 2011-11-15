@@ -1,7 +1,8 @@
-#ifndef _BENCHMARK_H_
-#define _BENCHMARK_H_
+#ifndef BENCHMARK_H
+#define BENCHMARK_H
 
 struct Options {
+    uint source;
     uint min;
     uint max;
     uint seed;
@@ -10,12 +11,14 @@ struct Options {
     uint step;
     uint repeat;
     char *logfile;
-    uint* (*algorithm)(uint *array, uint size);
-    char * log_name;
+    uint* (*generate_graph)(uint size, uint min, uint max, uint seed);
+    uint (*dijkstra)(uint num_vertices, uint source, uint * weights, uint ** edges);
+    char * log_algo;
+    char * log_graph;
 };
 
 void serialBenchmarks(Options opt);
 
 double elapsedTime (struct timeval start, struct timeval stop);
 
-#endif // _BENCHMARK_H_
+#endif
