@@ -40,7 +40,7 @@ bh_element * bh_insert(unsigned int key, void *data, binary_heap *h) {
 		e->data = data;
 		e->index = h->size;
 		h->data[h->size] = e;
-		bh_decrease_key(0, e, h, NULL);
+		bh_decrease_key(0, e, h);
 		//printf("inserted key %d, got index %d\n\n", key, e->index);
 		return e;
 	}
@@ -52,7 +52,7 @@ bh_element * bh_insert(unsigned int key, void *data, binary_heap *h) {
  * property is reestablished
  * Will return the new index in the array, or 0 if something went wrong.
  */
-unsigned int bh_decrease_key(unsigned int delta, bh_element * e, binary_heap *h, unsigned int * bops) {
+unsigned int bh_decrease_key(unsigned int delta, bh_element * e, binary_heap *h) {
 	//printf("decreasing: node: %d, key: %d, delta %d\n", *	(unsigned int*)e->data, e->key, delta);
 	unsigned int parent;
 	//error, cannot decrease key to a negative value.
@@ -63,8 +63,6 @@ unsigned int bh_decrease_key(unsigned int delta, bh_element * e, binary_heap *h,
 		parent = e->index / 2;
 		while (e->index > 1 && h->data[parent]->key > e->key) {
 			bh_exchange(e->index, parent, h);
-			//if (bops)
-				//(*bops)++;
 			//e->index = parent;
 			parent = e->index / 2;
 		}
@@ -119,12 +117,9 @@ bh_element *bh_delete_element(unsigned int e, binary_heap *h){
  * larger - while making sure that it stays within the size of the current heap.
  */
 void bh_min_heapify(unsigned int e, binary_heap *h) {
-	unsigned int parent = e / 2;
 	unsigned int left = e * 2;
 	unsigned int right = (e * 2) + 1;
 	unsigned int smallest;
-	unsigned int t_key;
-	void *t_data;
 
 	if (left <= h->size && h->data[left]->key < h->data[e]->key)
 		smallest = left;
