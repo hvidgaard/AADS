@@ -9,7 +9,7 @@
 	<property name="benchmark" value="${basedir}/benchmark" />
 	<property name="report" value="${basedir}/report" />
 	
-	<include file="${benchmark}/benchmark.xml"/>
+	<import file="${benchmark}/benchmark.xml"/>
 	
 	<property name="debug" value="true" />
 	
