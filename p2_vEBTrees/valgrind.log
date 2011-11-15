@@ -1,0 +1,54 @@
+==5200== Memcheck, a memory error detector
+==5200== Copyright (C) 2002-2009, and GNU GPL'd, by Julian Seward et al.
+==5200== Using Valgrind-3.6.0.SVN-Debian and LibVEX; rerun with -h for copyright info
+==5200== Command: bin/benchmark random fib 1234 1090 2127 37 1 test.log
+==5200== 
+==5200== Mismatched free() / delete / delete []
+==5200==    at 0x4C26A4B: operator delete[](void*) (vg_replace_malloc.c:409)
+==5200==    by 0x402D6E: serialBenchmarks(Options) (benchmark.cpp:96)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200==  Address 0x5960520 is 0 bytes inside a block of size 4,360 alloc'd
+==5200==    at 0x4C274A8: malloc (vg_replace_malloc.c:236)
+==5200==    by 0x402C6D: serialBenchmarks(Options) (benchmark.cpp:83)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200== 
+==5200== Conditional jump or move depends on uninitialised value(s)
+==5200==    at 0x401076: dijkstra_fib (dijkstra.c:56)
+==5200==    by 0x402DA1: serialBenchmarks(Options) (benchmark.cpp:102)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200== 
+==5200== Mismatched free() / delete / delete []
+==5200==    at 0x4C26A4B: operator delete[](void*) (vg_replace_malloc.c:409)
+==5200==    by 0x402E1E: serialBenchmarks(Options) (benchmark.cpp:108)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200==  Address 0x595e2c0 is 0 bytes inside a block of size 8,728 alloc'd
+==5200==    at 0x4C274A8: malloc (vg_replace_malloc.c:236)
+==5200==    by 0x402C5A: serialBenchmarks(Options) (benchmark.cpp:82)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200== 
+==5200== Mismatched free() / delete / delete []
+==5200==    at 0x4C26A4B: operator delete[](void*) (vg_replace_malloc.c:409)
+==5200==    by 0x402E31: serialBenchmarks(Options) (benchmark.cpp:109)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200==  Address 0x5d5e040 is 0 bytes inside a block of size 4,752,400 alloc'd
+==5200==    at 0x4C267CC: calloc (vg_replace_malloc.c:467)
+==5200==    by 0x401254: generate_random_graph (graph_generators.c:8)
+==5200==    by 0x402C42: serialBenchmarks(Options) (benchmark.cpp:80)
+==5200==    by 0x402B81: main (benchmark.cpp:59)
+==5200== 
+==5200== 
+==5200== HEAP SUMMARY:
+==5200==     in use at exit: 49,334,416 bytes in 139,896 blocks
+==5200==   total heap usage: 233,277 allocs, 93,381 frees, 673,120,576 bytes allocated
+==5200== 
+==5200== LEAK SUMMARY:
+==5200==    definitely lost: 47,638,716 bytes in 67,182 blocks
+==5200==    indirectly lost: 1,692,424 bytes in 72,711 blocks
+==5200==      possibly lost: 3,276 bytes in 3 blocks
+==5200==    still reachable: 0 bytes in 0 blocks
+==5200==         suppressed: 0 bytes in 0 blocks
+==5200== Rerun with --leak-check=full to see details of leaked memory
+==5200== 
+==5200== For counts of detected and suppressed errors, rerun with: -v
+==5200== Use --track-origins=yes to see where uninitialised values come from
+==5200== ERROR SUMMARY: 46719 errors from 4 contexts (suppressed: 4 from 4)
