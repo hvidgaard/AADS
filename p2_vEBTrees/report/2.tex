@@ -1,2 +1,23 @@
 \section*{van Emde Boas Trees}
-vores implementation af vEBT
+The van Emde Boas Tree data structure is recursive, this means we have to decide when to end the recursion. A natural starting point is to let the recursion end with leafs consisting of the 2 elements, $min$ and $max$, but since a tree with 3 elements will have a $TOP$ and $BOTTOM$ with a single element, that must also be supported. However, as stated in the note from G. Frandsen, and at the lectures, there is a point where you will gain better performance by reverting to an array and a liniar scan. Our implementation allows for this $threshold$ to be set upon creation of the tree, or by passing a value of $-1$ to let the system set the size such that, the leaf will fit inside a single memory page on the system. Normally, a page are of size 4 KiB, but it's possible to have a page size 2-4 MiB - therefore the default value will not make the leafs larger than 4KiB. Our hope is that this will improve performance, since the system can load the entire page to the CPU cache and scan it.
+
+\subsection*{Supported operations}
+Our implementation support the following operations on a vEB tree:
+
+\begin{itemize}
+\item $uint32\_t \textbf{ veb\_insert}(uint32\_t index, void * data, vebtree * tree)$
+\item $void \textbf{ veb\_delete}(uint32\_t index, vebtree * tree)$
+\item $int32\_t \textbf{ veb\_findsucc}(uint32\_t index, void * data, vebtree *tree)$
+\item $int32\_t \textbf{ veb\_findpred}(uint32\_t index, void * data, vebtree *tree)$
+\end{itemize}
+
+\textbf{delete\_min} and \textbf{find\_min} can both be implementeted with the above operations, by first calling \textbf{veb\_findsucc} on $0$, and if you want to delete it, call \textbf{veb\_delete} on the returned index.
+
+
+\subsection*{Handling the leafs}
+Our leafs are a simple array of elements and as such will not be explained in more detail than this part. The operations to \textbf{insert} and \textbf{delete} are a matter of inserting and deleting in the correct place in the array, this is done in constant time. The operations \textbf{find\_pred} and \textbf{find\_succ} are a matter of scanning the array from a certain posistion to find the first, if any, element that is before or after. Determining $min$ and $max$ is also done by scanning the array. Since the arrays have a fixed length, independent from the size of the universe, \textbf{find\_pred}, \textbf{find\_succ} and determining $min$ and $max$ are constant time.
+
+\subsection*{Handling the recursive nodes}
+The trees are build as described on the slides from the lectures - and \textbf{insert}, \textbf{delete} and \textbf{find\_succ} are all implemented as described on the slides as well. The operation \textbf{find\_pred}, is mostly identical to \textbf{find\_succ}, but obviously look for the first element preceeding the index.
+
+

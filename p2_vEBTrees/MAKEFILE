@@ -1,6 +1,6 @@
 sourcedir				:= src
 output					:= debug
-compileroptions			:= -g -Wall -std=c99
+compileroptions				:= -Wall -std=c99
 includes				:= -I./$(sourcedir)
 outputfile				:= p2_vebt
 

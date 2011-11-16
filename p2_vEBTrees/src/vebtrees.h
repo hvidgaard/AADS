@@ -6,6 +6,7 @@ typedef struct vebelement {
 } vebelement;
 
 typedef struct vebtree {
+	int leaf;
 	struct vebelement *max;
 	struct vebelement *min;
 	struct vebtree *top;
@@ -25,9 +26,10 @@ typedef struct vebtree {
  */
 void veb_delete(uint32_t index, vebtree * tree);
 uint32_t veb_insert(uint32_t index, void * data, vebtree * tree);
-int32_t veb_findsucc(uint32_t index, vebtree * tree);
-int32_t veb_findpred(uint32_t index, vebtree * tree);
+int32_t veb_findsucc(uint32_t index, void * data, vebtree *tree);
+int32_t veb_findpred(uint32_t index, void * data, vebtree *tree);
+void veb_extract_min(vebtree *, void *);
+void veb_delete_min(vebtree *);
 /********************************************************************/
-vebtree * veb_initialize(int);
-vebelement * veb_deletemin(vebtree *);
+vebtree * veb_initialize(int, int);
 /********************************************************************/
