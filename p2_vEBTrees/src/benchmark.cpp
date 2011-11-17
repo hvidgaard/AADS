@@ -67,6 +67,7 @@ void serialBenchmarks (Options opt) {
 		cout << "Could not open the logfile." <<endl;
 		exit(2);
 	}
+	
 	uint size;
 	uint remaining;
 	uint total = ((opt.end-opt.start)/opt.step+1)*opt.repeat;
@@ -102,7 +103,7 @@ void serialBenchmarks (Options opt) {
 			opt.dijkstra(size, opt.source, weights, edges);
 			end_clock = clock();
 			gettimeofday(&end_time, NULL);
-			double cyc_running_time = (double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC;
+			double cyc_running_time = ((double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC) * 1000;
 			double abs_running_time = elapsedTime(start_time, end_time);
 			
 			free(edges);
