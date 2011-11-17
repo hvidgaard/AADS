@@ -93,7 +93,7 @@ void serialBenchmarks (Options opt) {
 				for (j = 1; j <= count; j++)
 					edges[i][j] = t_edges[j];
 			}
-			delete[] t_edges;
+			free(t_edges);
 			
 			struct timeval start_time, end_time;
 			clock_t start_clock, end_clock;
@@ -105,8 +105,8 @@ void serialBenchmarks (Options opt) {
 			double cyc_running_time = (double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC;
 			double abs_running_time = elapsedTime(start_time, end_time);
 			
-			delete[] edges;
-			delete[] weights;
+			free(edges);
+			free(weights);
 			
 			fprintf(logfilehandle, "\n%s\t%s\t%d\t%10.10f\t%10.10f",
 				opt.log_algo, opt.log_graph, size,
