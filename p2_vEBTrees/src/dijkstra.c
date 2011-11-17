@@ -82,3 +82,25 @@ uint dijkstra_fib(uint num_vertices, uint source, uint * weights, uint ** edges)
 	free(distances);
 	return decrease_key_calls;
 }
+uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
+	uint *distances = malloc(num_vertices * sizeof(uint));
+	
+	vebtree * tree = veb_initialize(22, 64);
+	/*
+	FibNode ** vertices = malloc(num_vertices * sizeof(FibNode *));
+	
+	uint distance;
+	uint *data;
+	int i;
+	for (i = 0; i < num_vertices; i++) {
+		if(i == source)
+			distance = 0;
+		else
+			distance = UINT_MAX;
+		distances[i] = distance;
+		data = malloc(sizeof(uint));
+		*data = i;
+		vertices[i] = fib_insert(distance, data, heap);
+	}*/
+	return 0;
+}
