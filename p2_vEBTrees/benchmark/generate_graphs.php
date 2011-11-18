@@ -31,7 +31,7 @@ $graph->addPlot($bin_rand);
 
 $fib_rand = clone $bin_rand;
 $fib_rand->datafile = "< grep \"fib_random\" $file";
-$bin_rand->style = "$stdline '$fibcolor'";
+$fib_rand->style = "$stdline '$fibcolor'";
 $fib_rand->title = 'Fibonacci';
 $graph->addPlot($fib_rand);
 
