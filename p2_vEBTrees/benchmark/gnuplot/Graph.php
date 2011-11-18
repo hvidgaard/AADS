@@ -41,15 +41,15 @@ class Graph {
 			else
 				$script .= "set $name\n";
 		}
-		$script .= "plot \\\n".implode(',\\\n', $this->plots)."\n";
+		$script .= "plot \\\n".implode(",\\\n", $this->plots)."\n";
 		return $script;
 	}
 	
 	public function output($file) {
 		$oldOutput = $this->output;
-		$this->output = $file;
+		$this->output = "'$file'";
 		$handle = popen("gnuplot", "w");
-		fputs($this);
+		fputs($handle, $this);
 		pclose($handle);
 		$this->output = $oldOutput;
 	}

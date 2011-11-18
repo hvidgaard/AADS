@@ -17,7 +17,7 @@
 	
 	<target name="plot" depends="averages" description="Plot the output of the benchmark">
 		<mkdir dir="${graphs}" />
-		<apply executable="./runningtimes.gnuplot" dir="${benchmark}" force="yes">
+		<apply executable="${benchmark}/generate_graphs.php" dir="${benchmark}" force="yes">
 			<srcfile/>
 			<targetfile/>
 			<fileset dir="${logs}" includes="*.averages" />

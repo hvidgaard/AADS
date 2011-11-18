@@ -51,7 +51,7 @@ while($line = fgets($infile)) {
 		$errors++;
 		continue;
 	}
-	$group = $matches[1].' '.$matches[2];
+	$group = $matches[1].'_'.$matches[2];
 	$size = $matches[3];
 	$running_time = floatval($matches[4]);
 	if(!array_key_exists($group, $groups))

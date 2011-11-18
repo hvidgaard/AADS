@@ -67,6 +67,7 @@
 	</target>
 	
 	<target name="small-benchmark" description="Runs benchmarks on various algorithms">
+		<small-benchmark graph="random" algorithm="bin" />
 		<small-benchmark graph="random" algorithm="fib" />
 	</target>
 	<macrodef name="small-benchmark">
@@ -75,9 +76,7 @@
 		<attribute name="seed" default="0"/>
 		<sequential>
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
-			 seed="1234" start="0" end="48" step="2" tests="5" />
-			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
-			 seed="1234" start="50" end="1077" step="13" tests="3" />
+			 seed="1234" start="700" end="1077" step="13" tests="3" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
 			 seed="1234" start="1090" end="2940" step="37" tests="1" />
 		</sequential>
@@ -88,9 +87,7 @@
 		<attribute name="seed" default="0"/>
 		<sequential>
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
-			 seed="1234" start="0" end="48" step="2" tests="10" />
-			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
-			 seed="1234" start="50" end="1077" step="13" tests="10" />
+			 seed="1234" start="700" end="1077" step="13" tests="10" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
 			 seed="1234" start="1090" end="2940" step="37" tests="9" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
