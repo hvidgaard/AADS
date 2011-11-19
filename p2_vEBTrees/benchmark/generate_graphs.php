@@ -11,28 +11,46 @@ Graph::setDefaults(array(
 	'key' => 'bmargin'
 ));
 
-$file = 'logs/concatenated.averages';
+$cyc_file = 'logs/concatenated.cyc.averages';
+$abs_file = 'logs/concatenated.abs.averages';
 
-$bincolor = '#555599';
-$fibcolor = '#995599';
-$vebcolor = '#995599';
-$rbtcolor = '#CCCC55';
+$binary = new stdClass;
+$binary->name = 'Binary';
+$binary->color = '#555599';
+$binary->selector = 'bin';
+
+$fibonacci = new stdClass;
+$fibonacci->name = 'Fibonacci';
+$fibonacci->color = '#995599';
+$fibonacci->selector = 'fib';
+
+$veb = new stdClass;
+$veb->name = 'van Emde Boas';
+$veb->color = '#CCCC55';
+$veb->selector = 'veb';
+
+$redblack = new stdClass;
+$redblack->name = 'Red Black';
+$redblack->color = '#55CCCC';
+$redblack->selector = 'rbt';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$graph = new Graph;
-$graph->title = '"Random graph averages"';
-$bin_rand = new Plot;
-$bin_rand->datafile = "< grep \"bin_random\" $file";
-$bin_rand->datamodifiers = 'using 2:5';
-$bin_rand->style = "$stdline '$bincolor'";
-$bin_rand->title = 'Binary';
-$graph->addPlot($bin_rand);
-
-$fib_rand = clone $bin_rand;
-$fib_rand->datafile = "< grep \"fib_random\" $file";
-$fib_rand->style = "$stdline '$fibcolor'";
-$fib_rand->title = 'Fibonacci';
-$graph->addPlot($fib_rand);
-
-$graph->output('graphs/random_graph_averages.png');
+$columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard deviation', 7 => 'samples');
+$generators = array('random' => 'Random', 'dkmax' => 'Decrease Key maximized', 'dkmax2' => 'Decrease Key maximized v2');
+$algorithms = array($binary, $fibonacci, $veb, $redblack);
+foreach($columns as $column => $columnName) {
+	foreach($generators as $generator => $generatorName)  {
+		$graph = new Graph;
+		$graph->title = "\"$generatorName graph $columnName\"";
+		foreach($algorithms as $algo) {
+			$plot = new Plot;
+			$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $cyc_file";
+			$plot->datamodifiers = "using 2:$column";
+			$plot->style = "$stdline '$algo->color'";
+			$plot->title = $algo->name;
+			$graph->addPlot($plot);
+		}
+		$graph->output("graphs/{$generator}_{$columnName}.png");
+	}
+}

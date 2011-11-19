@@ -111,7 +111,7 @@ void serialBenchmarks (Options opt) {
 			free(edges);
 			free(weights);
 			
-			fprintf(logfilehandle, "\n%s\t%s\t%d\t%10.10f\t%10.10f",
+			fprintf(logfilehandle, "\n%s_%s\t%d\t%10.10f\t%10.10f",
 				opt.log_algo, opt.log_graph, size,
 				cyc_running_time, abs_running_time);
 			
@@ -122,7 +122,7 @@ void serialBenchmarks (Options opt) {
 		}
 	}
 	if(previous_progress != 100)
-		cout << "100%" << endl;
+		cout << opt.log_algo << " " << opt.log_graph << "100%" << endl;
 	fclose(logfilehandle);
 }
 

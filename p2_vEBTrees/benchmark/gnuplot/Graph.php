@@ -41,7 +41,7 @@ class Graph {
 			else
 				$script .= "set $name\n";
 		}
-		$script .= "plot \\\n".implode(",\\\n", $this->plots)."\n";
+		$script .= "plot \\\n".implode(", \\\n", $this->plots)."\n";
 		return $script;
 	}
 	

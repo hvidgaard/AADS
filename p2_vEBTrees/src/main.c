@@ -11,7 +11,7 @@ void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
 void indent(int in);
 
-int main2(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	if (argc != 3){
 		printf("Please use 2 input values - first for the bitsize of the tree, and the second for the threashold. You can use -1 to let the system determine the best one\n");
