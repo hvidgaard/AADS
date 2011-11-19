@@ -11,28 +11,34 @@ Graph::setDefaults(array(
 	'key' => 'bmargin'
 ));
 
-$file = 'logs/concatenated.averages';
+$cyc_file = 'logs/concatenated.cyc.averages';
+$abs_file = 'logs/concatenated.abs.averages';
 
 $bincolor = '#555599';
 $fibcolor = '#995599';
-$vebcolor = '#995599';
-$rbtcolor = '#CCCC55';
+$vebcolor = '#CCCC55';
+$rbtcolor = '#55CCCC';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$graph = new Graph;
-$graph->title = '"Random graph averages"';
+$random = new Graph;
+$random->title = '"Random graph averages"';
 $bin_rand = new Plot;
-$bin_rand->datafile = "< grep \"bin_random\" $file";
+$bin_rand->datafile = "< grep \"bin_random\" $cyc_file";
 $bin_rand->datamodifiers = 'using 2:5';
 $bin_rand->style = "$stdline '$bincolor'";
 $bin_rand->title = 'Binary';
-$graph->addPlot($bin_rand);
+$random->addPlot($bin_rand);
 
 $fib_rand = clone $bin_rand;
-$fib_rand->datafile = "< grep \"fib_random\" $file";
+$fib_rand->datafile = "< grep \"fib_random\" $cyc_file";
 $fib_rand->style = "$stdline '$fibcolor'";
 $fib_rand->title = 'Fibonacci';
-$graph->addPlot($fib_rand);
+$random->addPlot($fib_rand);
 
-$graph->output('graphs/random_graph_averages.png');
+$veb_rand = clone $bin_rand;
+$veb_rand->datafile = "< grep \"veb_random\" $cyc_file";
+$veb_rand->style = "$stdline '$vebcolor'";
+$veb_rand->title = 'van Emde Boas';
+$random->addPlot($veb_rand);
+$random->output('graphs/random_averages.png');

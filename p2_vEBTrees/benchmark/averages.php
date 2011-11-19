@@ -1,20 +1,14 @@
 #!/usr/bin/php
 <?php
-$term = false;
-
-if($argc == 2) {
-	$argv[2] = $argv[1].'.averages';
-	echo "No outfile specified, assuming $argv[2]\n";
-	$term = true;
-	$argc++;
+if($argc != 4) {
+	echo "Usage\n\taverages infile outfile measurementcolumn\n";
+	exit(1);
 }
+
+$measurecolumn = $argv[3];
 $argv[1] = str_replace(getcwd().'/', '', $argv[1]);
 $argv[2] = str_replace(getcwd().'/', '', $argv[2]);
 
-if($argc != 3) {
-	echo "Usage\n\taverages infile outfile\n";
-	exit(1);
-}
 if(!file_exists($argv[1])) {
 	echo "$argv[1] does not exist\n";
 	exit(2);
@@ -45,27 +39,23 @@ while($line = fgets($infile)) {
 	$line = trim($line);
 	if(empty($line))
 		continue;
-	if(!preg_match('/^([a-z_]+)\t([a-z_]+)\t([0-9]+)\t([0-9]+\.[0-9]+)\t([0-9]+\.[0-9]+)$/i', $line, $matches)) {
+	if(!preg_match('/^([a-z_]+)\t([0-9]+)\t([0-9]+\.[0-9]+)\t([0-9]+\.[0-9]+)$/i', $line, $matches)) {
 		echo "Could not parse line $i of file $argv[1]\n";
 		echo "\tThe line is $line\n";
 		$errors++;
 		continue;
 	}
-	$group = $matches[1].'_'.$matches[2];
-	$size = $matches[3];
-	$running_time = floatval($matches[4]);
+	$group = $matches[1];
+	$size = $matches[2];
+	$measurement = floatval($matches[$measurecolumn]);
 	if(!array_key_exists($group, $groups))
 		$groups[$group] = array();
 	if(!array_key_exists($size, $groups[$group]))
 		$groups[$group][$size] = array();
-	$groups[$group][$size][] = $running_time;
-	if($i % 100 == 0 && $term)
-		echo "\rAt line $i of $lines";
+	$groups[$group][$size][] = $measurement;
 	$i++;
 }
 $i--;
-if($term)
-	echo "\rAt line $i of $lines\n";
 fclose($infile);
 
 if($errors)
@@ -73,24 +63,22 @@ if($errors)
 
 fputs($outfile, "Group\tSize\tMinimum\tMaximum\tAverage\tStandard deviation\tSamples\n");
 foreach($groups as $group => $sizes) {
-	if($term)
-		echo "Parsing group $group\n";
-	foreach($sizes as $size => $running_times) {
+	foreach($sizes as $size => $measurements) {
 		$samples = 0;
-		foreach($running_times as $running_time) {
+		foreach($measurements as $measurement) {
 			if($samples == 0) {
-				$sum = $min = $max = $running_time;
+				$sum = $min = $max = $measurement;
 			} else {
-				$min = min($min, $running_time);
-				$max = max($max, $running_time);
-				$sum += $running_time;
+				$min = min($min, $measurement);
+				$max = max($max, $measurement);
+				$sum += $measurement;
 			}
 			$samples++;
 		}
 		$avg = $sum/$samples;
 		$deviation_sum = 0;
-		foreach($running_times as $running_time)
-			$deviation_sum += pow($avg - $running_time, 2);
+		foreach($measurements as $measurement)
+			$deviation_sum += pow($avg - $measurement, 2);
 		$deviation = 0;
 		if($samples > 1)
 			$deviation = sqrt($deviation_sum / ($samples - 1));
