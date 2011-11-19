@@ -25,5 +25,6 @@ veb_pq_node * veb_pq_deletemin(vebtree * tree);
 veb_pq_node * veb_pq_findmin(vebtree * tree);
 int veb_pq_decrease_key(vebtree * tree, veb_pq_node * node, uint32_t delta);
 int veb_pq_delete(vebtree * tree, veb_pq_node * node);
+void veb_pq_destruct(vebtree * tree);
 
 #endif

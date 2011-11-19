@@ -123,9 +123,10 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 		 }
 		 node = veb_pq_deletemin(heap);
 	}
-	
-	free(vertices);
-	free(heap);
 	free(distances);
+	veb_pq_destruct(heap);
+	for (i=0; i < num_vertices; i++)
+		free(vertices[i]);
+	free(vertices);
 	return decrease_key_calls;
 }
