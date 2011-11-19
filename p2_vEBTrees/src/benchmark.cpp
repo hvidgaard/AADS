@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 	}
 	
 	if(strcmp(opt.log_algo, "veb") == 0) {
-		// opt.dijkstra = dijkstra_veb;
+		opt.dijkstra = dijkstra_veb;
 	} else if(strcmp(opt.log_algo, "rb") == 0) {
 		// opt.dijkstra = dijkstra_rb;
 	} else if(strcmp(opt.log_algo, "bin") == 0) {
