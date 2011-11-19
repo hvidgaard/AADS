@@ -14,31 +14,40 @@ Graph::setDefaults(array(
 $cyc_file = 'logs/concatenated.cyc.averages';
 $abs_file = 'logs/concatenated.abs.averages';
 
-$bincolor = '#555599';
-$fibcolor = '#995599';
-$vebcolor = '#CCCC55';
-$rbtcolor = '#55CCCC';
+$binary = new stdClass;
+$binary->name = 'Binary';
+$binary->color = '#555599';
+$binary->selector = 'bin';
+
+$fibonacci = new stdClass;
+$fibonacci->name = 'Fibonacci';
+$fibonacci->color = '#995599';
+$fibonacci->selector = 'fib';
+
+$veb = new stdClass;
+$veb->name = 'van Emde Boas';
+$veb->color = '#CCCC55';
+$veb->selector = 'veb';
+
+$redblack = new stdClass;
+$redblack->name = 'Red Black';
+$redblack->color = '#55CCCC';
+$redblack->selector = 'rbt';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$random = new Graph;
-$random->title = '"Random graph averages"';
-$bin_rand = new Plot;
-$bin_rand->datafile = "< grep \"bin_random\" $cyc_file";
-$bin_rand->datamodifiers = 'using 2:5';
-$bin_rand->style = "$stdline '$bincolor'";
-$bin_rand->title = 'Binary';
-$random->addPlot($bin_rand);
-
-$fib_rand = clone $bin_rand;
-$fib_rand->datafile = "< grep \"fib_random\" $cyc_file";
-$fib_rand->style = "$stdline '$fibcolor'";
-$fib_rand->title = 'Fibonacci';
-$random->addPlot($fib_rand);
-
-$veb_rand = clone $bin_rand;
-$veb_rand->datafile = "< grep \"veb_random\" $cyc_file";
-$veb_rand->style = "$stdline '$vebcolor'";
-$veb_rand->title = 'van Emde Boas';
-$random->addPlot($veb_rand);
-$random->output('graphs/random_averages.png');
+$generators = array('random' => 'Random', 'dkmax' => 'Decrease Key maximized', 'dkmax2' => 'Decrease Key maximized v2');
+$algorithms = array($binary, $fibonacci, $veb, $redblack);
+foreach($generators as $generator => $generatorName)  {
+	$graph = new Graph;
+	$graph->title = "\"$generatorName graph averages\"";
+	foreach($algorithms as $algo) {
+		$plot = new Plot;
+		$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $cyc_file";
+		$plot->datamodifiers = 'using 2:5';
+		$plot->style = "$stdline '$algo->color'";
+		$plot->title = $algo->name;
+		$graph->addPlot($plot);
+	}
+	$graph->output("graphs/{$generator}_averages.png");
+}
