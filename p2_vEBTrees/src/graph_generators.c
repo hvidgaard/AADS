@@ -35,7 +35,7 @@ uint *generate_decrease_key_max_graph_2(uint vertices, uint max_weight, uint see
 	uint i, j, n;
 	n = vertices;
 	uint *weights = calloc((vertices * vertices),sizeof(uint));
-	uint max;
+	uint max = n - 1;
 	for (j = 1; j < vertices; j++) {
 		weights[j] = (vertices*vertices) - j;
 	}

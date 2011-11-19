@@ -375,7 +375,7 @@ void vebswap(uint32_t *index, void **data, vebelement *e){
 	*index = tmp_idx;
 }
 void veb_destruct(vebtree *tree){
-	if (tree->size < threshold){
+	/*if (tree->size < threshold){
 		free(tree->max);
 		free(tree->min);
 		free(tree->arr);
@@ -387,7 +387,7 @@ void veb_destruct(vebtree *tree){
 		int i;
 		for (i = 0; i < tree->sqrtsize; i++)
 			veb_destruct(tree->bottom[i]);
-	}
+	}*/
 	free(tree);
 }
 
