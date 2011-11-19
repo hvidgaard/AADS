@@ -17,7 +17,7 @@
 	
 	<target name="plot" depends="averages" description="Plot the output of the benchmark">
 		<mkdir dir="${graphs}" />
-		<apply executable="./runningtimes.gnuplot" dir="${benchmark}" force="yes">
+		<apply executable="${benchmark}/generate_graphs.php" dir="${benchmark}" force="yes">
 			<srcfile/>
 			<targetfile/>
 			<fileset dir="${logs}" includes="*.averages" />
@@ -26,19 +26,17 @@
 	</target>
 	
 	<target name="averages" description="Concatenate all benchmark logs and compute averages" depends="concatenate">
-		<apply executable="../averages.php" dir="${logs}" relative="true">
+		<apply executable="${benchmark}/averages.php" dir="${benchmark}">
 			<srcfile/>
 			<targetfile/>
 			<fileset dir="${logs}" includes="*.log" />
-			<mapper type="glob" from="*.log" to="*.averages"/>
+			<mapper type="glob" from="*.log" to="${logs}/*.averages"/>
 		</apply>
 	</target>
 	
 	<target name="concatenate">
 		<concat destfile="${logs}/concatenated.log">
-			<fileset dir="${logs}" includes="**/*.log" excludes="concatenated.log">
-				<modified/>
-			</fileset>
+			<fileset dir="${logs}" includes="**/*.log" excludes="concatenated.log" />
 		</concat>
 	</target>
 	
@@ -66,13 +64,17 @@
 			<tstamp>
 				<format property="time" pattern="hhmmssSSS"/>
 			</tstamp>
+			<tstamp>
+				<format property="timestamp" pattern="yyyy-MM-dd hhmmss"/>
+			</tstamp>
 			<condition property="seed" value="${time}" else="@{seed}">
 				<equals arg1="@{seed}" arg2="0" />
 			</condition>
 			<exec executable="hostname" outputproperty="hostname" />
-			<condition property="logfile" value="${logs}/${hostname}.log" else="@{logfile}">
+			<condition property="logfile" value="${logs}/${hostname}/${timestamp}.log" else="@{logfile}">
 				<equals arg1="@{logfile}" arg2="" />
 			</condition>
+			<mkdir dir="${logs}/${hostname}" />
 			<echo>graph @{graph}</echo>
 			<echo>algorithm @{algorithm}</echo>
 			<echo>seed ${seed}</echo>

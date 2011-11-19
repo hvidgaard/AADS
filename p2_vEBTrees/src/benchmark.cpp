@@ -69,6 +69,7 @@ void serialBenchmarks (Options opt) {
 		cout << "Could not open the logfile." <<endl;
 		exit(2);
 	}
+	
 	uint size;
 	uint remaining;
 	uint total = ((opt.end-opt.start)/opt.step+1)*opt.repeat;
@@ -95,7 +96,7 @@ void serialBenchmarks (Options opt) {
 				for (j = 1; j <= count; j++)
 					edges[i][j] = t_edges[j];
 			}
-			delete[] t_edges;
+			free(t_edges);
 			
 			struct timeval start_time, end_time;
 			clock_t start_clock, end_clock;
@@ -104,11 +105,11 @@ void serialBenchmarks (Options opt) {
 			opt.dijkstra(size, opt.source, weights, edges);
 			end_clock = clock();
 			gettimeofday(&end_time, NULL);
-			double cyc_running_time = (double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC;
+			double cyc_running_time = ((double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC) * 1000;
 			double abs_running_time = elapsedTime(start_time, end_time);
 			
-			delete[] edges;
-			delete[] weights;
+			free(edges);
+			free(weights);
 			
 			fprintf(logfilehandle, "\n%s\t%s\t%d\t%10.10f\t%10.10f",
 				opt.log_algo, opt.log_graph, size,

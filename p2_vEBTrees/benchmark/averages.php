@@ -8,6 +8,9 @@ if($argc == 2) {
 	$term = true;
 	$argc++;
 }
+$argv[1] = str_replace(getcwd().'/', '', $argv[1]);
+$argv[2] = str_replace(getcwd().'/', '', $argv[2]);
+
 if($argc != 3) {
 	echo "Usage\n\taverages infile outfile\n";
 	exit(1);
@@ -42,15 +45,15 @@ while($line = fgets($infile)) {
 	$line = trim($line);
 	if(empty($line))
 		continue;
-	if(!preg_match('/([a-z_]+)\t([0-9]+)\t([0-9]+\.[0-9]+)/i', $line, $matches)) {
+	if(!preg_match('/^([a-z_]+)\t([a-z_]+)\t([0-9]+)\t([0-9]+\.[0-9]+)\t([0-9]+\.[0-9]+)$/i', $line, $matches)) {
 		echo "Could not parse line $i of file $argv[1]\n";
 		echo "\tThe line is $line\n";
 		$errors++;
 		continue;
 	}
-	$group = $matches[1];
-	$size = $matches[2];
-	$running_time = floatval($matches[3]);
+	$group = $matches[1].'_'.$matches[2];
+	$size = $matches[3];
+	$running_time = floatval($matches[4]);
 	if(!array_key_exists($group, $groups))
 		$groups[$group] = array();
 	if(!array_key_exists($size, $groups[$group]))
@@ -66,9 +69,9 @@ if($term)
 fclose($infile);
 
 if($errors)
-	exit(6);
+	echo "$errors errors while parsing.";
 
-fputs($outfile, "Group\tArray size\tMinimum\tMaximum\tAverage\tStandard deviation\tSamples\n");
+fputs($outfile, "Group\tSize\tMinimum\tMaximum\tAverage\tStandard deviation\tSamples\n");
 foreach($groups as $group => $sizes) {
 	if($term)
 		echo "Parsing group $group\n";
