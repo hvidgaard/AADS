@@ -11,13 +11,13 @@ void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
 void indent(int in);
 
-int main(int argc, char **argv)
+int main2(int argc, char **argv)
 {
 	if (argc != 3){
 		printf("Please use 2 input values - first for the bitsize of the tree, and the second for the threashold. You can use -1 to let the system determine the best one\n");
 		return 1;
 	}
-	int thres = 2;
+	int thres = 4;
 	int cont = 1;
 
 	/*int i, index;
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 			}
 			fflush(stdout);
 			while (tree->n)
-				veb_delete_min(tree);
+				veb_delete_min(tree, NULL);
 			fflush(stdout);
 			clock_t a, t;
 			a = t = 0;
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 				}
 				while (tree->n){
 					a = clock();
-					veb_delete_min(tree);
+					veb_delete_min(tree, NULL);
 					t += clock() - a;
 				}
 			}

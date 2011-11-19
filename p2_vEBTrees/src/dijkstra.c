@@ -86,8 +86,8 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 	uint *distances = malloc(num_vertices * sizeof(uint));
 	
 	vebtree * tree = veb_initialize(22, 64);
-	/*
-	FibNode ** vertices = malloc(num_vertices * sizeof(FibNode *));
+	
+	uint32_t * vertices = malloc(num_vertices * sizeof(uint32_t));
 	
 	uint distance;
 	uint *data;
@@ -98,9 +98,32 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 		else
 			distance = UINT_MAX;
 		distances[i] = distance;
-		data = malloc(sizeof(uint));
+		data = malloc(sizeof(uint32_t));
 		*data = i;
-		vertices[i] = fib_insert(distance, data, heap);
-	}*/
-	return 0;
+		//vertices[i] = veb_insert(distance, data, heap);
+		veb_insert(distance, data, tree);
+	}
+	//FibNode *node;
+	uint decrease_key_calls = 0;
+	//while ((node = fib_find_min(heap))) {
+	uint32_t u;
+	while (tree->n) {
+		veb_delete_min(tree, &u);
+		for (i = 1; i <= edges[u][0]; i++) {
+			uint32_t v = edges[u][i];
+			uint32_t alt = distances[u] + weights[u * num_vertices + v];
+			if (alt < distances[v]) {
+				veb_decrease_key(distances[v] - alt, v, tree);
+				distances[v] = alt;
+				decrease_key_calls++;
+			}
+		 }
+	}
+	free(vertices);
+	free(tree);
+	free(distances);
+	return decrease_key_calls;
+	
+
+	//return 0;
 }

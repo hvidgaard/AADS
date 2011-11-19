@@ -11,6 +11,8 @@
 extern "C" {
 	#include "graph_generators.h"
 	#include "dijkstra.h"
+	//#include "BinaryHeap.h"
+	//#include "FibonacciHeap.h"
 }
 
 using namespace std;
