@@ -3,6 +3,7 @@
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
 #include "vebtrees.h"
+#include "veb_pq.h"
 
 uint dijkstra_bin(uint num_vertices, uint source, uint * weights, uint ** edges) {
 	uint *distances = malloc(num_vertices * sizeof(uint));
@@ -85,9 +86,13 @@ uint dijkstra_fib(uint num_vertices, uint source, uint * weights, uint ** edges)
 uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 	uint *distances = malloc(num_vertices * sizeof(uint));
 	
-	vebtree * tree = veb_initialize(22, 64);
+	uint32_t a,b;
+	b = 1;
+	for (a = 1; b <= num_vertices; a++)
+		b = b*2;
 	
-	uint32_t * vertices = malloc(num_vertices * sizeof(uint32_t));
+	vebtree * heap = veb_pq_init(a);
+	veb_pq_node ** vertices = malloc(num_vertices * sizeof(veb_pq_node));
 	
 	uint distance;
 	uint *data;
@@ -98,32 +103,28 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 		else
 			distance = UINT_MAX;
 		distances[i] = distance;
-		data = malloc(sizeof(uint32_t));
+		data = malloc(sizeof(uint));
 		*data = i;
-		//vertices[i] = veb_insert(distance, data, heap);
-		veb_insert(distance, data, tree);
+		vertices[i] = veb_pq_insert(heap, data, distance);  //fib_insert(distance, data, heap);
 	}
-	//FibNode *node;
+	veb_pq_node *node;
 	uint decrease_key_calls = 0;
-	//while ((node = fib_find_min(heap))) {
-	uint32_t u;
-	while (tree->n) {
-		veb_delete_min(tree, &u);
+	node = veb_pq_deletemin(heap);
+	while (node) {
+		uint u = node->node_nr;
 		for (i = 1; i <= edges[u][0]; i++) {
-			uint32_t v = edges[u][i];
-			uint32_t alt = distances[u] + weights[u * num_vertices + v];
+			uint v = edges[u][i];
+			uint alt = distances[u] + weights[u * num_vertices + v];
 			if (alt < distances[v]) {
-				veb_decrease_key(distances[v] - alt, v, tree);
+				veb_pq_decrease_key(heap, vertices[v], distances[v] - alt);
 				distances[v] = alt;
 				decrease_key_calls++;
 			}
 		 }
+		 node = veb_pq_deletemin(heap);
 	}
 	free(vertices);
-	free(tree);
+	free(heap);
 	free(distances);
 	return decrease_key_calls;
-	
-
-	//return 0;
 }

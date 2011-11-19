@@ -10,10 +10,6 @@ veb_pq_node * veb_pq_insert(vebtree * tree, uint32_t node_nr, uint32_t node_prio
 	node->node_prio = node_prio;
 	
 	veb_pq_data * data = malloc(sizeof(veb_pq_data));
-	//By cher chance it might happen that the newly created
-	//pointer is NULL, if that happens, we will not get any
-	//result, so set it to something that will be true.
-	if (!data) data = (veb_pq_data *)1;
 	
 	int32_t t = veb_findsucc(node_prio, data, tree);
 	if (t == -1)
@@ -46,6 +42,8 @@ veb_pq_node * veb_pq_insert(vebtree * tree, uint32_t node_nr, uint32_t node_prio
 	return node;
 }
 veb_pq_node * veb_pq_deletemin(vebtree * tree){
+	if (tree->n == 0)
+		return NULL;
 	veb_pq_node * n = ((veb_pq_node **)(tree->min->data))[0];
 	if (veb_pq_delete(tree, ((veb_pq_node **)(tree->min->data))[0]))
 		return NULL;

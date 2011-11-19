@@ -1,3 +1,6 @@
+#ifndef H_VEB_T
+#define H_VEB_T
+
 #include <stdint.h>
 
 typedef struct vebelement {
@@ -33,3 +36,5 @@ void veb_decrease_key(uint32_t index, uint32_t delta, vebtree * tree);
 /********************************************************************/
 vebtree * veb_initialize(int, int);
 /********************************************************************/
+
+#endif
