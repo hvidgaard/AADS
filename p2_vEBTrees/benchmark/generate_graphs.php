@@ -36,18 +36,21 @@ $redblack->selector = 'rbt';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
+$columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard deviation', 7 => 'samples');
 $generators = array('random' => 'Random', 'dkmax' => 'Decrease Key maximized', 'dkmax2' => 'Decrease Key maximized v2');
 $algorithms = array($binary, $fibonacci, $veb, $redblack);
-foreach($generators as $generator => $generatorName)  {
-	$graph = new Graph;
-	$graph->title = "\"$generatorName graph averages\"";
-	foreach($algorithms as $algo) {
-		$plot = new Plot;
-		$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $cyc_file";
-		$plot->datamodifiers = 'using 2:5';
-		$plot->style = "$stdline '$algo->color'";
-		$plot->title = $algo->name;
-		$graph->addPlot($plot);
+foreach($columns as $column => $columnName) {
+	foreach($generators as $generator => $generatorName)  {
+		$graph = new Graph;
+		$graph->title = "\"$generatorName graph $columnName\"";
+		foreach($algorithms as $algo) {
+			$plot = new Plot;
+			$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $cyc_file";
+			$plot->datamodifiers = "using 2:$column";
+			$plot->style = "$stdline '$algo->color'";
+			$plot->title = $algo->name;
+			$graph->addPlot($plot);
+		}
+		$graph->output("graphs/{$generator}_{$columnName}.png");
 	}
-	$graph->output("graphs/{$generator}_averages.png");
 }
