@@ -374,3 +374,32 @@ void vebswap(uint32_t *index, void **data, vebelement *e){
 	*data = tmp_data;
 	*index = tmp_idx;
 }
+void veb_destruct(vebtree *tree){
+	if (tree->size < threshold){
+		free(tree->max);
+		free(tree->min);
+		free(tree->arr);
+	}
+	else {
+		free(tree->max);
+		free(tree->min);
+		veb_destruct(tree->top);
+		int i;
+		for (i = 0; i < tree->sqrtsize; i++)
+			veb_destruct(tree->bottom[i]);
+	}
+	free(tree);
+}
+
+/*
+vebtree * veb_init_tree(int w){
+
+	tree->top = veb_initialize(halfofw, 0);
+	
+	tree->bottom = malloc(tree->sqrtsize * sizeof(struct vebtree *));
+	int i;
+	for (i = 0; i < tree->sqrtsize; i++)
+		tree->bottom[i] = veb_initialize(w-halfofw, 0);
+	
+	return tree;
+}*/

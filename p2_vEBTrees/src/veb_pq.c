@@ -68,6 +68,11 @@ int veb_pq_delete(vebtree * tree, veb_pq_node * node){
 	}
 	return 0;
 }
+void veb_pq_destruct(vebtree * tree){
+	while(tree->n)
+		veb_pq_deletemin(tree);
+	veb_destruct(tree);
+}
 
 /*
 typedef struct veb_pq_node {

@@ -33,6 +33,7 @@ int32_t veb_findpred(uint32_t index, void * data, vebtree *tree);
 void veb_extract_min(vebtree * tree, void *);
 void veb_delete_min(vebtree * tree, void * data);
 void veb_decrease_key(uint32_t index, uint32_t delta, vebtree * tree);
+void veb_destruct(vebtree *tree);
 /********************************************************************/
 vebtree * veb_initialize(int, int);
 /********************************************************************/
