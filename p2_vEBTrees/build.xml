@@ -54,9 +54,16 @@
 		</cc>
 	</target>
 	
-	<target name="report">
+	<target name="report" depends="copy-graphs">
 		<latex latexfile="${report}/aadsrapport.tex"
-			verbose="off" clean="on" pdftex="on" workingDir="${report}" />
+			verbose="on" clean="on" pdftex="on" workingDir="${report}" />
+	</target>
+	
+	<target name="copy-graphs" depends="convert2pdf">
+		<mkdir dir="${report}/graphs" />
+		<copy todir="${report}/graphs">
+			<fileset dir="${benchmark}/graphs" includes="*.pdf" />
+		</copy>
 	</target>
 	
 	<target name="clean" description="Remove all object and binary files">

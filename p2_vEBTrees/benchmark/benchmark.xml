@@ -43,9 +43,25 @@
 	</target>
 	
 	<target name="concatenate">
-		<concat destfile="${logs}/concatenated.log">
+		<concat destfile="${logs}/concatenated.log" force="no">
 			<fileset dir="${logs}" includes="**/*.log" excludes="concatenated.log" />
 		</concat>
+	</target>
+	
+	<target name="convert2pdf" depends="plot">
+		<apply executable="pstopdf" osfamily="mac">
+			<srcfile/>
+			<targetfile/>
+			<fileset dir="${graphs}" includes="*.eps" />
+			<mapper type="glob" from="*.eps" to="${graphs}/*.pdf"/>
+		</apply>
+		<!-- <apply executable="ps2pdf" osfamily="linux">
+			<arg value="-dEPSCrop" />
+			<srcfile/>
+			<targetfile/>
+			<fileset dir="${graphs}" includes="*.eps" />
+			<mapper type="glob" from="*.eps" to="${graphs}/*.pdf"/>
+		</apply> -->
 	</target>
 	
 	<target name="alone" description="Fails unless the user is the only one logged in, used for distributed benchmarking">

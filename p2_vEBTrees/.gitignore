@@ -6,3 +6,5 @@ cache.properties
 benchmark/logs/*
 benchmark/build.properties
 history.xml
+report/graphs
+report/aadsrapport.pdf
