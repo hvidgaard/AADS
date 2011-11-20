@@ -11,8 +11,12 @@ void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
 void indent(int in);
 
-int main2(int argc, char **argv)
-{
+int main2(int argc, char **argv){
+	vebtree *tree = veb_initialize(15, 64);
+	simpletest(tree);
+}
+
+void testleafsize(int argc, char **argv){
 	if (argc != 3){
 		printf("Please use 2 input values - first for the bitsize of the tree, and the second for the threashold. You can use -1 to let the system determine the best one\n");
 		return 1;
@@ -71,7 +75,7 @@ int main2(int argc, char **argv)
 			}
 			fflush(stdout);
 			while (tree->n)
-				veb_delete_min(tree, NULL);
+				veb_delete_min(tree);
 			fflush(stdout);
 			clock_t a, t;
 			a = t = 0;
@@ -97,7 +101,7 @@ int main2(int argc, char **argv)
 				}
 				while (tree->n){
 					a = clock();
-					veb_delete_min(tree, NULL);
+					veb_delete_min(tree);
 					t += clock() - a;
 				}
 			}
@@ -108,7 +112,9 @@ int main2(int argc, char **argv)
 		}
 	}
 }
-	/*printinfo(0, tree);
+
+void simpletest(vebtree *tree){
+		printinfo(0, tree);
 	printf("inserting 10\n");
 	veb_insert(10, NULL, tree);
 	printinfo(0, tree);
@@ -167,28 +173,47 @@ int main2(int argc, char **argv)
 	printf("deleting 18\n");
 	veb_delete(18, tree);
 	printf("\n10, 15");
-	printtest(tree);*/
-
+	printtest(tree);
+}
 
 void printtest(vebtree *tree){
-	printf("\nsucc(2): %d\n", veb_findsucc(2, NULL, tree));
-	printf("succ(5): %d\n", veb_findsucc(5, NULL, tree));
-	printf("succ(7): %d\n", veb_findsucc(7, NULL, tree));
-	printf("succ(10): %d\n", veb_findsucc(10, NULL, tree));
-	printf("succ(12): %d\n", veb_findsucc(12, NULL, tree));
-	printf("succ(15): %d\n", veb_findsucc(15, NULL, tree));
-	printf("succ(17): %d\n", veb_findsucc(17, NULL, tree));
-	printf("succ(18): %d\n", veb_findsucc(18, NULL, tree));
-	printf("succ(20): %d\n", veb_findsucc(20, NULL, tree));
-	printf("pred(2): %d\n", veb_findpred(2, NULL, tree));
-	printf("pred(5): %d\n", veb_findpred(5, NULL, tree));
-	printf("pred(7): %d\n", veb_findpred(7, NULL, tree));
-	printf("pred(10): %d\n", veb_findpred(10, NULL, tree));
-	printf("pred(12): %d\n", veb_findpred(12, NULL, tree));
-	printf("pred(15): %d\n", veb_findpred(15, NULL, tree));
-	printf("pred(17): %d\n", veb_findpred(17, NULL, tree));
-	printf("pred(18): %d\n", veb_findpred(18, NULL, tree));
-	printf("pred(20): %d\n\n", veb_findpred(20, NULL, tree));
+	int32_t r;
+	veb_findsucc(2, &r, tree);
+	printf("\nsucc(2): %d\n", r);
+	veb_findsucc(5, &r, tree);
+	printf("succ(5): %d\n", r);
+	veb_findsucc(7, &r, tree);
+	printf("succ(7): %d\n", r);
+	veb_findsucc(10, &r, tree);
+	printf("succ(10): %d\n", r);
+	veb_findsucc(12, &r, tree);
+	printf("succ(12): %d\n", r);
+	veb_findsucc(15, &r, tree);
+	printf("succ(15): %d\n", r);
+	veb_findsucc(17, &r, tree);
+	printf("succ(17): %d\n", r);
+	veb_findsucc(18, &r, tree);
+	printf("succ(18): %d\n", r);
+	veb_findsucc(20, &r, tree);
+	printf("succ(20): %d\n", r);
+	veb_findpred(2, &r, tree);
+	printf("pred(2): %d\n", r);
+	veb_findpred(5, &r, tree);
+	printf("pred(5): %d\n", r);
+	veb_findpred(7, &r, tree);
+	printf("pred(7): %d\n", r);
+	veb_findpred(10, &r, tree);
+	printf("pred(10): %d\n", r);
+	veb_findpred(12, &r, tree);
+	printf("pred(12): %d\n", r);
+	veb_findpred(15, &r, tree);
+	printf("pred(15): %d\n", r);
+	veb_findpred(17, &r, tree);
+	printf("pred(17): %d\n", r);
+	veb_findpred(18, &r, tree);
+	printf("pred(18): %d\n", r);
+	veb_findpred(20, &r, tree);
+	printf("pred(20): %d\n\n", r);
 	fflush(stdout); 
 }
 

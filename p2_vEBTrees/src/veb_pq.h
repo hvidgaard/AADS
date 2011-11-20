@@ -11,16 +11,16 @@ struct veb_pq_node {
 	uint32_t node_nr;
 	uint32_t node_prio;
 	veb_pq_data *parent;
-	uint32_t parent_index;
+	veb_pq_node *next;
+	veb_pq_node *prev;
 };
 struct veb_pq_data {
-	uint32_t max_size;
-	uint32_t size;
-	veb_pq_node ** nodes;
+	uint32_t n;
+	veb_pq_node * first;
 };
 
 vebtree * veb_pq_init(int w);
-veb_pq_node * veb_pq_insert(vebtree * tree, uint32_t node_nr, uint32_t node_prio);
+void veb_pq_insert(veb_pq_node * n, vebtree * tree);
 veb_pq_node * veb_pq_deletemin(vebtree * tree);
 veb_pq_node * veb_pq_findmin(vebtree * tree);
 int veb_pq_decrease_key(vebtree * tree, veb_pq_node * node, uint32_t delta);

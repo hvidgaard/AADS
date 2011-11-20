@@ -25,8 +25,7 @@ int main(int argc, char **argv) {
 	}
 
 	Options opt;
-	//opt.max = 4294967295;
-	opt.max = 4194967295;
+	opt.max = 1048575;
 	opt.log_graph = argv[1];
 	opt.log_algo = argv[2];
 	opt.seed = (uint) strtoul(argv[3], NULL, 10);
@@ -109,6 +108,9 @@ void serialBenchmarks (Options opt) {
 			double cyc_running_time = ((double) (end_clock-start_clock) / (double) CLOCKS_PER_SEC) * 1000;
 			double abs_running_time = elapsedTime(start_time, end_time);
 			
+			for (i = 0; i < size; i++)
+				free(edges[i]);
+				
 			free(edges);
 			free(weights);
 			

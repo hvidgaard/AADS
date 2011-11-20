@@ -85,13 +85,8 @@ uint dijkstra_fib(uint num_vertices, uint source, uint * weights, uint ** edges)
 }
 uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 	uint *distances = malloc(num_vertices * sizeof(uint));
-	
-	uint32_t a,b;
-	b = 1;
-	for (a = 1; b <= num_vertices; a++)
-		b = b*2;
-	
-	vebtree * heap = veb_pq_init(a);
+
+	vebtree * heap = veb_pq_init(20);
 	veb_pq_node ** vertices = malloc(num_vertices * sizeof(veb_pq_node));
 	
 	uint distance;
@@ -105,11 +100,18 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 		distances[i] = distance;
 		//data = malloc(sizeof(uint));
 		//*data = i;
-		vertices[i] = veb_pq_insert(heap, i, distance);  //fib_insert(distance, data, heap);
+		veb_pq_node * node = malloc(sizeof(veb_pq_node));
+		if (!node)
+			exit(1);
+		node->node_nr = i;
+		node->node_prio = distance;
+		vertices[i] = node;
+		veb_pq_insert(node, heap);  //fib_insert(distance, data, heap);
 	}
 	veb_pq_node *node;
 	uint decrease_key_calls = 0;
 	node = veb_pq_deletemin(heap);
+	int m = 0;
 	while (node) {
 		uint u = node->node_nr;
 		for (i = 1; i <= edges[u][0]; i++) {
@@ -122,11 +124,12 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 			}
 		 }
 		 node = veb_pq_deletemin(heap);
+		 m++;
 	}
 	free(distances);
 	veb_pq_destruct(heap);
 	for (i=0; i < num_vertices; i++)
-		free(vertices[i]);
+			free(vertices[i]);
 	free(vertices);
 	return decrease_key_calls;
 }
