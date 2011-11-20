@@ -77,10 +77,10 @@
 	<target name="full-benchmark" description="Runs benchmarks on various algorithms">
 		<full-benchmark graph="random" algorithm="bin" />
 		<full-benchmark graph="random" algorithm="fib" />
-		<full-benchmark graph="random" algorithm="veb" />
+		<!-- <full-benchmark graph="random" algorithm="veb" /> -->
 		<full-benchmark graph="dkmax2" algorithm="bin" />
 		<full-benchmark graph="dkmax2" algorithm="fib" />
-		<full-benchmark graph="dkmax2" algorithm="veb" />
+		<!-- <full-benchmark graph="dkmax2" algorithm="veb" /> -->
 	</target>
 	<macrodef name="small-benchmark">
 		<attribute name="graph"/>
@@ -109,7 +109,7 @@
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
 			 seed="1234" start="3530" end="7750" step="211" tests="7" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
-			 seed="1234" start="7750" end="29700" step="439" tests="6" />
+			 seed="1234" start="7750" end="12140" step="439" tests="6" />
 		</sequential>
 	</macrodef>
 	
