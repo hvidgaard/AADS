@@ -40,7 +40,7 @@
 			<libset libs="m" if="isUnix" />
 			<libset libs="stdc++" />
 			<compilerarg value="-Wall" />
-			<fileset dir="${src}" includes="benchmark.cpp, *.c" excludes="main.c" />
+			<fileset dir="${src}" includes="benchmark.cpp, **/*.c" excludes="main.c" />
 		</cc>
 	</target>
 	

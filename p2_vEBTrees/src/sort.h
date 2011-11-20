@@ -10,4 +10,6 @@ void sort_fib(uint size, uint* list);
 void sort_veb(uint size, uint* list);
 void sort_rb(uint size, uint* list);
 
+int CompareKeys(const void* key1, const void* key2);
+
 #endif
