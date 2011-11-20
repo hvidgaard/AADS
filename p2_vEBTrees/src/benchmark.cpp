@@ -120,12 +120,12 @@ void serialBenchmarks (Options opt) {
 			
 			progress = (((size-opt.start)/opt.step+1)*opt.repeat-remaining)*100/total;
 			if(progress > previous_progress)
-				cout << progress << "%" << endl;
+				cout << opt.log_algo << " " << opt.log_graph << " " << progress << "%" << endl;
 			previous_progress = progress;
 		}
 	}
 	if(previous_progress != 100)
-		cout << opt.log_algo << " " << opt.log_graph << "100%" << endl;
+		cout << opt.log_algo << " " << opt.log_graph << " 100%" << endl;
 	fclose(logfilehandle);
 }
 

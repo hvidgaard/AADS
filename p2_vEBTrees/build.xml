@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AADS Project 1" default="make" basedir=".">
+<project name="AADS Project 2" default="make" basedir=".">
 	<taskdef resource="cpptasks.tasks" classpath="cpptasks-1.0b5.jar"/>
 	<taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpath="ant_latex_0.0.9_1.jar"/>
 	
@@ -54,9 +54,16 @@
 		</cc>
 	</target>
 	
-	<target name="report">
+	<target name="report" depends="copy-graphs">
 		<latex latexfile="${report}/aadsrapport.tex"
-			verbose="off" clean="on" pdftex="on" workingDir="${report}" />
+			verbose="on" clean="on" pdftex="on" workingDir="${report}" />
+	</target>
+	
+	<target name="copy-graphs" depends="convert2pdf">
+		<mkdir dir="${report}/graphs" />
+		<copy todir="${report}/graphs">
+			<fileset dir="${benchmark}/graphs" includes="*.pdf" />
+		</copy>
 	</target>
 	
 	<target name="clean" description="Remove all object and binary files">
@@ -70,6 +77,17 @@
 		<small-benchmark graph="random" algorithm="bin" />
 		<small-benchmark graph="random" algorithm="fib" />
 		<small-benchmark graph="random" algorithm="veb" />
+		<small-benchmark graph="dkmax2" algorithm="bin" />
+		<small-benchmark graph="dkmax2" algorithm="fib" />
+		<small-benchmark graph="dkmax2" algorithm="veb" />
+	</target>
+	<target name="full-benchmark" description="Runs benchmarks on various algorithms">
+		<full-benchmark graph="random" algorithm="bin" />
+		<full-benchmark graph="random" algorithm="fib" />
+		<!-- <full-benchmark graph="random" algorithm="veb" /> -->
+		<full-benchmark graph="dkmax2" algorithm="bin" />
+		<full-benchmark graph="dkmax2" algorithm="fib" />
+		<!-- <full-benchmark graph="dkmax2" algorithm="veb" /> -->
 	</target>
 	<macrodef name="small-benchmark">
 		<attribute name="graph"/>
@@ -79,7 +97,9 @@
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
 			 seed="1234" start="700" end="1077" step="13" tests="3" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
-			 seed="1234" start="1090" end="2015" step="37" tests="1" />
+			 seed="1234" start="1090" end="2940" step="37" tests="1" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="2940" end="3471" step="59" tests="8" />
 		</sequential>
 	</macrodef>
 	<macrodef name="full-benchmark">
@@ -93,6 +113,10 @@
 			 seed="1234" start="1090" end="2940" step="37" tests="9" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
 			 seed="1234" start="2940" end="3530" step="59" tests="8" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="3530" end="7750" step="211" tests="7" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="7750" end="12140" step="439" tests="6" />
 		</sequential>
 	</macrodef>
 	

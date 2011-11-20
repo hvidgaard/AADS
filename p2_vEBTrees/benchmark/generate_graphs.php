@@ -36,8 +36,8 @@ $redblack->selector = 'rbt';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard deviation', 7 => 'samples');
-$generators = array('random' => 'Random', 'dkmax' => 'Decrease Key maximized', 'dkmax2' => 'Decrease Key maximized v2');
+$columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard_deviation', 7 => 'samples');
+$generators = array('random' => 'Random', /*'dkmax' => 'Decrease Key maximized', */'dkmax2' => 'Decrease Key maximized v2');
 $algorithms = array($binary, $fibonacci, $veb, $redblack);
 foreach($columns as $column => $columnName) {
 	foreach($generators as $generator => $generatorName)  {
@@ -52,5 +52,7 @@ foreach($columns as $column => $columnName) {
 			$graph->addPlot($plot);
 		}
 		$graph->output("graphs/{$generator}_{$columnName}.png");
+		$graph->terminal = "epslatex";
+		$graph->output("graphs/{$generator}_{$columnName}.eps");
 	}
 }
