@@ -13,6 +13,8 @@ void veb_pq_insert(veb_pq_node * node, vebtree * tree){
 		data->n = 1;
 		data->first = node;
 		node->parent = data;
+		node->next = NULL;
+		node->prev = NULL;
 		veb_insert(node->node_prio, data, tree);
 	}
 	else{
