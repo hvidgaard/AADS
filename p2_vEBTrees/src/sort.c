@@ -57,6 +57,8 @@ void sort_rb(uint size, uint* list) {
 	RBTreeDestroy(tree);
 }
 
-int CompareKeys(const void* key1, const void* key2) {
-	return key1 > key2;
+int CompareKeys(const void* a, const void* b) {
+	if( *(int*)a > *(int*)b) return(1);
+	if( *(int*)a < *(int*)b) return(-1);
+	return(0);
 }
