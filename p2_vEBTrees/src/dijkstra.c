@@ -5,6 +5,12 @@
 #include "vebtrees.h"
 #include "veb_pq.h"
 
+//#define PRINT
+
+#ifdef PRINT
+#include <stdio.h>
+#endif
+
 uint dijkstra_bin(uint num_vertices, uint source, uint * weights, uint ** edges) {
 	uint *distances = malloc(num_vertices * sizeof(uint));
 	
@@ -86,12 +92,24 @@ uint dijkstra_fib(uint num_vertices, uint source, uint * weights, uint ** edges)
 uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 	uint *distances = malloc(num_vertices * sizeof(uint));
 
-	vebtree * heap = veb_pq_init(20);
+	vebtree * heap = veb_pq_init(24);
 	veb_pq_node ** vertices = malloc(num_vertices * sizeof(veb_pq_node));
 	
 	uint distance;
-	//uint *data;
 	int i;
+	
+	#ifdef PRINT
+	printf("source: %d, num_vertices: %d\n", source, num_vertices);
+	int j;
+	for (i = 0; i < num_vertices; i++){
+		//printf("node %d have %d outdegree\n", i, edges[i][0]);
+		for (j = 1; j <= edges[i][0]; j++){
+			printf("edge from %d to %d : %d\n", i, edges[i][j], weights[i * num_vertices + edges[i][j]]);
+		}
+	}
+	#endif
+	
+	
 	for (i = 0; i < num_vertices; i++) {
 		if(i == source)
 			distance = 0;
@@ -117,7 +135,7 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 		for (i = 1; i <= edges[u][0]; i++) {
 			uint v = edges[u][i];
 			uint alt = distances[u] + weights[u * num_vertices + v];
-			if (alt < distances[v]) {
+			if (alt < distances[v] && vertices[v]->parent) {
 				veb_pq_decrease_key(heap, vertices[v], distances[v] - alt);
 				distances[v] = alt;
 				decrease_key_calls++;

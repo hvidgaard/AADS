@@ -30,38 +30,38 @@ clean:
 	rm -f ./$(output)/dijkstra.o
 	rm -f ./$(output)/$(outputfile)
 
-veb_pq.o: ./$(sourcedir)/veb_pq.c ./$(sourcedir)/veb_pq.h
+veb_pq.o: ./$(sourcedir)/veb_pq.c ./$(sourcedir)/veb_pq.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 	
-dijkstra.o: ./$(sourcedir)/dijkstra.c ./$(sourcedir)/dijkstra.h
+dijkstra.o: ./$(sourcedir)/dijkstra.c ./$(sourcedir)/dijkstra.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c ./$(sourcedir)/BinaryHeap.h
+BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c ./$(sourcedir)/BinaryHeap.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-benchmark.o: ./$(sourcedir)/benchmark.cpp ./$(sourcedir)/benchmark.h
+benchmark.o: ./$(sourcedir)/benchmark.cpp ./$(sourcedir)/benchmark.h ./$(sourcedir)/debug.h
 	gcc $(Cppcompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c ./$(sourcedir)/FibonacciHeap.h
+FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c ./$(sourcedir)/FibonacciHeap.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-vebtrees.o: ./$(sourcedir)/vebtrees.c ./$(sourcedir)/vebtrees.h
+vebtrees.o: ./$(sourcedir)/vebtrees.c ./$(sourcedir)/vebtrees.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 	
-main.o: ./$(sourcedir)/main.c
+main.o: ./$(sourcedir)/main.c ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-graph_generators.o: ./$(sourcedir)/graph_generators.c ./$(sourcedir)/graph_generators.h
+graph_generators.o: ./$(sourcedir)/graph_generators.c ./$(sourcedir)/graph_generators.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-misc.o: ./$(sourcedir)/RBTree/misc.c ./$(sourcedir)/RBTree/misc.h
+misc.o: ./$(sourcedir)/RBTree/misc.c ./$(sourcedir)/RBTree/misc.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-rb_int_key.o: ./$(sourcedir)/RBTree/rb_int_key.c ./$(sourcedir)/RBTree/rb_int_key.h
+rb_int_key.o: ./$(sourcedir)/RBTree/rb_int_key.c ./$(sourcedir)/RBTree/rb_int_key.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-red_black_tree.o: ./$(sourcedir)/RBTree/red_black_tree.c ./$(sourcedir)/RBTree/red_black_tree.h
+red_black_tree.o: ./$(sourcedir)/RBTree/red_black_tree.c ./$(sourcedir)/RBTree/red_black_tree.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-stack.o: ./$(sourcedir)/RBTree/stack.c ./$(sourcedir)/RBTree/stack.h
+stack.o: ./$(sourcedir)/RBTree/stack.c ./$(sourcedir)/RBTree/stack.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@

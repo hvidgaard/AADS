@@ -12,7 +12,7 @@ void printtest(vebtree *tree);
 void indent(int in);
 
 int main2(int argc, char **argv){
-	vebtree *tree = veb_initialize(15, 64);
+	vebtree *tree = veb_initialize(5, 4);
 	simpletest(tree);
 }
 
@@ -221,10 +221,11 @@ void printinfo(int in, vebtree *tree){
 	//if (tree->n == 0)
 	//	return;
 	/*indent(in); printf("Size %d, using %d bits. Currently containing %d elements\n", tree->size, tree->w, tree->n);
-	if (tree->size > tree->threshold){
+	if (tree->size > 4){
 		indent(in);printf("Recursive with:\n");
-		indent(in);printf("min: %d\n", tree->min.value);
-		indent(in);printf("max: %d\n", tree->max.value);
+		indent(in);printf("min: %d\n", tree->min->value);
+		indent(in);printf("max: %d\n", tree->max->value);
+		indent(in);printf("sqrt: %d\n", tree->sqrtsize);
 		indent(in);printf("with TOP structure: \n");
 		printinfo(in+4, tree->top);
 		indent(in);printf("with BOTTOM structures: \n");
@@ -236,13 +237,16 @@ void printinfo(int in, vebtree *tree){
 	else {
 		int i;
 		indent(in);printf("Leaf with elements: \n");
+		indent(in);printf("min: %d\n", tree->min->value);
+		indent(in);printf("max: %d\n", tree->max->value);
+		indent(in);printf("sqrt: %d\n", tree->sqrtsize);
 		indent(in);
 		for (i = 0; i < tree->size; i++){
 			printf("index %d: %d ;", i, (tree->arr)[i].value);
 		}
 		indent(in);printf("\n\n");
 	}
-	fflush(stdout); */
+	fflush(stdout);*/
 }
 void indent(int in){
 	int i;

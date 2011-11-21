@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	}
 
 	Options opt;
-	opt.max = 1048575;
+	opt.max = 1000;
 	opt.log_graph = argv[1];
 	opt.log_algo = argv[2];
 	opt.seed = (uint) strtoul(argv[3], NULL, 10);

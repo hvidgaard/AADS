@@ -1,15 +1,27 @@
 #include <stdlib.h>
 #include "graph_generators.h"
+#include "debug.h"
+
+#ifdef PRINT
+#include <stdio.h>
+#endif
 
 uint *generate_random_graph(uint vertices, uint max_weight, uint seed) {
 	uint edge_chance = 15;
 	srandom(seed);
 	uint i, j;
 	uint *weights = calloc(vertices * vertices,sizeof(uint));
+	#ifdef PRINT
+	printf("vertice: %d\n", vertices);
+	#endif
 	for(i = 0; i < vertices; i++) {
 		for(j = 0; j < vertices; j++)
-			if(j == i+1 || (i != j && random()%101 < edge_chance))
+			if(j == i+1 || (i != j && random()%101 < edge_chance)){
 				weights[i * vertices + j] = random()%max_weight+1;
+				#ifdef PRINT
+				printf("edge from %d to %d : %d\n", i, j, weights[i * vertices + j]);
+				#endif
+			}
 	}
 	return weights;
 }

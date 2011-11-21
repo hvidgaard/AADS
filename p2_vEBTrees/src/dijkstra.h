@@ -5,7 +5,7 @@
 typedef unsigned int uint;
 #endif
 #ifndef UINT_MAX
-#define UINT_MAX 1048575
+#define UINT_MAX 16777215
 #endif
 
 uint dijkstra_bin(uint num_vertices, uint source, uint* weights, uint** edges);

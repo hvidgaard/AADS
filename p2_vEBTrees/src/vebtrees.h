@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 typedef struct vebelement {
-	int32_t value;
+	uint32_t value;
 	void *data;
 } vebelement;
 
@@ -26,17 +26,16 @@ typedef struct vebtree {
 /* this are the basic operations, other operations are combinations
  * hereof.
  */
+vebtree * veb_initialize(int w, int threshold);
+int32_t veb_insert(uint32_t index, void * data, vebtree * tree);
 void * veb_delete(uint32_t index, vebtree * tree);
-void * veb_delete_min(vebtree * tree);
 void * veb_findsucc(uint32_t index, int32_t * succ, vebtree * tree);
 void * veb_findpred(uint32_t index, int32_t * pred, vebtree * tree);
-void * veb_extract_min(vebtree * tree, int32_t * index);
-int32_t veb_insert(uint32_t index, void * data, vebtree * tree);
 
+//void * veb_extract_min(vebtree * tree, int32_t * index);
+//void * veb_delete_min(vebtree * tree);
 //void veb_decrease_key(uint32_t index, uint32_t delta, vebtree * tree);
-void veb_destruct(vebtree *tree);
-/********************************************************************/
-vebtree * veb_initialize(int, int);
-/********************************************************************/
 
+
+void veb_destruct(vebtree *tree);
 #endif
