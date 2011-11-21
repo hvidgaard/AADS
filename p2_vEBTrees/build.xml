@@ -79,7 +79,7 @@
 		<full-benchmark graph="random" algorithm="veb" />
 		<full-benchmark graph="dkmax2" algorithm="veb" />
 	</target>
-	<target name="dist-full-benchmark" description="Runs benchmarks on various algorithms" depends="alone">
+	<target name="dist-full-benchmark" description="Runs benchmarks on various algorithms" depends="alone, make">
 		<full-benchmark graph="random" algorithm="bin" />
 		<full-benchmark graph="dkmax2" algorithm="bin" />
 		<full-benchmark graph="random" algorithm="fib" />
