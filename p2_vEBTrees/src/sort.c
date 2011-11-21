@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "sort.h"
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
@@ -48,16 +49,11 @@ void sort_rb(uint size, uint* list) {
 	for (i = 0; i < size; i++)
 		RBTreeInsert(tree, &list[i], NULL);
 	
-	rb_red_blk_node* prev = tree->root;
-	while(prev->left != tree->nil)
-		prev = prev->left;
-	
 	rb_red_blk_node* node = tree->root;
-	while((node = TreeSuccessor(tree, prev))) {
-		RBDelete(tree, prev);
-		prev = node;
-	}
-	RBDelete(tree, prev);
+	while(node->left != tree->nil)
+		node = node->left;
+	
+	while((node = TreeSuccessor(tree, node)));
 	RBTreeDestroy(tree);
 }
 
