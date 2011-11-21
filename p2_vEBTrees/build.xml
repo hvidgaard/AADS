@@ -64,19 +64,27 @@
 	</target>
 	
 	<target name="small-benchmark" description="Runs benchmarks on various algorithms">
+<!-- 		<small-benchmark graph="random" algorithm="bin" />
+		<small-benchmark graph="dkmax2" algorithm="bin" />
+		<small-benchmark graph="random" algorithm="fib" />
+		<small-benchmark graph="dkmax2" algorithm="fib" /> -->
 		<small-benchmark graph="random" algorithm="veb" />
 		<small-benchmark graph="dkmax2" algorithm="veb" />
-		<small-benchmark graph="random" algorithm="bin" />
-		<small-benchmark graph="random" algorithm="fib" />
-		<small-benchmark graph="dkmax2" algorithm="bin" />
-		<small-benchmark graph="dkmax2" algorithm="fib" />
 	</target>
 	<target name="full-benchmark" description="Runs benchmarks on various algorithms">
 <!-- 		<full-benchmark graph="random" algorithm="bin" />
-		<full-benchmark graph="random" algorithm="fib" /> -->
-		<!-- <full-benchmark graph="random" algorithm="veb" /> -->
-<!-- 		<full-benchmark graph="dkmax2" algorithm="bin" />
+		<full-benchmark graph="dkmax2" algorithm="bin" />
+		<full-benchmark graph="random" algorithm="fib" />
 		<full-benchmark graph="dkmax2" algorithm="fib" /> -->
+		<full-benchmark graph="random" algorithm="veb" />
+		<full-benchmark graph="dkmax2" algorithm="veb" />
+	</target>
+	<target name="dist-full-benchmark" description="Runs benchmarks on various algorithms" depends="alone">
+		<full-benchmark graph="random" algorithm="bin" />
+		<full-benchmark graph="dkmax2" algorithm="bin" />
+		<full-benchmark graph="random" algorithm="fib" />
+		<full-benchmark graph="dkmax2" algorithm="fib" />
+		<full-benchmark graph="random" algorithm="veb" />
 		<full-benchmark graph="dkmax2" algorithm="veb" />
 	</target>
 	<macrodef name="small-benchmark">
@@ -111,6 +119,6 @@
 	</macrodef>
 	
 	<target name="dist-bm" description="Runs the benchmark target on many computers at once">
-		<distribute-ssh-command command="ant -buildfile ${ant.file} benchmark" />
+		<distribute-ssh-command command="ant -buildfile ${ant.file} dist-full-benchmark" />
 	</target>
 </project>
