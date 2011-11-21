@@ -15,22 +15,17 @@ We have chosen to benchmark the van Emde Boas tree with the two graph generation
 Those include a random graph generator and a generator which should cause a high number of decrease\_key calls when using dijkstra on the graph to solve the single source shortest path problem.
 The random graph generator generates a graph, where each vertice has a 15\% chance of being connected to another vertice with the weight being between 1 and a chosen maximum.
 
-We measured the running time using two different methods. One using normal absolute time measurement, the other one counting clock cycles. Curios to see which method had the lowest standard deviation we were surprised to discover that it increases using both methods quite rapidly as the graph sizes grow bigger.
-
+We measured the running time using two different methods. One using normal absolute time measurement, the other one counting clock cycles. Curios to see which method had the lowest standard deviation we were surprised to discover that it increases using both methods quite rapidly as the graph sizes grow bigger.\newline
 \input{../benchmark/graphs/random_standard_deviation_absolute.tex}
 
-The only exception being the random graph, when counting clock cycles.
-
+The only exception being the random graph, when counting clock cycles.\newline
 \input{../benchmark/graphs/random_standard_deviation_cycles.tex}
 
-We have yet to explain why this is happening. It is not a random deviation, our sample size is fairly large.
-
+We have yet to explain why this is happening. It is not a random deviation, our sample size is fairly large.\newline
 \input{../benchmark/graphs/random_samples_cycles.tex}
 
-As can be observed below, the graph does not bode well for van Emde Boas trees. It is slower by a constant of ~225 ms.
-
+As can be observed below, the graph does not bode well for van Emde Boas trees. It is slower by a constant of ~225 ms.\newline
 \input{../benchmark/graphs/random_averages_cycles.tex}
 
-All this changes however, once we switch the graph generation algorithm to dkmax2. The algorithm we developed for previous assignment. As you can see, the van Emde Boas tree outperforms both the binary and fibonacci heap at approx. 6300 nodes.
-
+All this changes however, once we switch the graph generation algorithm to dkmax2. The algorithm we developed for previous assignment. As you can see, the van Emde Boas tree outperforms both the binary and fibonacci heap at approx. 6300 nodes.\newline
 \input{../benchmark/graphs/dkmax2_averages_cycles.tex}
