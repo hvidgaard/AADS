@@ -39,7 +39,7 @@ while($line = fgets($infile)) {
 	$line = trim($line);
 	if(empty($line))
 		continue;
-	if(!preg_match('/^([a-z_]+)\t([0-9]+)\t([0-9]+\.[0-9]+)\t([0-9]+\.[0-9]+)$/i', $line, $matches)) {
+	if(!preg_match('/^([a-z0-9_]+)\t([0-9]+)\t([0-9]+\.[0-9]+)\t([0-9]+\.[0-9]+)$/i', $line, $matches)) {
 		echo "Could not parse line $i of file $argv[1]\n";
 		echo "\tThe line is $line\n";
 		$errors++;
