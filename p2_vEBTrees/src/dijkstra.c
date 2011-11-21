@@ -1,9 +1,12 @@
 #include <stdlib.h>
+#include <unistd.h>
 #include "dijkstra.h"
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
 #include "vebtrees.h"
 #include "veb_pq.h"
+#include "time.h"
+#include <stdio.h>
 
 //#define PRINT
 
@@ -91,8 +94,9 @@ uint dijkstra_fib(uint num_vertices, uint source, uint * weights, uint ** edges)
 }
 uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 	uint *distances = malloc(num_vertices * sizeof(uint));
-
+	
 	vebtree * heap = veb_pq_init(24);
+	
 	veb_pq_node ** vertices = malloc(num_vertices * sizeof(veb_pq_node));
 	
 	uint distance;
@@ -109,7 +113,7 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 	}
 	#endif
 	
-	
+
 	for (i = 0; i < num_vertices; i++) {
 		if(i == source)
 			distance = 0;
@@ -124,7 +128,7 @@ uint dijkstra_veb(uint num_vertices, uint source, uint* weights, uint** edges){
 		node->node_nr = i;
 		node->node_prio = distance;
 		vertices[i] = node;
-		veb_pq_insert(node, heap);  //fib_insert(distance, data, heap);
+		veb_pq_insert(node, heap); 
 	}
 	veb_pq_node *node;
 	uint decrease_key_calls = 0;
