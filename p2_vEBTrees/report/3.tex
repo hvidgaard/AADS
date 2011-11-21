@@ -1,4 +1,15 @@
 \section*{Comparison with priority queues}
+The vEB tree can be used as a priority queue if we build some extra logic on top of it. Firstly a priority queue can contain several elements with the same priority, a search tree does not allow this. To get around this limitation we've build a new priority queue that can use any search tree as the underlying data structure. Ignoring intialization (this is just initializing the underlying search tree), we focus on the actual usage. Our priority queue support the following operations:
+
+\begin{itemize}
+  \item $void \textbf{ veb\_pq\_insert}(veb\_pq\_node * n, vebtree * tree)$
+  \item $void \textbf{ veb\_pq\_delete}(vebtree * tree, veb\_pq\_node * node)$
+  \item $veb\_pq\_node * \textbf{ veb\_pq\_deletemin}(vebtree * tree)$
+  \item $void \textbf{ veb\_pq\_decrease\_key}(vebtree * tree, veb\_pq\_node * node, uint32\_t delta)$
+\end{itemize}
+
+
+
 kort om BinHeap og FibHeap
 hvilke test cases har vi og hvorfor?
 test og plots

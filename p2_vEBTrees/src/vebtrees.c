@@ -458,6 +458,8 @@ void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b){
  * that tree. Any data that was still in the tree, will not be freed
  */
 void veb_destruct(vebtree *tree){
+	if (tree == NULL)
+		return;
 	if (tree->leaf)
 		free(tree->arr);
 	else {
