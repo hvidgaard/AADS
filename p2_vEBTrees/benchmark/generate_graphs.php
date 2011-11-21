@@ -5,8 +5,7 @@ require_once 'gnuplot/Plot.php';
 Graph::setDefaults(array(
 	'terminal' => 'png #FFFFFF nocrop enhanced font helvetica 18 size 1200,900',
 	'grid' => null,
-	'label' => '"Tree size"',
-	'xlabel' => '"vertices"',
+	'xlabel' => '"Vertices"',
 	'ylabel' => '"Time (ms)"',
 	'key' => 'bmargin'
 ));
@@ -43,6 +42,11 @@ $algorithms = array($binary, $fibonacci, $veb/*, $redblack*/);
 foreach($measurements as $measurement => $file) {
 	foreach($columns as $column => $columnName) {
 		foreach($generators as $generator => $generatorName)  {
+			$png = "graphs/{$generator}_{$columnName}_{$measurement}.png";
+			$eps = "graphs/{$generator}_{$columnName}_{$measurement}.eps";
+			if(file_exists($png) && file_exists($eps))
+				if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
+					continue;
 			$graph = new Graph;
 			$graph->title = "\"$generatorName graph $columnName\"";
 			foreach($algorithms as $algo) {
@@ -53,9 +57,9 @@ foreach($measurements as $measurement => $file) {
 				$plot->title = $algo->name;
 				$graph->addPlot($plot);
 			}
-			$graph->output("graphs/{$generator}_{$columnName}_{$measurement}.png");
+			$graph->output($png);
 			$graph->terminal = "epslatex";
-			$graph->output("graphs/{$generator}_{$columnName}_{$measurement}.eps");
+			$graph->output($eps);
 		}
 	}
 }
