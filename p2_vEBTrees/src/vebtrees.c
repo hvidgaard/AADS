@@ -16,7 +16,6 @@ int32_t veb_insert_tree(uint32_t index, void * data, vebtree * tree);
 void * veb_delete_tree(uint32_t index, vebtree * tree);
 void * veb_delete_leaf(uint32_t index, vebtree * tree);
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b);
-void veb_destruct(vebtree *tree);
 
 /*w is number of bits to use for the elements. Note
  *that the size of the entire datastructure will be 
@@ -227,10 +226,10 @@ void * veb_delete_leaf(uint32_t index, vebtree * tree){
 	tree->arr[index].value = 0;
 	tree->n--;
 	#ifdef DEBUG
-	int j;
 	if (tree->n == 1 && (tree->min != tree->max)){
 		printf("element min and max should be identical when n = 1\n");
 		#ifdef PRINT
+		int j;
 		printf("min is %d and max is %d in |", tree->min->value, tree->max->value);
 		for (j=0; j < tree->size; j++)
 				printf("%d|", tree->arr[j].value);
@@ -241,9 +240,10 @@ void * veb_delete_leaf(uint32_t index, vebtree * tree){
 	if (tree->n == 2 && (tree->min == tree->max)){
 		printf("element min and max should not the identical when n = 2\n");
 		#ifdef PRINT
+		int i;
 		printf("min is %d and max is %d in |", tree->min->value, tree->max->value);
-		for (j=0; j < tree->size; j++)
-				printf("%d|", tree->arr[j].value);
+		for (i=0; i < tree->size; i++)
+				printf("%d|", tree->arr[i].value);
 			printf("\n");
 		#endif
 		exit(2);
@@ -437,13 +437,12 @@ void * veb_findpred(uint32_t index, int32_t * pred, vebtree * tree){
 		}
 	}
 }
-
-
-/*
-void * veb_delete_min(vebtree * tree);
-
-void * veb_extract_min(vebtree * tree, int32_t * index);*/
-
+void * veb_delete_min(vebtree * tree){
+	if (tree->n)
+		return veb_delete(tree->min->value, tree);
+	else
+		return NULL;
+}
 /* Given a bitlength w, integer i to factor and pointer a, b
  * to where the upper and lower half should be - it will factor
  * i by simple bitshifting.
@@ -473,20 +472,6 @@ void veb_destruct(vebtree *tree){
 	free(tree);
 }
 
-
-
-
-
-
-
-
-
-
-void * veb_delete_min(vebtree * tree){
-	int32_t r;
-	veb_findsucc(0, &r,tree);
-	return veb_delete(r, tree);
-}
 
 /*void * veb_findsucc(uint32_t index, int32_t * succ, vebtree * tree){
 	//in a recursive tree

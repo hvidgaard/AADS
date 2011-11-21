@@ -6,20 +6,25 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "veb_pq.h"
 
 void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
 void indent(int in);
+void simpletest(vebtree *tree);
+int main2(int argc, char **argv);
+void testleafsize(int argc, char **argv);
 
 int main2(int argc, char **argv){
 	vebtree *tree = veb_initialize(5, 4);
 	simpletest(tree);
+	return 0;
 }
 
 void testleafsize(int argc, char **argv){
 	if (argc != 3){
 		printf("Please use 2 input values - first for the bitsize of the tree, and the second for the threashold. You can use -1 to let the system determine the best one\n");
-		return 1;
+		return;
 	}
 	int thres = 4;
 	int cont = 1;
