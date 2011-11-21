@@ -7,7 +7,9 @@ The vEB tree can be used as a priority queue if we build some extra logic on top
   \item $veb\_pq\_node * \textbf{ veb\_pq\_deletemin}(vebtree * tree)$
   \item $void \textbf{ veb\_pq\_decrease\_key}(vebtree * tree, veb\_pq\_node * node, uint32\_t delta)$
 \end{itemize}
+A \textbf{veb\_pq\_data} is just a simple structure that contain a pointer to the first \textbf{veb\_pq\_node} in a linked list of nodes, and a counter, $n$ that is the number of nodes in the linked list. A \textbf{veb\_pq\_node} contains a pointer to the next and previous nodes, if any, and a pointer to the \textbf{veb\_pq\_data} holding the node; in particular, this last pointer allows us to check if a node is in the search tree or not, but seeing if the pointer is $NULL$. It also have an unsigned integer field that is the priority. Any auxilary data should also be included in this node - we just have a node number to indicate which node in the graph for our dijkstras algorithm it represent.
 
+\subsubsection*{\textbf{veb\_pq\_insert}}
 
 
 kort om BinHeap og FibHeap
