@@ -76,7 +76,7 @@ int main(int argc, char **argv){
 				break;
 		case 4:
 			printf("\nTesting vEB priority queue performance with Dijkstra\n");
-			testperformancePQdijkstra();
+			testperformancePQdijkstra(100);
 			if (br)
 				break;
 		case 6:
