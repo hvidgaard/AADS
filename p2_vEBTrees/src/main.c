@@ -1,14 +1,15 @@
 #include <stdio.h>
-#include "vebtrees.h"
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "veb_pq.h"
-#include "FibonacciHeap.h"
 #include "BinaryHeap.h"
+#include "FibonacciHeap.h"
+#include "vebtrees.h"
+#include "veb_pq.h"
+#include "rb_tree.h"
 
 #define ITR 10000000
 
@@ -38,7 +39,10 @@ int main(int argc, char **argv){
 
 void testcorrectness(int itr){
 	int MAX = pow(2, 24);
-	double vinit, binit, vins, bins, vdm, bdm;
+	double
+		vinit, binit, rinit,
+		vins, bins, rins,
+		vdm, bdm, rdm;
 	clock_t start = clock();
 	vebtree * vebt = veb_initialize(24, 64);
 	clock_t end = clock();
@@ -49,58 +53,88 @@ void testcorrectness(int itr){
 	end = clock();
 	binit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	//FibHeap * fheap = fib_make_heap();
+	start = clock();
+	rb_tree* rbt = rb_init(24, 64);
+	end = clock();
+	rinit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	
 	
-	printf("vEB init: %f ms - bhinit: %f ms\n", vinit, binit);
+	printf("vEB init: %f ms - bhinit: %f ms - rinit: %f ms\n", vinit, binit, rinit);
 	int i;
 	uint8_t * arr = calloc(MAX, sizeof(uint8_t));
 	if (arr == NULL){
 		printf("dang...\n");
 		exit(1);
 	}
-	vins = 0;
 	bins = 0;
-	vdm = 0;
+	vins = 0;
+	rins = 0;
+	
 	bdm = 0;
+	vdm = 0;
+	rdm = 0;
 	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		while(arr[s])
 			s = random() % MAX;
 		arr[s] = 1;
 		start = clock();
-		veb_insert(s, NULL, vebt);
-		end = clock();
-		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		start = clock();
 		bh_insert(s, NULL, bheap);
 		end = clock();
 		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		//fib_insert(s, NULL, fheap);
-	}
-	printf("spend time inserting: vEB: %f ms - BH: %f ms\n", vins, bins);
-	printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
-	uint32_t v, b, f;
-	for (i = 0; i < itr; i++){
-		v = vebt->min->value;
 		start = clock();
-		veb_delete_min(vebt);
+		veb_insert(s, NULL, vebt);
 		end = clock();
-		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		//fib_insert(s, NULL, fheap);
+		start = clock();
+		rb_insert(s, rbt);
+		end = clock();
+		rins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	}
+	printf("spend time inserting: vEB: %f ms - BH: %f ms - RB: %f ms\n", vins, bins, rins);
+	printf("avg: vEB %f ms - BH: %f ms - RB: %f ms\n", vins/itr, bins/itr, rins/itr);
+	uint32_t v, b, f, r;
+	
+	start = clock();
+	rb_node* node = rbt->root;
+	while(!is_leaf(node->left))
+			node = node->left;
+	rb_node* successor = node;
+	end = clock();
+	rdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	
+	for (i = 0; i < itr; i++){
 		start = clock();
 		b = bh_delete_min(bheap)->key;
 		end = clock();
 		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
+		start = clock();
+		v = vebt->min->value;
+		veb_delete_min(vebt);
+		end = clock();
+		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
+		start = clock();
+		r = node->key;
+		successor = rb_succ(node);
+		rb_delete(node);
+		node = successor;
+		end = clock();
+		rdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		//v = fheap->min->key;
 		//fib_delete_min(fheap);
 		if (b != v)
 			exit(-1);
 		//printf("vEB: %d, bin: %d\n", v, b);
 	}
-	printf("spend time delete min: vEB: %f ms - BH: %f ms\n", vdm, bdm);
-	printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
+	printf("spend time delete min: vEB: %f ms - BH: %f ms - RB: %f ms\n", vdm, bdm, rdm);
+	printf("avg: vEB %f ms - BH: %f ms - RB: %f ms\n", vdm/itr, bdm/itr, rdm/itr);
 	free(arr);
-	veb_destruct(vebt);
 	bh_destruct(bheap);
+	veb_destruct(vebt);
+	rb_destruct(rbt);
 }
 
 void testleafsize(int argc, char **argv){

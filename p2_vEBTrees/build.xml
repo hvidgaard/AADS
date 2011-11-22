@@ -29,6 +29,19 @@
 		<condition property="isMac">
 			<os family="mac" />
 		</condition>
+		<cc outfile="${bin}/test" outtype="executable"
+			subsystem="console" objdir="${obj}" debug="${debug}">
+			<includepath>
+				<pathelement path="${src}"/>
+			</includepath>
+			<includepath if="isUnix">
+				<pathelement path="/usr/include"/>
+			</includepath>
+			<libset libs="m" if="isUnix" />
+			<libset libs="stdc++" />
+			<compilerarg value="-Wall" />
+			<fileset dir="${src}" includes="*.c" excludes="benchmark.cpp" />
+		</cc>
 		<cc outfile="${bin}/benchmark" outtype="executable"
 			subsystem="console" objdir="${obj}" debug="${debug}">
 			<includepath>

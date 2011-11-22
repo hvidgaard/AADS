@@ -4,7 +4,7 @@
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
 #include "vebtrees.h"
-#include "rbtree.h"
+#include "rb_tree.h"
 
 void sort_bin(uint size, uint* list) {
 	binary_heap* heap = bh_init_heap(size);

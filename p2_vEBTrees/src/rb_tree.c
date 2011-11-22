@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "rbtree.h"
+#include "rb_tree.h"
 
 void is_correct(rb_tree* tree) {
 	if(!tree->root)
@@ -32,6 +32,15 @@ void test_down(rb_node* n) {
 	test_down(n->right);
 }
 
+rb_tree* rb_init() {
+	rb_tree* tree = calloc(1, sizeof(rb_tree));
+	return tree;
+}
+
+void rb_destruct(rb_tree* tree) {
+	free(tree);
+}
+
 rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 	rb_node* n = calloc(1,sizeof(rb_node));
 	n->key = key;
@@ -45,21 +54,30 @@ rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 	n->right->color = BLACK;
 	n->right->parent = n;
 	n->right->tree = tree;
+	#ifdef DEBUG
 	is_correct(tree);
+	#endif
 	if(tree->root)
 		tree_insert(n, tree->root);
 	else
 		tree->root = n;
+	#ifdef DEBUG
 	is_correct(tree);
-	tree->n++;
+	#endif
 	insert_case1(n);
+	#ifdef DEBUG
 	is_correct(tree);
+	#endif
+	tree->n++;
 	return n;
 }
 
 void rb_delete(rb_node* n) {
+	#ifdef DEBUG
 	assert(is_leaf(n->left) || is_leaf(n->right));
+	#endif
 	delete_one_child(n);
+	n->tree->n--;
 }
 
 rb_node* rb_pred(rb_node* n) {
@@ -79,9 +97,13 @@ rb_node* rb_succ(rb_node* n) {
 }
 
 void tree_insert(rb_node* n, rb_node* leaf) {
+	#ifdef DEBUG
 	assert(leaf);
+	#endif
 	if(is_leaf(leaf)) {
+		#ifdef DEBUG
 		assert(leaf->parent);
+		#endif
 		if(leaf->parent->left == leaf)
 			leaf->parent->left = n;
 		else
@@ -114,9 +136,11 @@ void delete_one_child(rb_node* n) {
 }
 
 void rotate_right(rb_node* pivot) {
+	#ifdef DEBUG
 	printf("rotate right\n");
 	is_correct(pivot->tree);
 	assert(!is_leaf(pivot->left));
+	#endif
 	rb_node* root = pivot->left;
 	rb_node* move = root->right;
 	
@@ -133,18 +157,26 @@ void rotate_right(rb_node* pivot) {
 			root->parent->left = root;
 		else
 			root->parent->right = root;
+		#ifdef DEBUG
 		printf("Root stays\n");
+		#endif
 	} else {
+		#ifdef DEBUG
 		printf("New root\n");
+		#endif
 		root->tree->root = root;
 	}
+	#ifdef DEBUG
 	is_correct(root->tree);
+	#endif
 }
 
 void rotate_left(rb_node* pivot) {
+	#ifdef DEBUG
 	printf("rotate left\n");
 	is_correct(pivot->tree);
 	assert(!is_leaf(pivot->right));
+	#endif
 	rb_node* root = pivot->right;
 	rb_node* move = root->left;
 	
@@ -161,12 +193,18 @@ void rotate_left(rb_node* pivot) {
 			root->parent->left = root;
 		else
 			root->parent->right = root;
+		#ifdef DEBUG
 		printf("Root stays\n");
+		#endif
 	} else {
+		#ifdef DEBUG
 		printf("New root\n");
+		#endif
 		root->tree->root = root;
 	}
+	#ifdef DEBUG
 	is_correct(root->tree);
+	#endif
 }
 
 rb_node* sibling(rb_node* n) {
@@ -194,6 +232,7 @@ rb_node* uncle(rb_node* n) {
 }
 
 int is_leaf(rb_node* n) {
+	#ifdef DEBUG
 	if(n->left == NULL || n->right == NULL) {
 		assert(n->left == NULL && n->right == NULL);
 		return 1;
@@ -201,6 +240,8 @@ int is_leaf(rb_node* n) {
 		assert(n->left != NULL && n->right != NULL);
 		return 0;
 	}
+	#endif
+	return n->left == NULL;
 }
 
 void replace_node(rb_node* n, rb_node* child) {
