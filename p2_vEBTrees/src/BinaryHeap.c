@@ -106,14 +106,14 @@ bh_element *bh_delete_element(unsigned int e, binary_heap *h){
 		h->size--;
 		bh_min_heapify(e, h);
 	}
-	else if (h->size == 1 || e == 1)
+	else if (h->size == 1 && e == 1)
 		h->size--;
 	else
 		return NULL;
-	free(h->data[h->size+1]);
 	result->data = h->data[h->size+1]->data;
 	result->key = h->data[h->size+1]->key;
 	result->index = 0;
+	free(h->data[(h->size+1)]);
 	return result;
 }
 
