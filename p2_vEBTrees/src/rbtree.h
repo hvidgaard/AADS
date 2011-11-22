@@ -29,6 +29,9 @@ void rb_delete(rb_node* n);
 rb_node* rb_pred(rb_node* n);
 rb_node* rb_succ(rb_node* n);
 
+void is_correct(rb_node* n);
+void test_down(rb_node* n);
+
 void tree_insert(rb_node* n, rb_node* leaf);
 void delete_one_child(rb_node* n);
 int is_leaf(rb_node* n);

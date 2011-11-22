@@ -2,6 +2,37 @@
 #include <assert.h>
 #include "rbtree.h"
 
+void is_correct(rb_node* n) {
+	while(n->parent)
+		n = n->parent;
+	if(n->left) {
+		assert(n->right);
+	} else {
+		assert(!n->right);
+		assert(!n->key);
+		return;
+	}
+	test_down(n->left);
+	test_down(n->right);
+	assert(n->left != n->right);
+}
+
+void test_down(rb_node* n) {
+	assert(n->parent);
+	assert(n == n->parent->left || n == n->parent->right);
+	if(n->left) {
+		assert(n->right);
+	} else {
+		assert(!n->right);
+		assert(!n->key);
+		return;
+	}
+	
+	assert(n->left != n->right);
+	test_down(n->left);
+	test_down(n->right);
+}
+
 rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 	rb_node* n = calloc(1,sizeof(rb_node));
 	n->key = key;
@@ -16,6 +47,7 @@ rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 		tree_insert(n, tree->root);
 	else
 		tree->root = n;
+	is_correct(tree->root);
 	tree->n++;
 	insert_case1(n);
 	return n;
