@@ -55,9 +55,10 @@ void sort_rb(uint size, uint* list) {
 	while(!is_leaf(node->left))
 		node = node->left;
 	
-	rb_node* successor = rb_succ(node);
+	rb_node* successor = node;
 	while((node = successor)) {
 		successor = rb_succ(node);
+		printf("Deleting %d\n", node->key);
 		rb_delete(node);
 	}
 	free(tree);

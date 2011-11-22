@@ -16,11 +16,13 @@ struct rb_node {
 	rb_node* parent;
 	rb_node* right;
 	rb_node* left;
+	rb_tree* tree;
 	void* data;
 };
 
 struct rb_tree {
 	rb_node* root;
+	rb_node* nil;
 	uint32_t n;
 };
 
@@ -29,7 +31,7 @@ void rb_delete(rb_node* n);
 rb_node* rb_pred(rb_node* n);
 rb_node* rb_succ(rb_node* n);
 
-void is_correct(rb_node* n);
+void is_correct(rb_tree* tree);
 void test_down(rb_node* n);
 
 void tree_insert(rb_node* n, rb_node* leaf);

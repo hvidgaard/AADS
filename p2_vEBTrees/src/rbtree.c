@@ -1,17 +1,14 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include "rbtree.h"
 
-void is_correct(rb_node* n) {
-	while(n->parent)
-		n = n->parent;
-	if(n->left) {
-		assert(n->right);
-	} else {
-		assert(!n->right);
-		assert(!n->key);
+void is_correct(rb_tree* tree) {
+	if(!tree->root)
 		return;
-	}
+	rb_node* n = tree->root;
+	assert(n->left);
+	assert(n->right);
 	test_down(n->left);
 	test_down(n->right);
 	assert(n->left != n->right);
@@ -20,14 +17,16 @@ void is_correct(rb_node* n) {
 void test_down(rb_node* n) {
 	assert(n->parent);
 	assert(n == n->parent->left || n == n->parent->right);
-	if(n->left) {
-		assert(n->right);
-	} else {
+	if(!n->left) {
 		assert(!n->right);
 		assert(!n->key);
 		return;
 	}
-	
+	assert(n->right);
+	if(n->left->left)
+		assert(n->key > n->left->key);
+	if(n->right->right)
+		assert(n->key <= n->right->key);
 	assert(n->left != n->right);
 	test_down(n->left);
 	test_down(n->right);
@@ -37,19 +36,24 @@ rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 	rb_node* n = calloc(1,sizeof(rb_node));
 	n->key = key;
 	n->color = RED;
+	n->tree = tree;
 	n->left = calloc(1,sizeof(rb_node));
 	n->left->color = BLACK;
 	n->left->parent = n;
+	n->left->tree = tree;
 	n->right = calloc(1,sizeof(rb_node));
 	n->right->color = BLACK;
 	n->right->parent = n;
+	n->right->tree = tree;
+	is_correct(tree);
 	if(tree->root)
 		tree_insert(n, tree->root);
 	else
 		tree->root = n;
-	is_correct(tree->root);
+	is_correct(tree);
 	tree->n++;
 	insert_case1(n);
+	is_correct(tree);
 	return n;
 }
 
@@ -110,6 +114,7 @@ void delete_one_child(rb_node* n) {
 }
 
 void rotate_right(rb_node* q) {
+	is_correct(q->tree);
 	rb_node* p = q->left;
 	rb_node* b = p->right;
 	
@@ -120,14 +125,20 @@ void rotate_right(rb_node* q) {
 	
 	p->right = q;
 	q->parent = p;
-	
-	if (q == p->parent->left)
-		p->parent->left = p;
-	else
-		p->parent->right = p;
+	if(p->parent) {
+		if (q == p->parent->left)
+			p->parent->left = p;
+		else
+			p->parent->right = p;
+	} else {
+		printf("New root\n");
+		p->tree->root = p;
+	}
+	is_correct(q->tree);
 }
 
 void rotate_left(rb_node* p) {
+	is_correct(p->tree);
 	rb_node* q = p->right;
 	rb_node* b = q->left;
 	
@@ -139,11 +150,16 @@ void rotate_left(rb_node* p) {
 	q->left = p;
 	p->parent = q;
 	
-	if (p == q->parent->left)
-		q->parent->left = q;
-	else
-		q->parent->right = q;
-	
+	if(q->parent) {
+		if (p == q->parent->left)
+			q->parent->left = q;
+		else
+			q->parent->right = q;
+	} else {
+		printf("New root\n");
+		q->tree->root = p;
+	}
+	is_correct(p->tree);
 }
 
 rb_node* sibling(rb_node* n) {
