@@ -1,20 +1,25 @@
 sourcedir				:= src
 output					:= debug
-Ccompileroptions		:= -Wall -std=c99 -O2
-C89options				:= -Wall -std=c99 -O2
+Ccompileroptions		:= -Wall -std=gnu99 -O2
+C89options				:= -Wall -std=gnu99 -O2
 Cppcompileroptions		:= -Wall -O2
 includes				:= -I./$(sourcedir)
 outputfile				:= p2_vebt
 
-objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o main.o graph_generators.o benchmark.o dijkstra.o misc.o rb_int_key.o red_black_tree.o stack.o veb_pq.o sort.o list_generators.o
+objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o graph_generators.o benchmark.o dijkstra.o misc.o rb_int_key.o red_black_tree.o stack.o veb_pq.o sort.o list_generators.o
 
 prebuild:
 	mkdir -p $(output)
 
 build: $(objectfiles)
-	gcc ./$(output)/list_generators.o ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
+	gcc ./$(output)/list_generators.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
 
-all: prebuild build
+build2: $(objectfiles) main.o
+	gcc ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm
+
+benchmark: prebuild build
+
+simplecli: prebuild build2
 
 clean:
 	rm -f ./$(output)/list_generators.o

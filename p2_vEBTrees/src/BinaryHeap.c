@@ -30,7 +30,6 @@ void bh_destruct(binary_heap * bh){
 	int i;
 	for (i = 1; i <= bh->size; i++)
 		free(bh->data[i]);
-	free(bh->data);
 	free(bh);
 }
 
@@ -112,7 +111,6 @@ bh_element *bh_delete_element(unsigned int e, binary_heap *h){
 		h->size--;
 	else
 		return NULL;
-	
 	result->data = h->data[h->size+1]->data;
 	result->key = h->data[h->size+1]->key;
 	result->index = 0;
