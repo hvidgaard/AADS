@@ -113,53 +113,56 @@ void delete_one_child(rb_node* n) {
 	free(n);
 }
 
-void rotate_right(rb_node* q) {
-	is_correct(q->tree);
-	rb_node* p = q->left;
-	rb_node* b = p->right;
+void rotate_right(rb_node* pivot) {
+	printf("rotate right\n");
+	is_correct(pivot->tree);
+	rb_node* root = pivot->left;
+	rb_node* move = root->right;
 	
-	p->parent = q->parent;
+	root->parent = pivot->parent;
 	
-	q->left = b;
-	b->parent = q;
+	pivot->left = move;
+	move->parent = pivot;
 	
-	p->right = q;
-	q->parent = p;
-	if(p->parent) {
-		if (q == p->parent->left)
-			p->parent->left = p;
+	root->right = pivot;
+	pivot->parent = root;
+	
+	if(root->parent) {
+		if (pivot == root->parent->left)
+			root->parent->left = root;
 		else
-			p->parent->right = p;
+			root->parent->right = root;
 	} else {
 		printf("New root\n");
-		p->tree->root = p;
+		root->tree->root = root;
 	}
-	is_correct(q->tree);
+	is_correct(root->tree);
 }
 
-void rotate_left(rb_node* p) {
-	is_correct(p->tree);
-	rb_node* q = p->right;
-	rb_node* b = q->left;
+void rotate_left(rb_node* pivot) {
+	printf("rotate left\n");
+	is_correct(pivot->tree);
+	rb_node* root = pivot->right;
+	rb_node* move = root->left;
 	
-	q->parent = p->parent;
+	root->parent = pivot->parent;
 	
-	p->right = b;
-	b->parent = p;
+	pivot->right = move;
+	move->parent = pivot;
 	
-	q->left = p;
-	p->parent = q;
+	root->left = pivot;
+	pivot->parent = root;
 	
-	if(q->parent) {
-		if (p == q->parent->left)
-			q->parent->left = q;
+	if(root->parent) {
+		if (pivot == root->parent->left)
+			root->parent->left = root;
 		else
-			q->parent->right = q;
+			root->parent->right = root;
 	} else {
 		printf("New root\n");
-		q->tree->root = p;
+		root->tree->root = root;
 	}
-	is_correct(p->tree);
+	is_correct(root->tree);
 }
 
 rb_node* sibling(rb_node* n) {
