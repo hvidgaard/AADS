@@ -53,7 +53,7 @@ int main(int argc, char **argv){
 				break;
 		case 2:
 			printf("\nTesting VEB performance by sorting random elements\n");
-			for (i = 4096; i < 10000000; i *= 2){
+			for (i = 4096; i < 20000000; i *= 2){
 				printf("\nTesting with %d elements;\n",i);
 				testVEBperformance_random_sort(i, 64);
 			}
@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 				break;
 		case 3:
 			printf("\nTesting vEB priority queue performance with random elements\n");
-			for (i = 4096; i < 10000000; i *= 2){
+			for (i = 4096; i < 20000000; i *= 2){
 				printf("\nTesting with %d elements;\n",i);
 				testPQperformance_random(i);
 			}
@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 void testcorrectnessveb(){
-	int itr = 10000;
+	int itr = 10000000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_initialize(24, 64);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -93,7 +93,7 @@ void testcorrectnessveb(){
 	
 	uint8_t * arr = calloc(MAX, sizeof(uint8_t));
 	int i;
-	if (arr == NULL){
+	if (arr == NULL){	
 		printf("dang... could not allocate enough memory\n");
 		exit(1);
 	}
@@ -114,7 +114,7 @@ void testcorrectnessveb(){
 		e = bh_delete_min(bheap);
 		b = e->key;
 		free(e);
-		v = fheap->min->key;
+		f = fib_find_min(fheap)->key;
 		fib_delete_min(fheap);
 		if (b != v || b != f || v !=f){
 			printf("one of the datastructures was not correct\n");
