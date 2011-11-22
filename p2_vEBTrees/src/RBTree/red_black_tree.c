@@ -311,6 +311,26 @@ rb_red_blk_node* TreeSuccessor(rb_red_blk_tree* tree,rb_red_blk_node* x) {
     return(y);
   }
 }
+rb_red_blk_node * RB_TreeMinimum(rb_red_blk_tree* tree,rb_red_blk_node* x){
+	while (x->left != tree->nil)
+		x = x->left;
+	return x;
+}
+
+rb_red_blk_node * RB_TreeSucc(rb_red_blk_tree* tree,rb_red_blk_node* x){
+	rb_red_blk_node* nil=tree->nil;
+	if (x->right != nil) {
+		return RB_TreeMinimum(tree, x);
+	}
+	else {
+		rb_red_blk_node * y = x->parent;
+		while (y != nil && x == y->right){
+			x = y;
+			y = y->parent;
+		}
+		return y;
+	}
+}
 
 /***********************************************************************/
 /*  FUNCTION:  Treepredecessor  */

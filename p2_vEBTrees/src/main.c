@@ -16,8 +16,13 @@ int main2(int argc, char **argv);
 void testleafsize(int argc, char **argv);
 
 int main2(int argc, char **argv){
-	vebtree *tree = veb_initialize(5, 4);
-	simpletest(tree);
+	//vebtree *tree = veb_initialize(5, 4);
+	//simpletest(tree);
+	uint32_t * list = malloc(30 * sizeof(uint32_t));
+	int i;
+	for (i = 0; i < 30; i++)
+		list[i] = 1;
+	sort_rb(30, list);
 	return 0;
 }
 

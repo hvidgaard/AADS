@@ -53,12 +53,13 @@ void sort_rb(uint size, uint* list) {
 	while(node->left != tree->nil)
 		node = node->left;
 	
-	while((node = TreeSuccessor(tree, node)));
+	while(node != tree->nil)
+		node = RB_TreeSucc(tree, node);
 	RBTreeDestroy(tree);
 }
 
 int CompareKeys(const void* a, const void* b) {
-	if( *(int*)a > *(int*)b) return(1);
-	if( *(int*)a < *(int*)b) return(-1);
+	if( *(uint*)a > *(uint*)b) return(1);
+	if( *(uint*)a < *(uint*)b) return(-1);
 	return(0);
 }
