@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <assert.h>
 #include "rbtree.h"
 
 rb_node* rb_insert(uint32_t key, rb_tree* tree) {
@@ -6,24 +8,73 @@ rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 	n->color = RED;
 	n->left = calloc(1,sizeof(rb_node));
 	n->left->color = BLACK;
+	n->left->parent = n;
 	n->right = calloc(1,sizeof(rb_node));
 	n->right->color = BLACK;
-	tree_insert(n, tree->root);
+	n->right->parent = n;
+	if(tree->root)
+		tree_insert(n, tree->root);
+	else
+		tree->root = n;
+	tree->n++;
+	insert_case1(n);
 	return n;
 }
 
-void tree_insert(rb_node n, rb_node parent) {
-	if(parent == NULL) {
-		if(parent->parent->left == parent)
-			parent->parent->left = node;
+void rb_delete(rb_node* n) {
+	assert(is_leaf(n->left) || is_leaf(n->right));
+	delete_one_child(n);
+}
+
+rb_node* rb_pred(rb_node* n) {
+	if(!is_leaf(n->left))
+		return n->left;
+	while(n->parent && n->parent->right != n)
+		n = n->parent;
+	return n->parent;
+}
+
+rb_node* rb_succ(rb_node* n) {
+	if(!is_leaf(n->right))
+		return n->right;
+	while(n->parent && n->parent->left != n)
+		n = n->parent;
+	return n->parent;
+}
+
+void tree_insert(rb_node* n, rb_node* leaf) {
+	assert(leaf);
+	if(is_leaf(leaf)) {
+		assert(leaf->parent);
+		if(leaf->parent->left == leaf)
+			leaf->parent->left = n;
 		else
-			parent->parent->right = node;
-		node->parent = parent;
+			leaf->parent->right = n;
+		n->parent = leaf->parent;
+		free(leaf);
+	} else {
+		if(n->key < leaf->key) {
+			tree_insert(n, leaf->left);
+		} else {
+			tree_insert(n, leaf->right);
+		}
 	}
-	if(n->key < parent->key)
-		tree_insert(n, parent->left);
-	else
-		tree_insert(n, parent->right);
+}
+
+void delete_one_child(rb_node* n) {
+	/*
+	* Precondition: n has at most one non-null child.
+	*/
+	rb_node* child = is_leaf(n->right) ? n->left : n->right;
+	
+	replace_node(n, child);
+	if (n->color == BLACK) {
+		if (child->color == RED)
+			child->color = BLACK;
+		else
+			delete_case1(child);
+	}
+	free(n);
 }
 
 void rotate_right(rb_node* q) {
@@ -87,6 +138,20 @@ rb_node* uncle(rb_node* n) {
 		return g->left;
 }
 
+int is_leaf(rb_node* n) {
+	return n->left == NULL;
+}
+
+void replace_node(rb_node* n, rb_node* child) {
+	if(n->parent) {
+		if(n->parent->left == n)
+			n->parent->left = child;
+		else
+			n->parent->right = child;
+		child->parent = n->parent;
+	}
+}
+
 void insert_case1(rb_node* n) {
 	if (n->parent == NULL)
 		n->color = BLACK;
@@ -140,22 +205,6 @@ void insert_case5(rb_node* n) {
 	} else if ((n == n->parent->right) && (n->parent == g->right)) {
 		rotate_left(g);
 	}
-}
-
-void delete_one_child(rb_node* n) {
-	/*
-	* Precondition: n has at most one non-null child.
-	*/
-	rb_node* child = is_leaf(n->right) ? n->left : n->right;
-	
-	replace_node(n, child);
-	if (n->color == BLACK) {
-		if (child->color == RED)
-			child->color = BLACK;
-		else
-			delete_case1(child);
-	}
-	free(n);
 }
 
 void delete_case1(rb_node* n) {

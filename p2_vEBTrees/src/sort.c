@@ -4,7 +4,7 @@
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
 #include "vebtrees.h"
-#include "RBTree/red_black_tree.h"
+#include "rbtree.h"
 
 void sort_bin(uint size, uint* list) {
 	binary_heap* heap = bh_init_heap(size);
@@ -43,23 +43,22 @@ void sort_veb(uint size, uint* list) {
 }
 
 void sort_rb(uint size, uint* list) {
-	rb_red_blk_tree* tree = RBTreeCreate(CompareKeys, NullFunction, NullFunction, NullFunction, NullFunction);
+	rb_tree* tree = calloc(1, sizeof(rb_tree));
 	
 	uint i;
-	for (i = 0; i < size; i++)
-		RBTreeInsert(tree, &list[i], NULL);
+	for (i = 0; i < size; i++) {
+		printf("Inserting %d\n", list[i]);
+		rb_insert(list[i], tree);
+	}
 	
-	rb_red_blk_node* node = tree->root;
-	while(node->left != tree->nil)
+	rb_node* node = tree->root;
+	while(!is_leaf(node->left))
 		node = node->left;
 	
-	while(node != tree->nil)
-		node = RB_TreeSucc(tree, node);
-	RBTreeDestroy(tree);
-}
-
-int CompareKeys(const void* a, const void* b) {
-	if( *(uint*)a > *(uint*)b) return(1);
-	if( *(uint*)a < *(uint*)b) return(-1);
-	return(0);
+	rb_node* successor = rb_succ(node);
+	while((node = successor)) {
+		successor = rb_succ(node);
+		rb_delete(node);
+	}
+	free(tree);
 }
