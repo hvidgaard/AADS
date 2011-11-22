@@ -10,8 +10,10 @@ void sort_bin(uint size, uint* list) {
 	binary_heap* heap = bh_init_heap(size);
 	
 	uint i;
-	for (i = 0; i < size; i++)
+	bh_element *e;
+	for (i = 0; i < size; i++){
 		bh_insert(list[i], NULL, heap);
+	}
 	for (i = 0; i < size; i++)
 		bh_delete_min(heap);
 	

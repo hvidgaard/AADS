@@ -11,11 +11,10 @@ typedef struct binary_heap {
 	unsigned int max_size;
 	unsigned int size;
 	bh_element **data;
-	//unsigned int **elements;
 } binary_heap;
 
 binary_heap *bh_init_heap(unsigned int size);
-bh_element *bh_insert(unsigned int key, void *data, binary_heap *h);
+bh_element * bh_insert(int key, void * data, binary_heap *h);
 bh_element *bh_find_min(binary_heap *h);
 bh_element *bh_delete_min(binary_heap *h);
 binary_heap *bh_meld(binary_heap *h1, binary_heap *h2);

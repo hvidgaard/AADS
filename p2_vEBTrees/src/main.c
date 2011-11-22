@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 void testcorrectnessveb(){
-	int itr = 1000000;
+	int itr = 10000000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_initialize(24, 64);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -97,6 +97,7 @@ void testcorrectnessveb(){
 		printf("dang... could not allocate enough memory\n");
 		exit(1);
 	}
+	bh_element * e;
 	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		while(arr[s])
@@ -107,13 +108,12 @@ void testcorrectnessveb(){
 		//fib_insert(s, NULL, fheap);
 	}
 	uint32_t v, b; //f;
-	bh_element * bnode;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
 		veb_delete_min(vebt);
-		bnode = bh_delete_min(bheap);
-		b = bnode->key;
-		free(b);
+		e = bh_delete_min(bheap);
+		b = e->key;
+		free(e);
 		//v = fheap->min->key;
 		//fib_delete_min(fheap);
 		if (b != v){
@@ -122,12 +122,13 @@ void testcorrectnessveb(){
 			exit(-1);
 		}
 	}
-	printf("all data structures agree, so they can be assumed correct\n");
+	printf("all data structures agree, so they can be assumed correct - %d -\n", bheap->size);
 	free(arr);
 	veb_destruct(vebt);
 	bh_destruct(bheap);
 }
 void testcorrectnessvebpq(){
+	int itr = 10000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_pq_init(24);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -135,8 +136,8 @@ void testcorrectnessvebpq(){
 	
 	int i;
 	veb_pq_node * n;
-	bh_element * nn;
-	for (i = 0; i < 10000000; i++){
+	bh_element * e;
+	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		veb_pq_node * n = malloc(sizeof(veb_pq_node));
 		n->node_prio = s;
@@ -145,13 +146,13 @@ void testcorrectnessvebpq(){
 		//fib_insert(s, NULL, fheap);
 	}
 	uint32_t v, b; //f;
-	for (i = 0; i < 10000000; i++){
+	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
 		n = veb_pq_deletemin(vebt);;
 		free(n);
-		nn = bh_delete_min(bheap);
-		b = nn->key;
-		free(nn);
+		e = bh_delete_min(bheap);
+		b = e->key;
+		free(e);
 		//v = fheap->min->key;
 		//fib_delete_min(fheap);
 		if (b != v){
@@ -187,7 +188,7 @@ void testPQperformance_random(int itr){
 	vdm = 0;
 	bdm = 0;
 	veb_pq_node * n;
-	bh_element * nn;
+	bh_element * e;
 	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		veb_pq_node * n = malloc(sizeof(veb_pq_node));
@@ -214,10 +215,10 @@ void testPQperformance_random(int itr){
 		free(n);
 		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		start = clock();
-		nn = bh_delete_min(bheap);
+		e = bh_delete_min(bheap);
 		end = clock();
-		b = nn->key;
-		free(nn);
+		b = e->key;
+		free(e);
 		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		//v = fheap->min->key;
 		//fib_delete_min(fheap);
@@ -259,6 +260,7 @@ void testVEBperformance_random_sort(int itr, int thres){
 	bins = 0;
 	vdm = 0;
 	bdm = 0;
+	bh_element *e;
 	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		while(arr[s])
@@ -268,7 +270,6 @@ void testVEBperformance_random_sort(int itr, int thres){
 		veb_insert(s, NULL, vebt);
 		end = clock();
 		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		start = clock();
 		bh_insert(s, NULL, bheap);
 		end = clock();
 		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
@@ -277,7 +278,6 @@ void testVEBperformance_random_sort(int itr, int thres){
 	printf("spend time inserting: vEB: %f ms - BH: %f ms\n", vins, bins);
 	printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
 	uint32_t v, b; //f;
-	bh_element * bnode;
 	for (i = 0; i < itr; i++){
 		start = clock();
 		v = vebt->min->value;
@@ -285,10 +285,10 @@ void testVEBperformance_random_sort(int itr, int thres){
 		end = clock();
 		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		start = clock();
-		bnode = bh_delete_min(bheap);
+		e= bh_delete_min(bheap);
 		end = clock();
-		b = bnode->key;
-		free(b);
+		b = e->key;
+		free(e);
 		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		//v = fheap->min->key;
 		//fib_delete_min(fheap);
