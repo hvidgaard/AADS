@@ -4,7 +4,7 @@
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
 #include "vebtrees.h"
-#include "rbtree.h"
+#include "rb_tree.h"
 
 void sort_bin(uint size, uint* list) {
 	binary_heap* heap = bh_init_heap(size);
@@ -44,23 +44,27 @@ void sort_veb(uint size, uint* list) {
 }
 
 void sort_rb(uint size, uint* list) {
-	rb_tree* tree = calloc(1, sizeof(rb_tree));
-	
+	rb_tree* tree = rb_init();
+		
 	uint i;
 	for (i = 0; i < size; i++) {
-		printf("Inserting %d\n", list[i]);
 		rb_insert(list[i], tree);
+		printf("Inserting %d\n", list[i]);
 	}
 	
 	rb_node* node = tree->root;
-	while(!is_leaf(node->left))
+	while(!is_leaf(node->left, tree))
 		node = node->left;
 	
 	rb_node* successor = node;
 	while((node = successor)) {
-		successor = rb_succ(node);
+		successor = rb_succ(node, tree);
 		printf("Deleting %d\n", node->key);
-		rb_delete(node);
+		if(successor && successor->key < node->key) {
+			printf("Successor is wrong.\n");
+			abort();
+		}
+		rb_delete(node, tree);
 	}
 	free(tree);
 }
