@@ -23,8 +23,15 @@ binary_heap *bh_init_heap(unsigned int size) {
 	h->max_size = size;
 	h->size = 0;
 	h->data = malloc((size+1) * sizeof(bh_element *));
-	//h->elements = malloc(size *sizeof(unsigned int *));
+	//h-> = malloc(size *sizeof(unsigned int *));
 	return h;
+}
+void bh_destruct(binary_heap * bh){
+	int i;
+	for (i = 1; i <= bh->size; i++)
+		free(bh->data[i]);
+	free(bh->data);
+	free(bh);
 }
 
 /* Will return a pointer to the element

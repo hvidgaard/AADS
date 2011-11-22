@@ -7,6 +7,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "veb_pq.h"
+#include "FibonacciHeap.h"
+#include "BinaryHeap.h"
+
+#define ITR 10000000
 
 void printinfo(int in, vebtree *tree);
 void printtest(vebtree *tree);
@@ -14,16 +18,89 @@ void indent(int in);
 void simpletest(vebtree *tree);
 int main2(int argc, char **argv);
 void testleafsize(int argc, char **argv);
+void testcorrectness();
 
-int main2(int argc, char **argv){
+int main(int argc, char **argv){
 	//vebtree *tree = veb_initialize(5, 4);
 	//simpletest(tree);
-	uint32_t * list = malloc(30 * sizeof(uint32_t));
+	/*uint32_t * list = malloc(30 * sizeof(uint32_t));
 	int i;
 	for (i = 0; i < 30; i++)
 		list[i] = 1;
-	sort_rb(30, list);
+	sort_rb(30, list);*/
+	int i;
+	for (i = 1024; i < 15000000; i *= 2){
+		printf("\n\ntesting %d iterations\n",i);
+		testcorrectness(i);
+	}
 	return 0;
+}
+
+void testcorrectness(int itr){
+	int MAX = pow(2, 24);
+	double vinit, binit, vins, bins, vdm, bdm;
+	clock_t start = clock();
+	vebtree * vebt = veb_initialize(24, 64);
+	clock_t end = clock();
+	vinit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	
+	start = clock();
+	binary_heap * bheap = bh_init_heap(MAX);
+	end = clock();
+	binit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	//FibHeap * fheap = fib_make_heap();
+	
+	
+	printf("vEB init: %f ms - bhinit: %f ms\n", vinit, binit);
+	int i;
+	uint8_t * arr = calloc(MAX, sizeof(uint8_t));
+	if (arr == NULL){
+		printf("dang...\n");
+		exit(1);
+	}
+	vins = 0;
+	bins = 0;
+	vdm = 0;
+	bdm = 0;
+	for (i = 0; i < itr; i++){
+		uint32_t s = random() % MAX;
+		while(arr[s])
+			s = random() % MAX;
+		arr[s] = 1;
+		start = clock();
+		veb_insert(s, NULL, vebt);
+		end = clock();
+		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		start = clock();
+		bh_insert(s, NULL, bheap);
+		end = clock();
+		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		//fib_insert(s, NULL, fheap);
+	}
+	printf("spend time inserting: vEB: %f ms - BH: %f ms\n", vins, bins);
+	printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
+	uint32_t v, b, f;
+	for (i = 0; i < itr; i++){
+		v = vebt->min->value;
+		start = clock();
+		veb_delete_min(vebt);
+		end = clock();
+		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		start = clock();
+		b = bh_delete_min(bheap)->key;
+		end = clock();
+		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		//v = fheap->min->key;
+		//fib_delete_min(fheap);
+		if (b != v)
+			exit(-1);
+		//printf("vEB: %d, bin: %d\n", v, b);
+	}
+	printf("spend time delete min: vEB: %f ms - BH: %f ms\n", vdm, bdm);
+	printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
+	free(arr);
+	veb_destruct(vebt);
+	bh_destruct(bheap);
 }
 
 void testleafsize(int argc, char **argv){

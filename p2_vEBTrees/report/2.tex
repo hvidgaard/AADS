@@ -20,5 +20,8 @@ Our leafs are a simple array of elements and as such will not be explained in mo
 \subsection*{Handling the recursive nodes}
 The trees are build as described on the slides from the lectures - and \textbf{insert}, \textbf{delete} and \textbf{find\_succ} are all implemented as described on the slides as well. The operation \textbf{find\_pred}, is mostly identical to \textbf{find\_succ}, but obviously look for the first element preceeding the index. It's basicly a mirror of \textbf{find\_succ}.
 
+\subsection*{Correctness}
+Correctness have been loosely verified, by inserting 10 million random elements into a vEB tree, a binary heap and a Fibonacci heap - and then performing \textbf{delete\_min} until all the data structures are empty, while checking they all return the same value. This does not gurantee correctness, but the chance that all three implementations having the same behaviour is practically non-existing, due to the very different types of data structure. This is a good test since it's reasonable to assume that inserting 10 million random elements into the vEB tree will touch all insert cases, and same applies for delete (by \textbf{delete\_min}).
+
 \subsection*{Futher improvements}
 Out leafs are an ordinary ``nodes'' with an array instead of continuing the search. One possibility could be to use a leaf size of 32 or 64, depending og the machine, and represent the elements as a bit array. Manipulating this will be extremly efficint, and then keep pointers to the actual data somewhere else.

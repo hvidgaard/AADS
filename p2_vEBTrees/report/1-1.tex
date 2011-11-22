@@ -1,8 +1,14 @@
 \section*{Project}
-yadyyady om projektet
-praktiske ting som hvor kildekode ligger
-hvilken test maskine vi bruger
-hvordan man compiler og kør
-stødte vi ind i nogen problemer
-andet
-% \input{../benchmark/graphs/random_maximum.tex}
+This project is about van Emde Boas trees, and their practical performance. We implement vEB trees, and design and perform experiments to compare the performance to our binary heap and fibonacci heap from the previous project. We also design and perform experiements to compare the performance to a Red Black tree.
+
+\subsection*{General remarks about testing and compiling}
+???????????????hvilken test maskiner vi bruger????????????
+
+We use an automated process to perform our benchmarks, so as such it's not possible to replicate our results without using ANT and other linux tools. We have however included a makefile, that can be used to compile everything and run some basic tests. This is done by calling the following command\\
+\\
+\textbf{make -f MAKEFILE all}\\
+\\
+on a linux machine with the standard compilation tools installed - we only need \textit{make} and \textit{gcc}. The binary can then be found in the \textit{./debug/p2\_vebt}, don't worry, all debugging are turned off and \textit{-O2} used for optimal performance.
+
+\subsection*{Problems}
+Apart from the complexity of vEB and therefore difficult bug hunting, we didn't anticipate that we practically had to implement Red Black trees as well.

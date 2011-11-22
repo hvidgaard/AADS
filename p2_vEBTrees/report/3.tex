@@ -1,4 +1,5 @@
 \section*{Comparison with priority queues}
+\subsection*{The vEB tree as a priority queue}
 The vEB tree can be used as a priority queue if we build some extra logic on top of it. Firstly a priority queue can contain several elements with the same priority, a search tree does not allow this. To get around this limitation we've build a new priority queue that can use any search tree as the underlying data structure. Ignoring intialization (this is just initializing the underlying search tree), we focus on the actual usage. Our priority queue support the following operations:
 
 \begin{itemize}
@@ -7,10 +8,43 @@ The vEB tree can be used as a priority queue if we build some extra logic on top
   \item $veb\_pq\_node * \textbf{ veb\_pq\_deletemin}(vebtree * tree)$
   \item $void \textbf{ veb\_pq\_decrease\_key}(vebtree * tree, veb\_pq\_node * node, uint32\_t delta)$
 \end{itemize}
-A \textbf{veb\_pq\_data} is just a simple structure that contain a pointer to the first \textbf{veb\_pq\_node} in a linked list of nodes, and a counter, $n$ that is the number of nodes in the linked list. A \textbf{veb\_pq\_node} contains a pointer to the next and previous nodes, if any, and a pointer to the \textbf{veb\_pq\_data} holding the node; in particular, this last pointer allows us to check if a node is in the search tree or not, but seeing if the pointer is $NULL$. It also have an unsigned integer field that is the priority. Any auxilary data should also be included in this node - we just have a node number to indicate which node in the graph for our dijkstras algorithm it represent.
+A \textbf{veb\_pq\_data} is just a simple structure that contain a pointer to the first \textbf{veb\_pq\_node} in a linked list of nodes, and a counter, $n$ that is the number of nodes in the linked list. A \textbf{veb\_pq\_node} contains a pointer to the next and previous nodes, if any, and a pointer to the \textbf{veb\_pq\_data} holding the node; in particular, this last pointer allows us to check if a node is in the search tree or not, by seeing if the pointer is $NULL$. It also have an unsigned integer field that is the priority. Any auxilary data should also be included in this node - we just have a node number to indicate which node in the graph for our dijkstras algorithm it represent.
 
-\subsubsection*{\textbf{veb\_pq\_insert}}
+\begin{pseudocode}[Ovalbox]{veb\_pq\_insert}{node, tree}
+data \GETS \text{succesor}(node.prio, tree)\\
+\IF data.prio = node.prio
+\THEN \text{insert $n$ into the linked list in $data$}
+\ELSE 
+\BEGIN
+data \GETS \text{new veb\_pq\_data containing a single element, $node$} \\
+  \text{insert}(data, tree)
+\END
+\end{pseudocode}
 
+Let $T_{succ}(n)$ be the time for finding the successor to $n$, in the underlying datastructure, and let $T_{insert}(n)$ be the time to insert an element. Inserting $n$ into the linked list is a matter of updating a few, but constant number of pointers, so $O(1)$. The total time it takes to insert an element is $O(T_{succ}(n) + T_{insert}(n)$. With vEB trees as the underlying data structure, it's $O(\log \log U)$.
+
+\begin{pseudocode}[Ovalbox]{veb\_pq\_delete}{node, tree}
+\IF node.parent.n > 1
+\THEN \text{then remove $node$ from the linked list}
+\ELSE \text{remove}(node.parent, tree)
+\end{pseudocode}
+
+It is assumed we have a pointer to the node we want to delete. By the same argument as for \textbf{veb\_pq\_insert}, the time is $O(T_{remove}(n)$ which translates to $O(\log \log U)$.
+
+\subsubsection*{\textbf{veb\_pq\_deletemin}}
+Since vEB trees have a pointer to the minimum element, this can be fetched in constant time. The running time of \textbf{veb\_pq\_deletemin} is therefore $O(T_{remove}(n)) = O(\log \log U)$. The observant reader will notice that this means we can sort the integers $0, \dots, U$ in time $O(k \cdot \log \log U)$, where $k$ is the number of integers. So have we broken the $O(n \cdot \log n)$ barrier for comparison based integer sorting? No. In order to sort an arbitraty range of integers, we firstly need to build the vEB tree. Since this has size $O(U) = O(2^m)$, it takes $O(2^m)$ to build, where m is the bit length used for the vEB tree. This is clearly at least as large as $O(n)$. But for any fixed size integers set, we can sort efficiently by reusing the same vEB data structure.
+
+\begin{pseudocode}[Ovalbox]{veb\_pq\_decreasekey}{node, delta, tree}
+\text{veb\_pq\_delete}(node, tree)\\
+node.prio \GETS n.prio - delta\\
+\text{veb\_pq\_insert}(node, tree)
+\end{pseudocode}
+
+With a running time of $O(T_{delete}(n) + T_{insert}(n) = O(\log \log U)$.
+
+All operations on our priority queue with vEB takes $O(\log \log U)$ time, except initialization.
+
+\subsection*{Benchmarking}
 We have chosen to benchmark the van Emde Boas tree with the two graph generation algorithms we implemented in the previous assignment.
 Those include a random graph generator and a generator which should cause a high number of decrease\_key calls when using dijkstra on the graph to solve the single source shortest path problem.
 The random graph generator generates a graph, where each vertice has a 15\% chance of being connected to another vertice with the weight being between 1 and a chosen maximum.

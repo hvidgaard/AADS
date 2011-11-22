@@ -11,7 +11,7 @@ typedef struct binary_heap {
 	unsigned int max_size;
 	unsigned int size;
 	bh_element **data;
-	unsigned int **elements;
+	//unsigned int **elements;
 } binary_heap;
 
 binary_heap *bh_init_heap(unsigned int size);
@@ -23,5 +23,6 @@ unsigned int bh_decrease_key(unsigned int delta, bh_element * e, binary_heap *h)
 bh_element *bh_delete_element(unsigned int e, binary_heap *h);
 void bh_min_heapify(unsigned int e, binary_heap *h);
 void bh_exchange(unsigned int e1, unsigned int e2, binary_heap *h);
+void bh_destruct(binary_heap * bh);
 
 #endif

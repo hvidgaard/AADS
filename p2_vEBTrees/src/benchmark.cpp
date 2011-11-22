@@ -17,7 +17,7 @@ extern "C" {
 
 using namespace std;
 
-int main(int argc, char **argv) {
+int main2(int argc, char **argv) {
 	if(argc < 8) {
 		cout << "Usage" << endl
 			<< "  benchmark graph algo seed start end step tests logfile" << endl;
