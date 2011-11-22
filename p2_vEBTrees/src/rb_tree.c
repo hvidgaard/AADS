@@ -47,7 +47,10 @@ rb_node* rb_insert(uint32_t key, rb_tree* tree) {
 
 void rb_delete(rb_node* n, rb_tree* tree) {
 	#ifdef DEBUG
-	assert(is_leaf(n->left, tree) || is_leaf(n->right, tree));
+	if(!is_leaf(n->left, tree))
+		assert(is_leaf(n->right, tree));
+	if(!is_leaf(n->right, tree))
+		assert(is_leaf(n->left, tree));
 	#endif
 	
 	delete_one_child(n, tree);
@@ -122,7 +125,8 @@ void rotate_right(rb_node* pivot, rb_tree* tree) {
 	root->parent = pivot->parent;
 	
 	pivot->left = move;
-	move->parent = pivot;
+	if(!is_leaf(move, tree))
+		move->parent = pivot;
 	
 	root->right = pivot;
 	pivot->parent = root;
@@ -153,7 +157,8 @@ void rotate_left(rb_node* pivot, rb_tree* tree) {
 	root->parent = pivot->parent;
 	
 	pivot->right = move;
-	move->parent = pivot;
+	if(!is_leaf(move, tree))
+		move->parent = pivot;
 	
 	root->left = pivot;
 	pivot->parent = root;
@@ -211,7 +216,8 @@ void replace_node(rb_node* n, rb_node* child, rb_tree* tree) {
 		else
 			n->parent->right = child;
 	}
-	child->parent = n->parent;
+	if(!is_leaf(child, tree))
+		child->parent = n->parent;
 }
 
 void insert_case1(rb_node* n, rb_tree* tree) {
@@ -276,9 +282,6 @@ void delete_case1(rb_node* n, rb_tree* tree) {
 
 void delete_case2(rb_node* n, rb_tree* tree) {
 	rb_node* s = sibling(n);
-	#ifdef DEBUG
-	assert(!is_leaf(s, tree));
-	#endif
 	if (s->color == RED) {
 		n->parent->color = RED;
 		s->color = BLACK;
@@ -292,9 +295,6 @@ void delete_case2(rb_node* n, rb_tree* tree) {
 
 void delete_case3(rb_node* n, rb_tree* tree) {
 	rb_node* s = sibling(n);
-	#ifdef DEBUG
-	assert(!is_leaf(s, tree));
-	#endif
 
 	if ((n->parent->color == BLACK) &&
 	(s->color == BLACK) &&
@@ -309,9 +309,6 @@ void delete_case3(rb_node* n, rb_tree* tree) {
 
 void delete_case4(rb_node* n, rb_tree* tree) {
 	rb_node* s = sibling(n);
-	#ifdef DEBUG
-	assert(!is_leaf(s, tree));
-	#endif
 
 	if ((n->parent->color == RED) &&
 	(s->color == BLACK) &&
@@ -326,9 +323,6 @@ void delete_case4(rb_node* n, rb_tree* tree) {
 
 void delete_case5(rb_node* n, rb_tree* tree) {
 	rb_node* s = sibling(n);
-	#ifdef DEBUG
-	assert(!is_leaf(s, tree));
-	#endif
 	
 	/* this if statement is trivial, 
 	due to Case 2 (even though Case two changed the sibling to a sibling's child, 
@@ -355,10 +349,6 @@ void delete_case5(rb_node* n, rb_tree* tree) {
 
 void delete_case6(rb_node* n, rb_tree* tree) {
 	rb_node* s = sibling(n);
-	#ifdef DEBUG
-	is_correct(tree);
-	assert(!is_leaf(s, tree));
-	#endif
 
 	s->color = n->parent->color;
 	n->parent->color = BLACK;
@@ -376,6 +366,9 @@ void delete_case6(rb_node* n, rb_tree* tree) {
 void is_correct(rb_tree* tree) {
 	if(!tree->root)
 		return;
+	assert(tree->nil->parent == NULL);
+	assert(tree->nil->left == NULL);
+	assert(tree->nil->right == NULL);
 	rb_node* n = tree->root;
 	assert(n->left);
 	assert(n->right);

@@ -47,10 +47,8 @@ void sort_rb(uint size, uint* list) {
 	rb_tree* tree = rb_init();
 		
 	uint i;
-	for (i = 0; i < size; i++) {
+	for (i = 0; i < size; i++)
 		rb_insert(list[i], tree);
-		printf("Inserting %d\n", list[i]);
-	}
 	
 	rb_node* node = tree->root;
 	while(!is_leaf(node->left, tree))
@@ -59,12 +57,15 @@ void sort_rb(uint size, uint* list) {
 	rb_node* successor = node;
 	while((node = successor)) {
 		successor = rb_succ(node, tree);
-		printf("Deleting %d\n", node->key);
 		if(successor && successor->key < node->key) {
 			printf("Successor is wrong.\n");
 			abort();
 		}
 		rb_delete(node, tree);
+		node = successor;
+		while(node && (successor = node))
+			node = rb_pred(successor, tree);
+		
 	}
 	free(tree);
 }
