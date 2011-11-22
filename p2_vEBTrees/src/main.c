@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 void testcorrectnessveb(){
-	int itr = 10000000;
+	int itr = 10;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_initialize(24, 64);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -108,14 +108,17 @@ void testcorrectnessveb(){
 		fib_insert(s, NULL, fheap);
 	}
 	uint32_t v, b, f;
+	FibNode * fn;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
 		veb_delete_min(vebt);
 		e = bh_delete_min(bheap);
 		b = e->key;
 		free(e);
-		f = fib_find_min(fheap)->key;
+		fn = fib_find_min(fheap);
+		f = fn->key;
 		fib_delete_min(fheap);
+		free(fn);
 		if (b != v || b != f || v !=f){
 			printf("one of the datastructures was not correct\n");
 			printf("vEB: %d, bin: %d, fib: %d\n", v, b, f);
@@ -126,13 +129,14 @@ void testcorrectnessveb(){
 	free(arr);
 	veb_destruct(vebt);
 	bh_destruct(bheap);
+	free(fheap);
 }
 void testcorrectnessvebpq(){
 	int itr = 10000000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_pq_init(24);
 	binary_heap * bheap = bh_init_heap(MAX);
-	//FibHeap * fheap = fib_make_heap();
+	FibHeap * fheap = fib_make_heap();
 	
 	int i;
 	veb_pq_node * n;
@@ -143,9 +147,10 @@ void testcorrectnessvebpq(){
 		n->node_prio = s;
 		veb_pq_insert(n, vebt);
 		bh_insert(s, NULL, bheap);
-		//fib_insert(s, NULL, fheap);
+		fib_insert(s, NULL, fheap);
 	}
-	uint32_t v, b; //f;
+	uint32_t v, b, f;
+	FibNode * fn;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
 		n = veb_pq_deletemin(vebt);;
@@ -153,9 +158,11 @@ void testcorrectnessvebpq(){
 		e = bh_delete_min(bheap);
 		b = e->key;
 		free(e);
-		//v = fheap->min->key;
-		//fib_delete_min(fheap);
-		if (b != v){
+		fn = fib_find_min(fheap);
+		f = fn->key;
+		fib_delete_min(fheap);
+		free(fn);
+		if (b != v || b != f || v !=f){
 			printf("one of the datastructures was not correct\n");
 			printf("vEB: %d, bin: %d\n", v, b);
 			exit(-1);
@@ -167,9 +174,9 @@ void testcorrectnessvebpq(){
 }
 void testPQperformance_random(int itr){
 	int MAX = pow(2, 24);
-	double vinit, binit, vins, bins, vdm, bdm;
-	clock_t start = clock();
+	double vinit, binit, finit, vins, bins, fins, vdm, bdm, fdm;
 	
+	clock_t start = clock();
 	vebtree * vebt = veb_pq_init(24);
 	clock_t end = clock();
 	vinit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
@@ -178,65 +185,86 @@ void testPQperformance_random(int itr){
 	binary_heap * bheap = bh_init_heap(itr);
 	end = clock();
 	binit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-	//FibHeap * fheap = fib_make_heap();
 	
+	start = clock();
+	FibHeap * fheap = fib_make_heap();
+	end = clock();
+	finit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	
-	printf("vEB init: %f ms - bhinit: %f ms\n", vinit, binit);
+	printf("vEB init: %f ms - bhinit: %f ms - fibinit: %f ms\n", vinit, binit, finit);
 	int i;
 	vins = 0;
 	bins = 0;
+	fins = 0;
 	vdm = 0;
 	bdm = 0;
+	fdm = 0;
 	veb_pq_node * n;
 	bh_element * e;
+	FibNode * fn;
 	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		veb_pq_node * n = malloc(sizeof(veb_pq_node));
 		n->node_prio = s;
 		n->node_nr = i;
+		
 		start = clock();
 		veb_pq_insert(n, vebt);
 		end = clock();
 		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
 		start = clock();
 		bh_insert(s, NULL, bheap);
 		end = clock();
 		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		//fib_insert(s, NULL, fheap);
+		
+		start = clock();
+		fib_insert(s, NULL, fheap);
+		end = clock();
+		fins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	}
-	printf("spend time inserting: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vins, vins/itr, bins, bins/itr);
+	printf("spend time inserting: vEB: %f ms (avg %f) - BH: %f ms (avg %f) - fib: %f ms (avg %f)\n", vins, vins/itr, bins, bins/itr, fins, fins/itr);
 	//printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
-	uint32_t v, b; //f;
+	uint32_t v, b, f;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
+		
 		start = clock();
 		n = veb_pq_deletemin(vebt);;
 		end = clock();
 		free(n);
 		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
 		start = clock();
 		e = bh_delete_min(bheap);
 		end = clock();
 		b = e->key;
 		free(e);
 		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		//v = fheap->min->key;
-		//fib_delete_min(fheap);
-		if (b != v){
+		fn = fib_find_min(fheap);
+		f = fn->key;
+		
+		start = clock();
+		fib_delete_min(fheap);
+		end = clock();
+		fdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		free(fn);
+		if (b != v || b != f || v != f){
 			printf("vEB: %d, bin: %d\n", v, b);
 			exit(-1);
 		}
 			
 		
 	}
-	printf("spend time deletemin: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vdm, vdm/itr, bdm, bdm/itr);
+	printf("spend time deletemin: vEB: %f ms (avg %f) - BH: %f ms (avg %f) - fib: %f ms (avg %f)\n", vdm, vdm/itr, bdm, bdm/itr, fdm, fdm/itr);
 	//printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
 	veb_destruct(vebt);
 	bh_destruct(bheap);
 }
 void testVEBperformance_random_sort(int itr, int thres){
 	int MAX = pow(2, 24);
-	double vinit, binit, vins, bins, vdm, bdm;
+	double vinit, binit, finit, vins, bins, fins, vdm, bdm, fdm;
+	
 	clock_t start = clock();
 	vebtree * vebt = veb_initialize(24, thres);
 	clock_t end = clock();
@@ -246,10 +274,13 @@ void testVEBperformance_random_sort(int itr, int thres){
 	binary_heap * bheap = bh_init_heap(MAX);
 	end = clock();
 	binit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-	//FibHeap * fheap = fib_make_heap();
 	
+	start = clock();
+	FibHeap * fheap = fib_make_heap();
+	end = clock();
+	finit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	
-	printf("vEB init: %f ms - bhinit: %f ms\n", vinit, binit);
+	printf("vEB init: %f ms - bhinit: %f ms - fibinit: %f ms\n", vinit, binit, finit);
 	int i;
 	uint8_t * arr = calloc(MAX, sizeof(uint8_t));
 	if (arr == NULL){
@@ -258,45 +289,63 @@ void testVEBperformance_random_sort(int itr, int thres){
 	}
 	vins = 0;
 	bins = 0;
+	fins = 0;
 	vdm = 0;
 	bdm = 0;
+	fdm = 0;
 	bh_element *e;
+	FibNode * fn;
 	for (i = 0; i < itr; i++){
 		uint32_t s = random() % MAX;
 		while(arr[s])
 			s = random() % MAX;
 		arr[s] = 1;
+		
 		start = clock();
 		veb_insert(s, NULL, vebt);
 		end = clock();
 		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
+		start = clock();
 		bh_insert(s, NULL, bheap);
 		end = clock();
 		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		//fib_insert(s, NULL, fheap);
+		
+		start = clock();
+		fib_insert(s, NULL, fheap);
+		end = clock();
+		fins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	}
-	printf("spend time inserting: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vins, vins/itr, bins, bins/itr);
+	printf("spend time inserting: vEB: %f ms (avg %f) - BH: %f ms (avg %f) - fib: %f ms (avg %f)\n", vins, vins/itr, bins, bins/itr, fins, fins/itr);
 	//printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
-	uint32_t v, b; //f;
+	uint32_t v, b, f;
 	for (i = 0; i < itr; i++){
+		
 		start = clock();
 		v = vebt->min->value;
 		veb_delete_min(vebt);
 		end = clock();
 		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
 		start = clock();
 		e= bh_delete_min(bheap);
 		end = clock();
 		b = e->key;
 		free(e);
 		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		//v = fheap->min->key;
-		//fib_delete_min(fheap);
+		fn = fib_find_min(fheap);
+		f = fn->key;
+		
+		start = clock();
+		fib_delete_min(fheap);
+		end = clock();
+		fdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		free(fn);
 		if (b != v)
 			exit(-1);
 		//printf("vEB: %d, bin: %d\n", v, b);
 	}
-	printf("spend time deletemin: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vdm, vdm/itr, bdm, bdm/itr);
+	printf("spend time deletemin: vEB: %f ms (avg %f) - BH: %f ms (avg %f) - fib: %f ms (avg %f)\n", vdm, vdm/itr, bdm, bdm/itr, fdm, fdm/itr);
 	//printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
 	free(arr);
 	veb_destruct(vebt);
