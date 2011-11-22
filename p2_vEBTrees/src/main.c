@@ -19,6 +19,7 @@ int main(int argc, char **argv);
 void testcorrectnessveb();
 void testcorrectnessvebpq();
 void testVEBperformance_random_sort(int itr, int thres);
+void testVEBperformance_leaf(int itr, int thres);
 void testPQperformance_random(int itr);
 void testperformancePQdijkstra(int itr);
 void time_veb_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
@@ -87,7 +88,8 @@ int main(int argc, char **argv){
 			printf("Testing different leaf sizes\n");
 			for (i = 8; i <= 4096; i *= 2){
 				printf("\nTesting with leafsize %d ;\n",i);
-				testVEBperformance_random_sort(10000000, i);
+				testVEBperformance_leaf(10000000, i);
+				//testVEBperformance_random_sort(10000000, i);
 			}
 			break;
 		default:
@@ -362,6 +364,52 @@ void testVEBperformance_random_sort(int itr, int thres){
 	veb_destruct(vebt);
 	bh_destruct(bheap);
 	free(fheap);
+}
+void testVEBperformance_leaf(int itr, int thres){
+	int MAX = pow(2, 24);
+	double vinit, vins, vdm;
+	
+	clock_t start = clock();
+	vebtree * vebt = veb_initialize(24, thres);
+	clock_t end = clock();
+	vinit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	
+	printf("vEB init: %f ms\n", vinit);
+	int i;
+	uint8_t * arr = calloc(MAX, sizeof(uint8_t));
+	if (arr == NULL){
+		printf("dang...could not allocate enough memory\n");
+		exit(1);
+	}
+	vins = 0;
+	vdm = 0;
+	for (i = 0; i < itr; i++){
+		uint32_t s = random() % MAX;
+		while(arr[s])
+			s = random() % MAX;
+		arr[s] = 1;
+		
+		start = clock();
+		veb_insert(s, NULL, vebt);
+		end = clock();
+		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
+	}
+	printf("spend time inserting: vEB: %f ms (avg %f)\n", vins, vins/itr);
+	//printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
+	uint32_t v;
+	for (i = 0; i < itr; i++){
+		
+		start = clock();
+		v = vebt->min->value;
+		veb_delete_min(vebt);
+		end = clock();
+		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	}
+	printf("spend time deletemin: vEB: %f ms (avg %f)", vdm, vdm/itr);
+	//printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
+	free(arr);
+	veb_destruct(vebt);
 }
 void testperformancePQdijkstra(int size){
 	//int itr = size;
