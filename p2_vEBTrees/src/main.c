@@ -12,7 +12,7 @@
 #include "graph_generators.h"
 
 #ifndef UINT_MAX
-#define UINT_MAX 16777215
+#define UINT_MAX 65535 //2^16-1
 #endif
 
 int main(int argc, char **argv);
@@ -21,8 +21,9 @@ void testcorrectnessvebpq();
 void testVEBperformance_random_sort(int itr, int thres);
 void testPQperformance_random(int itr);
 void testperformancePQdijkstra(int itr);
+void time_veb_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
 void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
-
+void time_fib_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
 
 int main(int argc, char **argv){
 	if (argc < 2){
@@ -39,14 +40,15 @@ int main(int argc, char **argv){
 		printf(" 4: Test performance of vEB using Dijkstras algorithm,\n");
 		printf("    compared with binary heap and fibonacci heap,\n");
 		printf("    with test graph maximizing the decrease key stress on binary heap\n\n");
-		printf(" 5: ALL OF THEM!\n\n");
+		printf(" 5: Test performance of vEB with different leaf sizes\n\n");
+		printf(" 6: ALL OF THEM!\n\n");
 		exit (0);
 	}
 	int testcase = atoi(argv[1]);
 	int i, br;
 	br = 1;
 	switch (testcase){
-		case 5:
+		case 6:
 			br = 0;
 		case 0:
 			printf("Testing correctness of vEB\n");
@@ -76,10 +78,12 @@ int main(int argc, char **argv){
 				break;
 		case 4:
 			printf("\nTesting vEB priority queue performance with Dijkstra\n");
-			testperformancePQdijkstra(100);
+			for (i = 16; i < 20000; i *= 2){
+				testperformancePQdijkstra(i);
+			}
 			if (br)
 				break;
-		case 6:
+		case 5:
 			printf("Testing different leaf sizes\n");
 			for (i = 8; i <= 4096; i *= 2){
 				printf("\nTesting with leafsize %d ;\n",i);
@@ -360,7 +364,7 @@ void testVEBperformance_random_sort(int itr, int thres){
 	free(fheap);
 }
 void testperformancePQdijkstra(int size){
-	int itr = size;
+	//int itr = size;
 	int seed = 1234;
 	uint32_t* weights = generate_decrease_key_max_graph_2(size, 1000, seed);
 	uint32_t** edges = malloc((size+1) * sizeof(uint32_t *));
@@ -379,18 +383,15 @@ void testperformancePQdijkstra(int size){
 	}
 	free(t_edges);
 	
-	
-	//time_veb_dijkstra(size, 0, weights, edges);
+	printf("now testing vEB PQ: size = %d\n", size);
+	printf("-------------------\n");
+	time_veb_dijkstra(size, 0, weights, edges);
+	printf("now testing binary PQ: size = %d\n", size);
+	printf("----------------------\n");
 	time_bin_dijkstra(size, 0, weights, edges);
-	//time_fib_dijkstra(size, 0, weights, edges);
-	
-	
-	
-	
-	
-	
-	
-	
+	printf("now testing fibonacci PQ: size = %d\n", size);
+	printf("-------------------------\n");
+	time_fib_dijkstra(size, 0, weights, edges);
 	for (i = 0; i < size; i++)
 		free(edges[i]);
 	free(edges);
@@ -413,9 +414,9 @@ void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 	uint32_t *distances = malloc(num_vertices * sizeof(uint32_t));
 	bh_element ** vertices = malloc(num_vertices * sizeof(bh_element *));
 	
-	uint distance;
-	uint *data;
-	uint i;
+	uint32_t distance;
+	uint32_t *data;
+	uint32_t i;
 	for (i = 0; i < num_vertices; i++) {
 		if(i == source)
 			distance = 0;
@@ -431,17 +432,17 @@ void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 		
 	}
 	bh_element *node;
-	uint decrease_key_calls = 0;
-	node = bh_find_min(heap);
+	uint32_t decrease_key_calls = 0;
+	
+	start = clock();
+	node = bh_delete_min(heap);
+	end = clock();
+	bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	while (node) {
-		start = clock();
-		bh_delete_min(heap);
-		end = clock();
-		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
-		uint u = *(uint *)node->data;
+		uint32_t u = *((uint32_t *)node->data);
 		for (i = 1; i <= edges[u][0]; i++) {
-			uint v = edges[u][i];
-			uint alt = distances[u] + weights[u * num_vertices + v];
+			uint32_t v = edges[u][i];
+			uint32_t alt = distances[u] + weights[u * num_vertices + v];
 			if (alt < distances[v]) {
 				start = clock();
 				bh_decrease_key(distances[v] - alt, vertices[v], heap);
@@ -453,8 +454,12 @@ void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 		}
 		free(node->data);
 		free(node);
+		start = clock();
+		node = bh_delete_min(heap);
+		end = clock();
+		bdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 	}
-	free(heap);
+	bh_destruct(heap);
 	free(vertices);
 	free(distances);
 	printf("bin: init: %f - total time: %f\n", binit, binit+bdm+bins+bdk);
@@ -462,9 +467,146 @@ void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 	printf("     delmin: %f (avg: %f)\n", bdm, bdm/num_vertices);
 	printf("     dec.ke: %f (avg: %f)\n\n", bdk, bdk/decrease_key_calls);
 }
-void time_veb_dijkstra(){
+void time_veb_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges){
+	clock_t start, end;
+	double vinit = 0;
+	double vdm = 0;
+	double vdk = 0;
+	double vins = 0;
+	
+	start = clock();
+	vebtree * heap = veb_pq_init(24);
+	end = clock();
+	vinit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+
+	
+	uint32_t *distances = malloc(num_vertices * sizeof(uint32_t));
+	veb_pq_node ** vertices = malloc(num_vertices * sizeof(veb_pq_node *));
+	
+	uint32_t distance;
+	uint32_t i;
+	veb_pq_node * n;
+	for (i = 0; i < num_vertices; i++) {
+		if(i == source)
+			distance = 0;
+		else
+			distance = UINT_MAX;
+		distances[i] = distance;
+		n = malloc(sizeof(veb_pq_node));
+		n->node_prio = distance;
+		n->node_nr = i;
+		vertices[i] = n;
+		start = clock();
+		veb_pq_insert(n, heap);
+		end = clock();
+		vins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
+	}
+	uint32_t decrease_key_calls = 0;
+	
+	start = clock();
+	n = veb_pq_deletemin(heap);
+	end = clock();
+	vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	while (n) {
+		uint32_t u = n->node_nr;
+		for (i = 1; i <= edges[u][0]; i++) {
+			uint32_t v = edges[u][i];
+			uint32_t alt = distances[u] + weights[u * num_vertices + v];
+			if (alt < distances[v]) {
+				start = clock();
+				veb_pq_decrease_key(heap, vertices[v], distances[v] - alt);
+				end = clock();
+				vdk += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+				distances[v] = alt;
+				decrease_key_calls++;
+			}
+		}
+		start = clock();
+		n = veb_pq_deletemin(heap);
+		end = clock();
+		vdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	}
+	for (i = 0; i < num_vertices; i++)
+		free(vertices[i]);
+	veb_destruct(heap);
+	free(vertices);
+	free(distances);
+	printf("veb: init: %f - total time: %f\n", vinit, vinit+vdm+vins+vdk);
+	printf("     insert: %f (avg: %f)\n", vins, vins/num_vertices);
+	printf("     delmin: %f (avg: %f)\n", vdm, vdm/num_vertices);
+	printf("     dec.ke: %f (avg: %f)\n\n", vdk, vdk/decrease_key_calls);
 	
 }
-void time_fib_dijkstra(){
+void time_fib_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges){
+	clock_t start, end;
+	double finit = 0;
+	double fdm = 0;
+	double fdk = 0;
+	double fins = 0;
 	
+	start = clock();
+	FibHeap * heap = fib_make_heap();
+	end = clock();
+	finit = ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+
+	
+	uint32_t *distances = malloc(num_vertices * sizeof(uint32_t));
+	FibNode ** vertices = malloc(num_vertices * sizeof(FibNode *));
+	
+	uint32_t distance;
+	uint32_t *data;
+	uint32_t i;
+	FibNode * n;
+	for (i = 0; i < num_vertices; i++) {
+		if(i == source)
+			distance = 0;
+		else
+			distance = UINT_MAX;
+		distances[i] = distance;
+		data = malloc(sizeof(uint32_t));
+		*data = i;
+		start = clock();
+		vertices[i] = fib_insert(distance, data, heap);
+		end = clock();
+		fins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+		
+	}
+	uint32_t decrease_key_calls = 0;
+	n = fib_find_min(heap);
+	start = clock();
+	fib_delete_min(heap);
+	end = clock();
+	fdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	while (n) {
+		uint32_t u = *((uint32_t *)n->data);
+		for (i = 1; i <= edges[u][0]; i++) {
+			uint32_t v = edges[u][i];
+			uint32_t alt = distances[u] + weights[u * num_vertices + v];
+			if (alt < distances[v]) {
+				start = clock();
+				fib_decrease_key(distances[v] - alt, vertices[v], heap);
+				end = clock();
+				fdk += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+				distances[v] = alt;
+				decrease_key_calls++;
+			}
+		}
+		n = fib_find_min(heap);
+		start = clock();
+		fib_delete_min(heap);
+		end = clock();
+		fdm += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
+	}
+	for (i = 0; i < num_vertices; i++){
+		free(vertices[i]->data);
+		free(vertices[i]);
+	}
+	free(heap);
+	free(vertices);
+	free(distances);
+	printf("fib: init: %f - total time: %f\n", finit, finit+fdm+fins+fdk);
+	printf("     insert: %f (avg: %f)\n", fins, fins/num_vertices);
+	printf("     delmin: %f (avg: %f)\n", fdm, fdm/num_vertices);
+	printf("     dec.ke: %f (avg: %f)\n\n", fdk, fdk/decrease_key_calls);	
 }
