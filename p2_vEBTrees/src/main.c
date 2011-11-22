@@ -85,11 +85,11 @@ int main(int argc, char **argv){
 	return 0;
 }
 void testcorrectnessveb(){
-	int itr = 10000000;
+	int itr = 10000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_initialize(24, 64);
 	binary_heap * bheap = bh_init_heap(MAX);
-	//FibHeap * fheap = fib_make_heap();
+	FibHeap * fheap = fib_make_heap();
 	
 	uint8_t * arr = calloc(MAX, sizeof(uint8_t));
 	int i;
@@ -105,20 +105,20 @@ void testcorrectnessveb(){
 		arr[s] = 1;
 		veb_insert(s, NULL, vebt);
 		bh_insert(s, NULL, bheap);
-		//fib_insert(s, NULL, fheap);
+		fib_insert(s, NULL, fheap);
 	}
-	uint32_t v, b; //f;
+	uint32_t v, b, f;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
 		veb_delete_min(vebt);
 		e = bh_delete_min(bheap);
 		b = e->key;
 		free(e);
-		//v = fheap->min->key;
-		//fib_delete_min(fheap);
-		if (b != v){
+		v = fheap->min->key;
+		fib_delete_min(fheap);
+		if (b != v || b != f || v !=f){
 			printf("one of the datastructures was not correct\n");
-			printf("vEB: %d, bin: %d\n", v, b);
+			printf("vEB: %d, bin: %d, fib: %d\n", v, b, f);
 			exit(-1);
 		}
 	}
@@ -128,7 +128,7 @@ void testcorrectnessveb(){
 	bh_destruct(bheap);
 }
 void testcorrectnessvebpq(){
-	int itr = 10000;
+	int itr = 10000000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_pq_init(24);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -204,8 +204,8 @@ void testPQperformance_random(int itr){
 		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		//fib_insert(s, NULL, fheap);
 	}
-	printf("spend time inserting: vEB: %f ms - BH: %f ms\n", vins, bins);
-	printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
+	printf("spend time inserting: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vins, vins/itr, bins, bins/itr);
+	//printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
 	uint32_t v, b; //f;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
@@ -229,8 +229,8 @@ void testPQperformance_random(int itr){
 			
 		
 	}
-	printf("spend time delete min: vEB: %f ms - BH: %f ms\n", vdm, bdm);
-	printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
+	printf("spend time deletemin: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vdm, vdm/itr, bdm, bdm/itr);
+	//printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
 	veb_destruct(vebt);
 	bh_destruct(bheap);
 }
@@ -275,8 +275,8 @@ void testVEBperformance_random_sort(int itr, int thres){
 		bins += ((double) (end-start) / CLOCKS_PER_SEC) * 1000;
 		//fib_insert(s, NULL, fheap);
 	}
-	printf("spend time inserting: vEB: %f ms - BH: %f ms\n", vins, bins);
-	printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
+	printf("spend time inserting: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vins, vins/itr, bins, bins/itr);
+	//printf("avg: vEB %f ms - BH: %f ms\n", vins/itr, bins/itr);
 	uint32_t v, b; //f;
 	for (i = 0; i < itr; i++){
 		start = clock();
@@ -296,8 +296,8 @@ void testVEBperformance_random_sort(int itr, int thres){
 			exit(-1);
 		//printf("vEB: %d, bin: %d\n", v, b);
 	}
-	printf("spend time delete min: vEB: %f ms - BH: %f ms\n", vdm, bdm);
-	printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
+	printf("spend time deletemin: vEB: %f ms (avg %f) - BH: %f ms (avg %f)\n", vdm, vdm/itr, bdm, bdm/itr);
+	//printf("avg: vEB %f ms - BH: %f ms\n", vdm/itr, bdm/itr);
 	free(arr);
 	veb_destruct(vebt);
 	bh_destruct(bheap);
