@@ -5,6 +5,7 @@ require_once 'gnuplot/Plot.php';
 Graph::setDefaults(array(
 	'terminal' => 'png #FFFFFF nocrop enhanced font helvetica 18 size 1200,900',
 	'grid' => null,
+	'xrange' => '[0:12000]',
 	'xlabel' => '"Vertices"',
 	'ylabel' => '"Time (ms)"',
 	'key' => 'bmargin'
@@ -47,8 +48,16 @@ foreach($measurements as $measurement => $file) {
 			if(file_exists($png) && file_exists($eps))
 				if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
 					continue;
+			$columnName = str_replace('_', ' ', $columnName);
 			$graph = new Graph;
-			$graph->title = "\"$generatorName graph $columnName\"";
+			if($columnName == 'samples') {
+				$graph->ylabel = '"Samples"';
+			} else {
+				if($measurement == 'cycles')
+					$graph->title = "\"$generatorName graph $columnName \\n(Clock cycles)\"";
+				else
+					$graph->title = "\"$generatorName graph $columnName \\n(Abs. time)\"";
+			}
 			foreach($algorithms as $algo) {
 				$plot = new Plot;
 				$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
@@ -58,7 +67,7 @@ foreach($measurements as $measurement => $file) {
 				$graph->addPlot($plot);
 			}
 			$graph->output($png);
-			$graph->terminal = "epslatex";
+			$graph->terminal = "epslatex linewidth 3";
 			$graph->output($eps);
 		}
 	}
