@@ -92,13 +92,13 @@
 		<medium-benchmark graph="random" algorithm="veb" />
 		<medium-benchmark graph="dkmax2" algorithm="veb" />
 	</target>
-	<target name="dist-big-benchmark" description="Runs benchmarks on various algorithms" depends="alone, make">
-		<big-benchmark graph="random" algorithm="bin" />
-		<big-benchmark graph="dkmax2" algorithm="bin" />
-		<big-benchmark graph="random" algorithm="fib" />
-		<big-benchmark graph="dkmax2" algorithm="fib" />
-		<big-benchmark graph="random" algorithm="veb" />
-		<big-benchmark graph="dkmax2" algorithm="veb" />
+	<target name="dist-medium-benchmark" description="Runs benchmarks on various algorithms" depends="alone, make">
+		<medium-benchmark graph="random" algorithm="bin" />
+		<medium-benchmark graph="dkmax2" algorithm="bin" />
+		<medium-benchmark graph="random" algorithm="fib" />
+		<medium-benchmark graph="dkmax2" algorithm="fib" />
+		<medium-benchmark graph="random" algorithm="veb" />
+		<medium-benchmark graph="dkmax2" algorithm="veb" />
 	</target>
 	
 	<target name="dist-list-benchmark" description="Runs benchmarks on various algorithms" depends="alone, make">
@@ -153,6 +153,8 @@
 			 seed="1234" start="3530" end="7750" step="211" tests="7" />
 			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
 			 seed="1234" start="7750" end="12140" step="439" tests="6" />
+			<benchmark executable="bin/benchmark" graph="@{graph}" algorithm="@{algorithm}"
+			 seed="1234" start="12140" end="112690" step="2011" tests="5" />
 		</sequential>
 	</macrodef>
 	
