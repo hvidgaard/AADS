@@ -24,7 +24,7 @@ void test_down(rb_node* n) {
 	}
 	assert(n->right);
 	if(n->left->left)
-		assert(n->key > n->left->key);
+		assert(n->key >= n->left->key);
 	if(n->right->right)
 		assert(n->key <= n->right->key);
 	assert(n->left != n->right);
@@ -116,6 +116,7 @@ void delete_one_child(rb_node* n) {
 void rotate_right(rb_node* pivot) {
 	printf("rotate right\n");
 	is_correct(pivot->tree);
+	assert(!is_leaf(pivot->left));
 	rb_node* root = pivot->left;
 	rb_node* move = root->right;
 	
@@ -132,6 +133,7 @@ void rotate_right(rb_node* pivot) {
 			root->parent->left = root;
 		else
 			root->parent->right = root;
+		printf("Root stays\n");
 	} else {
 		printf("New root\n");
 		root->tree->root = root;
@@ -142,6 +144,7 @@ void rotate_right(rb_node* pivot) {
 void rotate_left(rb_node* pivot) {
 	printf("rotate left\n");
 	is_correct(pivot->tree);
+	assert(!is_leaf(pivot->right));
 	rb_node* root = pivot->right;
 	rb_node* move = root->left;
 	
@@ -158,6 +161,7 @@ void rotate_left(rb_node* pivot) {
 			root->parent->left = root;
 		else
 			root->parent->right = root;
+		printf("Root stays\n");
 	} else {
 		printf("New root\n");
 		root->tree->root = root;
@@ -190,7 +194,13 @@ rb_node* uncle(rb_node* n) {
 }
 
 int is_leaf(rb_node* n) {
-	return n->left == NULL;
+	if(n->left == NULL || n->right == NULL) {
+		assert(n->left == NULL && n->right == NULL);
+		return 1;
+	} else {
+		assert(n->left != NULL && n->right != NULL);
+		return 0;
+	}
 }
 
 void replace_node(rb_node* n, rb_node* child) {
@@ -199,8 +209,8 @@ void replace_node(rb_node* n, rb_node* child) {
 			n->parent->left = child;
 		else
 			n->parent->right = child;
-		child->parent = n->parent;
 	}
+	child->parent = n->parent;
 }
 
 void insert_case1(rb_node* n) {
