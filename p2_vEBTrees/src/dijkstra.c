@@ -47,6 +47,7 @@ uint dijkstra_bin(uint num_vertices, uint source, uint * weights, uint ** edges)
 				decrease_key_calls++;
 			}
 		}
+		free(node);
 	}
 	free(heap);
 	free(vertices);

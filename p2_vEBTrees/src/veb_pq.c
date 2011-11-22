@@ -30,10 +30,12 @@ void veb_pq_insert(veb_pq_node * node, vebtree * tree){
 		data->first = node;
 		data->n++;
 	}
+	#ifdef DEBUG
 	else{
 		printf("fatal error in veb_pq_insert\n");
 		exit(10);
 	}
+	#endif
 }
 int veb_pq_delete(vebtree * tree, veb_pq_node * node){
 	#ifdef DEBUG
@@ -57,8 +59,11 @@ int veb_pq_delete(vebtree * tree, veb_pq_node * node){
 		return 0;
 	}
 	else{
-		veb_pq_data * d = (veb_pq_data *)veb_delete(node->node_prio, tree);
+		#ifndef DEBUG
+		veb_delete(node->node_prio, tree);
+		#endif
 		#ifdef DEBUG
+		veb_pq_data * d = (veb_pq_data *)veb_delete(node->node_prio, tree);
 		if (d != node->parent){
 			printf("fatal error in veb_pq_delete\n");
 			exit(11);
@@ -85,10 +90,12 @@ veb_pq_node * veb_pq_deletemin(vebtree * tree){
 	return n;
 }
 int veb_pq_decrease_key(vebtree * tree, veb_pq_node * node, uint32_t delta){
+	#ifdef DEBUG
 	if (!node->parent){
 		printf("fatal error in veb_pq_decrease_key - node have no parent\n");
 		exit(13);
 	}
+	#endif
 	veb_pq_delete(tree, node);
 	#ifdef DEBUG
 	if (node->next || node->prev || node->parent){
@@ -105,18 +112,3 @@ void veb_pq_destruct(vebtree * tree){
 		veb_pq_deletemin(tree);
 	veb_destruct(tree);
 }
-
-/*
-typedef struct veb_pq_node {
-	uint32_t node_nr;
-	uint32_t node_prio;
-	data * parent;
-	uint32_t parent_index;
-} veb_pq_node;
-
-typedef struct veb_pq_data {
-	uint32_t max_size;
-	uint32_t size;
-	node ** nodes;
-} veb_pq_data;
-*/

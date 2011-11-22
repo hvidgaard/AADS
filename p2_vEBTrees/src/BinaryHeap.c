@@ -36,19 +36,17 @@ void bh_destruct(binary_heap * bh){
 
 /* Will return a pointer to the element
  */
-bh_element * bh_insert(unsigned int key, void *data, binary_heap *h) {
+bh_element * bh_insert(int key, void * data, binary_heap *h) {
 	if (h->size < h->max_size) {
-		//printf("insert key %d\n", key);
-		h->size++;
-		bh_element * e = malloc(sizeof(struct bh_element));
+		bh_element * e = malloc(sizeof(bh_element));
 		if (!e)
-			return 0;
-		e->key  = key;
+			return NULL;
+		e->key = key;
 		e->data = data;
+		h->size++;
 		e->index = h->size;
 		h->data[h->size] = e;
 		bh_decrease_key(0, e, h);
-		//printf("inserted key %d, got index %d\n\n", key, e->index);
 		return e;
 	}
 	else
@@ -108,11 +106,11 @@ bh_element *bh_delete_element(unsigned int e, binary_heap *h){
 		h->size--;
 		bh_min_heapify(e, h);
 	}
-	else if (h->size < 1 || e == 1)
+	else if (h->size == 1 || e == 1)
 		h->size--;
 	else
 		return NULL;
-	
+	free(h->data[h->size+1]);
 	result->data = h->data[h->size+1]->data;
 	result->key = h->data[h->size+1]->key;
 	result->index = 0;

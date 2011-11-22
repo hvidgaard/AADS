@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "list_generators.h"
+#include <math.h>
 
 uint *generate_random_list(uint size, uint max, uint seed) {
 	srandom(seed);
