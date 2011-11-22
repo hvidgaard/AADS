@@ -6,16 +6,16 @@ Cppcompileroptions		:= -Wall -O2
 includes				:= -I./$(sourcedir)
 outputfile				:= p2_vebt
 
-objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o graph_generators.o benchmark.o dijkstra.o misc.o rb_int_key.o red_black_tree.o stack.o veb_pq.o sort.o list_generators.o
+objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o graph_generators.o benchmark.o dijkstra.o veb_pq.o sort.o list_generators.o rbtree.o
 
 prebuild:
 	mkdir -p $(output)
 
 build: $(objectfiles)
-	gcc ./$(output)/list_generators.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
+	gcc ./$(output)/rbtree.o ./$(output)/list_generators.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
 
 build2: $(objectfiles) main.o
-	gcc ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm
+	gcc ./$(output)/rbtree.o ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm
 
 benchmark: prebuild build
 
@@ -26,17 +26,17 @@ clean:
 	rm -f ./$(output)/BinaryHeap.o
 	rm -f ./$(output)/sort.o
 	rm -f ./$(output)/FibonacciHeap.o
-	rm -f ./$(output)/misc.o
-	rm -f ./$(output)/veb_pq.o
-	rm -f ./$(output)/rb_int_key.o
-	rm -f ./$(output)/red_black_tree.o
 	rm -f ./$(output)/stack.o
 	rm -f ./$(output)/vebtrees.o
 	rm -f ./$(output)/main.o
+	rm -f ./$(output)/rbtree.o
 	rm -f ./$(output)/graph_generators.o
 	rm -f ./$(output)/benchmark.o
 	rm -f ./$(output)/dijkstra.o
 	rm -f ./$(output)/$(outputfile)
+
+rbtree.o: ./$(sourcedir)/rbtree.c ./$(sourcedir)/rbtree.h ./$(sourcedir)/debug.h
+	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
 list_generators.o: ./$(sourcedir)/list_generators.c ./$(sourcedir)/list_generators.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
@@ -66,16 +66,4 @@ main.o: ./$(sourcedir)/main.c ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
 graph_generators.o: ./$(sourcedir)/graph_generators.c ./$(sourcedir)/graph_generators.h ./$(sourcedir)/debug.h
-	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
-
-misc.o: ./$(sourcedir)/RBTree/misc.c ./$(sourcedir)/RBTree/misc.h ./$(sourcedir)/debug.h
-	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
-
-rb_int_key.o: ./$(sourcedir)/RBTree/rb_int_key.c ./$(sourcedir)/RBTree/rb_int_key.h ./$(sourcedir)/debug.h
-	gcc $(C89options) $(includes) -c $< -o ./$(output)/$@
-
-red_black_tree.o: ./$(sourcedir)/RBTree/red_black_tree.c ./$(sourcedir)/RBTree/red_black_tree.h ./$(sourcedir)/debug.h
-	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
-
-stack.o: ./$(sourcedir)/RBTree/stack.c ./$(sourcedir)/RBTree/stack.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@

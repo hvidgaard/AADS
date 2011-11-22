@@ -23,7 +23,6 @@ uint dijkstra_bin(uint num_vertices, uint source, uint * weights, uint ** edges)
 	uint distance;
 	uint *data;
 	uint i;
-	bh_element *e;
 	for (i = 0; i < num_vertices; i++) {
 		if(i == source)
 			distance = 0;
