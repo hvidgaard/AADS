@@ -79,7 +79,7 @@ int main(int argc, char **argv){
 				break;
 		case 4:
 			printf("\nTesting vEB priority queue performance with Dijkstra\n");
-			for (i = 16; i < 20000; i *= 2){
+			for (i = 1000; i < 24000; i += 1000){
 				testperformancePQdijkstra(i);
 			}
 			if (br)
@@ -412,7 +412,6 @@ void testVEBperformance_leaf(int itr, int thres){
 	veb_destruct(vebt);
 }
 void testperformancePQdijkstra(int size){
-	//int itr = size;
 	int seed = 1234;
 	uint32_t* weights = generate_decrease_key_max_graph_2(size, 1000, seed);
 	uint32_t** edges = malloc((size+1) * sizeof(uint32_t *));
