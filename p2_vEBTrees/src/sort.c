@@ -4,6 +4,7 @@
 #include "BinaryHeap.h"
 #include "FibonacciHeap.h"
 #include "vebtrees.h"
+#include "veb_pq.h"
 #include "rb_tree.h"
 
 void sort_bin(uint size, uint* list) {

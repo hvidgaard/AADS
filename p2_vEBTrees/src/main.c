@@ -10,9 +10,10 @@
 #include "FibonacciHeap.h"
 #include "BinaryHeap.h"
 #include "graph_generators.h"
+#include "rb_tree.h"
 
 #ifndef UINT_MAX
-#define UINT_MAX 65535 //2^16-1
+#define UINT_MAX 16777215 //2^24-1
 #endif
 
 int main(int argc, char **argv);
@@ -25,6 +26,7 @@ void testperformancePQdijkstra(int itr);
 void time_veb_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
 void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
 void time_fib_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges);
+void print_rb_leafs(rb_tree * tree, rb_node * n, uint32_t height, uint32_t cutoff);
 
 int main(int argc, char **argv){
 	if (argc < 2){
@@ -42,14 +44,17 @@ int main(int argc, char **argv){
 		printf("    Compare with binary heap and fibonacci heap.\n");
 		printf("    Uses test graph maximizing the decrease key stress on binary heap\n\n");
 		printf(" 5: Test performance of vEB with different leaf sizes\n\n");
-		printf(" 6: ALL OF THEM!\n\n");
+		printf(" 6: Insert elements into a RB tree and print all keys with height >= cutoff\n");
+		printf("    p2_vebt_cli 6 10000 10\n");
+		printf("    this will insert 10000 nodes and only print keys with height 10 or more\n\n");
+		printf(" 10: ALL OF THEM!\n\n");
 		exit (0);
 	}
 	int testcase = atoi(argv[1]);
-	int i, br;
+	int i, br, n, cutoff;
 	br = 1;
 	switch (testcase){
-		case 6:
+		case 10:
 			br = 0;
 		case 0:
 			printf("Testing correctness of vEB\n");
@@ -88,9 +93,25 @@ int main(int argc, char **argv){
 			printf("Testing different leaf sizes\n");
 			for (i = 8; i <= 4096; i *= 2){
 				printf("\nTesting with leafsize %d ;\n",i);
-				testVEBperformance_leaf(10000000, i);
-				//testVEBperformance_random_sort(10000000, i);
+				testVEBperformance_leaf(1000000, i);
 			}
+			break;
+		case 6:
+			if (argc != 4){
+				printf("please use the number of nodes as second parameter, and the cutoff height as third\n");
+				printf("p2_vebt_cli 6 10000 10\n");
+				printf(" this will insert 10000 nodes and only print keys with height 10 or more\n");
+			}
+				
+			n = atoi(argv[2]);
+			cutoff = atoi(argv[3]);
+			printf("printing all leafs\n");
+			rb_tree * t = rb_init();
+			int i;
+			for (i = 0; i < n; i++){
+				rb_insert(i, t);
+			}
+			print_rb_leafs(t, t->root, 0, cutoff);
 			break;
 		default:
 			printf("Please provide an option between 0 and 5\n");
@@ -461,7 +482,6 @@ void testperformancePQdijkstra(int size){
 	free(edges);
 	free(weights);
 }
-
 void time_bin_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weights, uint32_t ** edges){
 	clock_t start, end;
 	double binit = 0;
@@ -673,4 +693,14 @@ void time_fib_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 	printf("     insert: %f (avg: %f)\n", fins, fins/num_vertices);
 	printf("     delmin: %f (avg: %f)\n", fdm, fdm/num_vertices);
 	printf("     dec.ke: %f (avg: %f)\n\n", fdk, fdk/decrease_key_calls);
+}
+
+void print_rb_leafs(rb_tree * tree, rb_node * n, uint32_t height, uint32_t cutoff){
+	if (n->left != tree->nil)
+		print_rb_leafs(tree, n->left, height+1, cutoff);
+	if (height >= cutoff)
+		printf("key: %d with height: %d\n", n->key, height);
+	if (n->right != tree->nil)
+		print_rb_leafs(tree, n->right, height+1, cutoff);
+	
 }

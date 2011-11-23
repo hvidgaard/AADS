@@ -4,7 +4,8 @@ Ccompileroptions		:= -Wall -std=gnu99 -O2
 C89options				:= -Wall -std=gnu99 -O2
 Cppcompileroptions		:= -Wall -O2
 includes				:= -I./$(sourcedir)
-outputfile				:= p2_vebt
+outputfile				:= p2_vebt_bench
+outputfile2				:= p2_vebt_cli
 
 objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o graph_generators.o benchmark.o dijkstra.o veb_pq.o sort.o list_generators.o rb_tree.o
 
@@ -12,12 +13,12 @@ prebuild:
 	mkdir -p $(output)
 
 build: $(objectfiles)
-	gcc ./$(output)/rb_tree.o ./$(output)/list_generators.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/misc.o ./$(output)/rb_int_key.o ./$(output)/red_black_tree.o ./$(output)/stack.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
+	gcc ./$(output)/rb_tree.o ./$(output)/list_generators.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
 
 build2: $(objectfiles) main.o
-	gcc ./$(output)/rb_tree.o ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm
+	gcc ./$(output)/rb_tree.o ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile2) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm
 
-benchmark: prebuild build
+bench: prebuild build 
 
 simplecli: prebuild build2
 
@@ -33,6 +34,7 @@ clean:
 	rm -f ./$(output)/graph_generators.o
 	rm -f ./$(output)/benchmark.o
 	rm -f ./$(output)/dijkstra.o
+	rm -f ./$(output)/veb_pq.o
 	rm -f ./$(output)/$(outputfile)
 
 rb_tree.o: ./$(sourcedir)/rb_tree.c ./$(sourcedir)/rb_tree.h ./$(sourcedir)/debug.h
@@ -53,7 +55,7 @@ dijkstra.o: ./$(sourcedir)/dijkstra.c ./$(sourcedir)/dijkstra.h ./$(sourcedir)/d
 BinaryHeap.o: ./$(sourcedir)/BinaryHeap.c ./$(sourcedir)/BinaryHeap.h ./$(sourcedir)/debug.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
-benchmark.o: ./$(sourcedir)/benchmark.cpp ./$(sourcedir)/benchmark.h ./$(sourcedir)/debug.h
+benchmark.o: ./$(sourcedir)/benchmark.cpp ./$(sourcedir)/benchmark.h
 	gcc $(Cppcompileroptions) $(includes) -c $< -o ./$(output)/$@
 
 FibonacciHeap.o: ./$(sourcedir)/FibonacciHeap.c ./$(sourcedir)/FibonacciHeap.h ./$(sourcedir)/debug.h

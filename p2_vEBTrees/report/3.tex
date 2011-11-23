@@ -50,6 +50,8 @@ From the previous project, we had a graph generating algorithm that would genera
 For good messure we have also included a random graph, where each vertice has a 15\% chance of being connected to another vertice with the weight being between 1 and a chosen maximum.
 
 We measured the running time using two different methods. One using normal absolute time measurement, the other one counting clock cycles. Curios to see which method had the lowest standard deviation we were surprised to discover that it increases using both methods quite rapidly as the graph sizes grow bigger.\newline
+
+\subsubsection*{Dijkstra: Random graph VI SKAL TESTE OP TIL OG MED 100000 nodes her!!}
 \input{../benchmark/graphs/random_standard_deviation_absolute.tex}
 
 The only exception being the random graph, when counting clock cycles.\newline
@@ -61,5 +63,6 @@ We have yet to explain why this is happening. It is not a random deviation, our 
 As can be observed below, the graph does not bode well for van Emde Boas trees. It is slower by a constant of ~225 ms.\newline
 \input{../benchmark/graphs/random_averages_cycles.tex}
 
-All this changes however, once we switch the graph generation algorithm to dkmax2. The algorithm we developed for previous assignment. As you can see, the van Emde Boas tree outperforms both the binary and fibonacci heap at approx. 6300 nodes.\newline
+\subsubsection*{Dijkstra: dkmax2 graph}
+All this changes however, once we switch the graph generation algorithm to dkmax2. The algorithm we developed for previous assignment. As you can see, the van Emde Boas tree outperforms both the binary and fibonacci heap at approx. 6300 nodes. Curiously though, it have a rather, should we call it, funky, looking graph. It could be cache effects or something else. We have triple checked that it produce the correct output, so it's not a fatal bug that just make operations take constant time.\newline
 \input{../benchmark/graphs/dkmax2_averages_cycles.tex}
