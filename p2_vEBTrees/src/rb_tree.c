@@ -12,7 +12,21 @@ rb_tree* rb_init() {
 }
 
 void rb_destruct(rb_tree* tree) {
+	rb_node * e;
+	while (tree->n > 0){
+		e = tree->root;
+		rb_delete(tree->root, tree);
+		free(e);
+	}
+	free(tree->nil);
 	free(tree);
+}
+
+rb_node * rb_find_min(rb_tree * tree){
+	rb_node *n = tree->root;
+	while (n->left != tree->nil)
+		n = n->left;
+	return n;
 }
 
 rb_node* rb_insert(uint32_t key, rb_tree* tree) {

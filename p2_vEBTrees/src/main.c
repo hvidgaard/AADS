@@ -131,8 +131,8 @@ int main(int argc, char **argv){
 }
 
 void startplotting(){
-	//startplotting_rand_sort();
-	startplotting_dkmax();
+	startplotting_rand_sort();
+	//startplotting_dkmax();
 }
 void startplotting_dkmax(){
 	FILE *gnuplot_ins = popen("`which gnuplot`", "w");
@@ -218,7 +218,7 @@ void startplotting_rand_sort(){
 		fprintf(gnuplot_ins, "set title 'Sorting random: insert avg'\n");
 		fprintf(gnuplot_ins, "set ylabel 'Time (nano seconds)'\n");
 		fprintf(gnuplot_ins, "set logscale x\n");
-		fprintf(gnuplot_ins, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
+		fprintf(gnuplot_ins, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap', '-' title 'RB tree'\n");
 	}
 	if (gnuplot_dm){
 		fprintf(gnuplot_dm, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
@@ -226,41 +226,71 @@ void startplotting_rand_sort(){
 		fprintf(gnuplot_dm, "set title 'Sorting random: delete min avg'\n");
 		fprintf(gnuplot_dm, "set ylabel 'Time (nano seconds)'\n");
 		fprintf(gnuplot_dm, "set logscale x\n");
-		fprintf(gnuplot_dm, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
+		fprintf(gnuplot_dm, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap', '-' title 'RB tree'\n");
 	}
 	if (gnuplot_total){
 		fprintf(gnuplot_total, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
 		fprintf(gnuplot_total, "set output 'Sort_rand_total.png'\n");
 		fprintf(gnuplot_total, "set title 'Sorting random: total'\n");
 		fprintf(gnuplot_total, "set ylabel 'Time (mili seconds)'\n");
-		fprintf(gnuplot_total, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
+		fprintf(gnuplot_total, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap', '-' title 'RB tree'\n");
 	}
 	printf("\nTesting VEB performance by sorting random elements\n");
 	int i;
 	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	for (i = 10000; i <= 100000; i += 10000)
+		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	/*for (i = 1000; i < 100000; i += 1000)
+		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	for (i = 100000; i < 1000000; i += 10000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	for (i = 1000000; i < 14000000; i += 100000)
-		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
 	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
+	
+	for (i = 1000; i < 10000; i += 1000)
+		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	for (i = 10000; i <= 100000; i += 10000)	
+		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	printf("\nTesting BinHeap performance by sorting random elements\n");
-	for (i = 1000; i < 10000; i += 1000)
+	/*for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	for (i = 100000; i < 1000000; i += 10000)
 		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	for (i = 1000000; i < 14000000; i += 100000)
-		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
 	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
-	printf("\nTesting FibHeap performance by sorting random elements\n");
+	
 	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 100000; i < 1000000; i += 10000)
+	for (i = 10000; i <= 100000; i += 10000)
 		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	printf("\nTesting FibHeap performance by sorting random elements\n");
+	/*for (i = 1000; i < 10000; i += 1000)
+		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	//for (i = 100000; i < 1000000; i += 10000)
+	for (i = 100000; i < 200000; i += 10000)
+		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
+	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
+	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
+	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
+	
+	for (i = 1000; i < 10000; i += 1000)
+		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	for (i = 10000; i <= 100000; i += 10000)	
+		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	printf("\nTesting RB tree performance by sorting random elements\n");
+	/*for (i = 1000; i < 10000; i += 1000)
+		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	for (i = 100000; i < 1000000; i += 10000)
+		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	for (i = 1000000; i < 14000000; i += 100000)
+		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
 	if (gnuplot_ins){  fprintf(gnuplot_ins, "e\n");   fclose(gnuplot_ins);}
 	if (gnuplot_dm){   fprintf(gnuplot_dm, "e\n");    fclose(gnuplot_dm);}
 	if (gnuplot_total){fprintf(gnuplot_total, "e\n"); fclose(gnuplot_total);}

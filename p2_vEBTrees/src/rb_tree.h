@@ -32,6 +32,7 @@ rb_node* rb_insert(uint32_t key, rb_tree* tree);
 void rb_delete(rb_node* n, rb_tree* tree);
 rb_node* rb_pred(rb_node* n, rb_tree* tree);
 rb_node* rb_succ(rb_node* n, rb_tree* tree);
+rb_node * rb_find_min(rb_tree * tree);
 
 void is_correct(rb_tree* tree);
 void test_down(rb_node* n, rb_tree* tree);

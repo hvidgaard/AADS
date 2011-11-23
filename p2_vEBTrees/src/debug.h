@@ -1,2 +1,2 @@
 //#define PRINT
-// #define DEBUG
+#define DEBUG
