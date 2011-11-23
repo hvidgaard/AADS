@@ -32,24 +32,28 @@ $veb->selector = 'veb';
 $redblack = new stdClass;
 $redblack->name = 'Red Black';
 $redblack->color = '#dc322f';
-$redblack->selector = 'rbt';
+$redblack->selector = 'rb';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
 $measurements = array('cycles' => 'logs/concatenated.cyc.averages', 'absolute' => 'logs/concatenated.abs.averages');
 $columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard_deviation', 7 => 'samples');
-$generators = array('random' => 'Random', /*'dkmax' => 'Decrease Key maximized', */'dkmax2' => 'Decrease Key maximized v2');
-$algorithms = array($binary, $fibonacci, $veb/*, $redblack*/);
+$generators = array("random" => 'Random', /*'dkmax' => 'Decrease Key maximized', */'dkmax2' => 'Decrease Key maximized v2', 'random_list' => 'Random List');
+$algorithms = array($binary, $fibonacci, $veb);
+
 foreach($measurements as $measurement => $file) {
 	foreach($columns as $column => $columnName) {
 		foreach($generators as $generator => $generatorName)  {
+			
 			$png = "graphs/{$generator}_{$columnName}_{$measurement}.png";
 			$eps = "graphs/{$generator}_{$columnName}_{$measurement}.eps";
 			if(file_exists($png) && file_exists($eps))
 				if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
 					continue;
 			$columnName = str_replace('_', ' ', $columnName);
+			
 			$graph = new Graph;
+			
 			if($columnName == 'samples') {
 				$graph->ylabel = '"Samples"';
 			} else {
@@ -58,9 +62,20 @@ foreach($measurements as $measurement => $file) {
 				else
 					$graph->title = "\"$generatorName graph $columnName \\n(Abs. time)\"";
 			}
-			foreach($algorithms as $algo) {
+			
+			
+			$_algorithms = $algorithms;
+			if($generator == 'random_list') {
+				$_algorithms = array($veb, $redblack);
+				$graph->xrange = '[0:112000]';
+			}
+			$match = $generator;
+			if($generator == 'random')
+				$match = "random\t";
+				
+			foreach($_algorithms as $algo) {
 				$plot = new Plot;
-				$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
+				$plot->datafile = "< grep \"{$algo->selector}_{$match}\" $file";
 				$plot->datamodifiers = "using 2:$column";
 				$plot->style = "$stdline '$algo->color'";
 				$plot->title = $algo->name;

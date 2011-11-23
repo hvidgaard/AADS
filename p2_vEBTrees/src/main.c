@@ -31,16 +31,16 @@ int main(int argc, char **argv){
 		printf("Start the program with one of the following commands:\n");
 		printf(" 0: Test correctness of vEB\n\n");
 		printf(" 1: Test correctness of vEB priority queue\n\n");
-		printf(" 2: Test performance of vEB for sorting random elements,\n");
-		printf("    compare with binary heap, fibonacci heap and Red Black trees.\n");
-		printf("    NOTE: this use the bare vEB tree, and does not allow duplicated elements\n\n");
-		printf(" 3: Test performance of vEB as a priority queue, with random elements,\n");
-		printf("    compare with binary heap and fibonacci heap.\n");
-		printf("    NOTE: this use the vEB_pq construction. It's slower than bare vEB,\n");
-		printf("    but allow any number of duplicated elements.\n\n");
-		printf(" 4: Test performance of vEB using Dijkstras algorithm,\n");
-		printf("    compared with binary heap and fibonacci heap,\n");
-		printf("    with test graph maximizing the decrease key stress on binary heap\n\n");
+		printf(" 2: Test performance of vEB for sorting random elements.\n");
+		printf("    Compare with binary heap, fibonacci heap and Red Black trees.\n");
+		printf("    NOTE: This uses the bare vEB tree, and does not allow duplicate elements.\n\n");
+		printf(" 3: Test performance of vEB as a priority queue, with random elements.\n");
+		printf("    Compare with binary heap and fibonacci heap.\n");
+		printf("    NOTE: This uses the vEB_pq construction.\n");
+		printf("    It's slower than the bare vEB, but allows duplicate elements.\n\n");
+		printf(" 4: Test performance of vEB using Dijkstras algorithm.\n");
+		printf("    Compare with binary heap and fibonacci heap.\n");
+		printf("    Uses test graph maximizing the decrease key stress on binary heap\n\n");
 		printf(" 5: Test performance of vEB with different leaf sizes\n\n");
 		printf(" 6: ALL OF THEM!\n\n");
 		exit (0);
@@ -98,7 +98,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 void testcorrectnessveb(){
-	int itr = 10;
+	int itr = 100000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_initialize(24, 64);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -145,7 +145,7 @@ void testcorrectnessveb(){
 	free(fheap);
 }
 void testcorrectnessvebpq(){
-	int itr = 10000000;
+	int itr = 100000;
 	int MAX = pow(2, 24);
 	vebtree * vebt = veb_pq_init(24);
 	binary_heap * bheap = bh_init_heap(MAX);
@@ -364,6 +364,23 @@ void testVEBperformance_random_sort(int itr, int thres){
 	veb_destruct(vebt);
 	bh_destruct(bheap);
 	free(fheap);
+	
+	FILE *gnuplot = popen("`which gnuplot`", "w");
+	if(gnuplot) {
+		fprintf(gnuplot, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
+		fprintf(gnuplot, "set output 'random_elem.png'\n");
+		fprintf(gnuplot, "set xtics rotate by 90 offset 2 ('vEB' 0, 'Binary Heap' 1, 'Fibonacci Heap' 2, 'Red-Black tree' 3)\n");
+		fprintf(gnuplot, "set xrange [0:5]\n");
+		fprintf(gnuplot, "set yrange [0:]\n");
+		fprintf(gnuplot, "set title 'delete_min() performance'\n");
+		fprintf(gnuplot, "set ylabel 'Time (ms)'\n");
+		fprintf(gnuplot, "set key off\n");
+		fprintf(gnuplot, "plot '-' with impulses ls 3 lw 10\n");
+		fprintf(gnuplot, "%f\n%f\n%f\n%f", vdm/itr, bdm/itr, fdm/itr, 0.0);
+		fclose(gnuplot);
+	} else {
+		printf("Could not open gnuplot.\n");
+	}
 }
 void testVEBperformance_leaf(int itr, int thres){
 	int MAX = pow(2, 24);
@@ -655,5 +672,5 @@ void time_fib_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 	printf("fib: init: %f - total time: %f\n", finit, finit+fdm+fins+fdk);
 	printf("     insert: %f (avg: %f)\n", fins, fins/num_vertices);
 	printf("     delmin: %f (avg: %f)\n", fdm, fdm/num_vertices);
-	printf("     dec.ke: %f (avg: %f)\n\n", fdk, fdk/decrease_key_calls);	
+	printf("     dec.ke: %f (avg: %f)\n\n", fdk, fdk/decrease_key_calls);
 }
