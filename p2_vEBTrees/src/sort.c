@@ -32,15 +32,20 @@ void sort_fib(uint size, uint* list) {
 }
 
 void sort_veb(uint size, uint* list) {
-	vebtree* tree = veb_initialize(24, 2);
-	
+	//vebtree* tree = veb_initialize(24, 2);
+	vebtree * tree = veb_pq_init(24);
 	uint i;
+	for (i = 0; i < size; i++){
+		veb_pq_node *n = malloc(sizeof(veb_pq_node));
+		n->node_prio = i;
+		veb_pq_insert(n, tree);
+		//veb_insert(list[i], NULL, tree);
+		
+	}
 	for (i = 0; i < size; i++)
-		veb_insert(list[i], NULL, tree);
-	for (i = 0; i < size; i++)
-		veb_delete_min(tree);
-	
-	free(tree);
+		free(veb_pq_deletemin(tree));
+		//free(tree);
+	veb_destruct(tree);
 }
 
 void sort_rb(uint size, uint* list) {
