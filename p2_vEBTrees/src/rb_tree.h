@@ -26,8 +26,10 @@ struct rb_tree {
 	uint32_t n;
 };
 
+int rb_search(int key, rb_tree * rbt);
 rb_tree* rb_init();
 void rb_destruct(rb_tree* tree);
+void rb_destruct_node(rb_node *n, rb_tree* tree);
 rb_node* rb_insert(uint32_t key, rb_tree* tree);
 void rb_delete(rb_node* n, rb_tree* tree);
 rb_node* rb_pred(rb_node* n, rb_tree* tree);

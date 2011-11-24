@@ -10,16 +10,28 @@ rb_tree* rb_init() {
 	tree->nil->color = BLACK;
 	return tree;
 }
+int rb_search(int key, rb_tree * rbt){
+	rb_node *current = rbt->root;
+	while (current->key != key){
+		if (key > current->key)
+			current = current->right;
+		else
+			current = current->left;
+	}
+	return current->key;
+}
 
 void rb_destruct(rb_tree* tree) {
-	rb_node * e;
-	while (tree->n > 0){
-		e = tree->root;
-		rb_delete(tree->root, tree);
-		free(e);
-	}
+	rb_destruct_node(tree->root, tree);
 	free(tree->nil);
 	free(tree);
+}
+void rb_destruct_node(rb_node *n, rb_tree* tree) {
+	if (n->left != tree->nil)
+		rb_destruct_node(n->left, tree);
+	if (n->right != tree->nil)
+		rb_destruct_node(n->right, tree);
+	free (n);
 }
 
 rb_node * rb_find_min(rb_tree * tree){

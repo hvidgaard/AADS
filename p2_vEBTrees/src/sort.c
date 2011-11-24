@@ -50,7 +50,7 @@ void sort_veb(uint size, uint* list) {
 }
 
 void sort_rb(uint size, uint* list) {
-	rb_tree* tree = rb_init();
+	/*rb_tree* tree = rb_init();
 		
 	uint i;
 	for (i = 0; i < size; i++)
@@ -73,5 +73,5 @@ void sort_rb(uint size, uint* list) {
 			node = rb_pred(successor, tree);
 		
 	}
-	free(tree);
+	free(tree);*/
 }

@@ -13,6 +13,7 @@
 #include "BinaryHeap.h"
 #include "plot_rand_sort.h"
 #include "plot_dkmax2.h"
+#include "plot_succ_pred.h"
 
 #ifndef UINT_MAX
 #define UINT_MAX 16777215 //2^24-1
@@ -31,6 +32,8 @@ void time_fib_dijkstra(uint32_t num_vertices, uint32_t source, uint32_t * weight
 void startplotting();
 void startplotting_rand_sort();
 void startplotting_dkmax();
+void startplotting_succ();
+int calc_log2(int i);
 
 void testVEBperformance_leaf(int itr, int thres);
 void testPQperformance_random(int itr);
@@ -60,14 +63,12 @@ int main(int argc, char **argv){
 		exit (0);
 	}
 	int testcase = atoi(argv[1]);
+	fflush(stdout);
 	int i, br, n, cutoff;
 	br = 1;
 	switch (testcase){
 		case 10:
 			br = 0;
-		case 9:
-			startplotting();
-			break;
 		case 0:
 			printf("Testing correctness of vEB\n");
 			testcorrectnessveb();
@@ -124,6 +125,9 @@ int main(int argc, char **argv){
 				rb_insert(i, t);
 			print_rb_leafs(t, t->root, 0, cutoff);
 			break;
+		case 9:
+			startplotting();
+			break;
 		default:
 			printf("Please provide an option between 0 and 5\n");
 	}
@@ -131,8 +135,70 @@ int main(int argc, char **argv){
 }
 
 void startplotting(){
-	startplotting_rand_sort();
+	//startplotting_rand_sort();
 	//startplotting_dkmax();
+	startplotting_succ();
+}
+int calc_log2( int input ) {
+    int log = 1;
+
+    if( input == 0 )
+        return 0;
+    while( input != 1 ) {
+        input = input >> 1;
+        log++;
+    }
+    return log;
+}
+
+void startplotting_succ(){
+	FILE *gnuplot_ins = popen("`which gnuplot`", "w");
+	FILE *gnuplot_succ = popen("`which gnuplot`", "w");
+	FILE *gnuplot_total = popen("`which gnuplot`", "w");
+	
+	if (gnuplot_ins){
+		fprintf(gnuplot_ins, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
+		fprintf(gnuplot_ins, "set output 'succ_ins.png'\n");
+		fprintf(gnuplot_ins, "set title 'Successor test: insert avg'\n");
+		fprintf(gnuplot_ins, "set ylabel 'Time (nano seconds)'\n");
+		fprintf(gnuplot_ins, "plot '-' title 'vEB','-' title 'RB'\n");
+	}
+	if (gnuplot_succ){
+		fprintf(gnuplot_succ, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
+		fprintf(gnuplot_succ, "set output 'succ_succ.png'\n");
+		fprintf(gnuplot_succ, "set title 'Successor test: successor avg'\n");
+		fprintf(gnuplot_succ, "set ylabel 'Time (nano seconds)'\n");
+		fprintf(gnuplot_succ, "plot '-' title 'vEB','-' title 'RB'\n");
+	}
+	if (gnuplot_total){
+		fprintf(gnuplot_total, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
+		fprintf(gnuplot_total, "set output 'succ_total.png'\n");
+		fprintf(gnuplot_total, "set title 'Successor test: total running time'\n");
+		fprintf(gnuplot_total, "set ylabel 'Time (mili seconds)'\n");
+		//fprintf(gnuplot_total, "set logscale x\n");
+		fprintf(gnuplot_total, "plot '-' title 'vEB','-' title 'RB'\n");
+	printf("\nTesting vEB succ\n");
+	int i;
+	/*for (i = 100; i < 10000; i += 100)
+		plot_succ_veb(i, calc_log2(i), gnuplot_ins, gnuplot_succ, gnuplot_total);*/
+	for (i = 100000; i < 1000000; i += 100000)
+		plot_succ_veb(i, calc_log2(i), gnuplot_ins, gnuplot_succ, gnuplot_total);
+	for (i = 1000000; i <= 10000000; i += 1000000)
+		plot_succ_veb(i, calc_log2(i), gnuplot_ins, gnuplot_succ, gnuplot_total);
+	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
+	if (gnuplot_succ)    fprintf(gnuplot_succ, "e\n");
+	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
+	
+	printf("\nTesting RB succ\n");
+	/*for (i = 100; i < 10000; i += 100)
+		plot_succ_rb(i, calc_log2(i), gnuplot_ins, gnuplot_succ, gnuplot_total);*/
+	for (i = 100000; i < 1000000; i += 100000)
+		plot_succ_rb(i, calc_log2(i), gnuplot_ins, gnuplot_succ, gnuplot_total);
+	for (i = 1000000; i <= 10000000; i += 1000000)
+		plot_succ_rb(i, calc_log2(i), gnuplot_ins, gnuplot_succ, gnuplot_total);
+	if (gnuplot_ins){  fprintf(gnuplot_ins, "e\n");   fclose(gnuplot_ins);}
+	if (gnuplot_succ){   fprintf(gnuplot_succ, "e\n");    fclose(gnuplot_succ);}
+	if (gnuplot_total){fprintf(gnuplot_total, "e\n"); fclose(gnuplot_total);}}
 }
 void startplotting_dkmax(){
 	FILE *gnuplot_ins = popen("`which gnuplot`", "w");
@@ -145,7 +211,6 @@ void startplotting_dkmax(){
 		fprintf(gnuplot_dk, "set output 'dkmax2_dk.png'\n");
 		fprintf(gnuplot_dk, "set title 'Dijkstra - dkmax2 graph: decrease key avg'\n");
 		fprintf(gnuplot_dk, "set ylabel 'Time (nano seconds)'\n");
-		fprintf(gnuplot_dk, "set logscale x\n");
 		fprintf(gnuplot_dk, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
 	}
 	if (gnuplot_ins){
@@ -153,7 +218,6 @@ void startplotting_dkmax(){
 		fprintf(gnuplot_ins, "set output 'dkmax2_ins.png'\n");
 		fprintf(gnuplot_ins, "set title 'Dijkstra - dkmax2 graph: insert avg'\n");
 		fprintf(gnuplot_ins, "set ylabel 'Time (nano seconds)'\n");
-		fprintf(gnuplot_ins, "set logscale x\n");
 		fprintf(gnuplot_ins, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
 	}
 	if (gnuplot_dm){
@@ -161,7 +225,6 @@ void startplotting_dkmax(){
 		fprintf(gnuplot_dm, "set output 'dkmax2_dm.png'\n");
 		fprintf(gnuplot_dm, "set title 'Dijkstra - dkmax2 graph: delete min avg'\n");
 		fprintf(gnuplot_dm, "set ylabel 'Time (nano seconds)'\n");
-		fprintf(gnuplot_dm, "set logscale x\n");
 		fprintf(gnuplot_dm, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
 	}
 	if (gnuplot_total){
@@ -169,38 +232,29 @@ void startplotting_dkmax(){
 		fprintf(gnuplot_total, "set output 'dkmax2_total.png'\n");
 		fprintf(gnuplot_total, "set title 'Dijkstra - dkmax2 graph: total running time'\n");
 		fprintf(gnuplot_total, "set ylabel 'Time (mili seconds)'\n");
+		fprintf(gnuplot_total, "set logscale x\n");
 		fprintf(gnuplot_total, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap'\n");
 	}
-	printf("\nTesting VEB performance by sorting random elements\n");
+	printf("\nTesting vEB Dijkstra dkmax2\n");
 	int i;
-	for (i = 10; i < 1000; i += 10)
+	for (i = 100; i <= 4000; i += 100)
 		plot_dkmax2_veb(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);
-	/*for (i = 1000; i < 10000; i += 100)
-		plot_dkmax2_veb(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);
-	for (i = 10000; i <= 20000; i += 1000)
-		plot_dkmax2_veb(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);*/
 	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
 	if (gnuplot_dk) fprintf(gnuplot_dk, "e\n");
-	printf("\nTesting BinHeap performance by sorting random elements\n");
-	for (i = 10; i < 1000; i += 10)
+	
+	printf("\nTesting BinHeap Dijkstra dkmax2\n");
+	for (i = 100; i <= 4000; i += 100)
 		plot_dkmax2_bin(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);
-	/*for (i = 1000; i < 10000; i += 100)
-		plot_dkmax2_bin(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);
-	for (i = 10000; i <= 20000; i += 1000)
-		plot_dkmax2_bin(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);*/
 	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
 	if (gnuplot_dk) fprintf(gnuplot_dk, "e\n");
-	printf("\nTesting FibHeap performance by sorting random elements\n");
-	for (i = 10; i < 1000; i += 10)
+	
+	printf("\nTesting FibHeap Dijkstra dkmax2\n");
+	for (i = 100; i <= 4000; i += 100)
 		plot_dkmax2_fib(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);
-	/*for (i = 1000; i < 10000; i += 100)
-		plot_dkmax2_fib(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);
-	for (i = 10000; i <= 20000; i += 1000)
-		plot_dkmax2_fib(i, 0, gnuplot_ins, gnuplot_dm, gnuplot_total, gnuplot_dk);*/
 	if (gnuplot_ins){  fprintf(gnuplot_ins, "e\n");   fclose(gnuplot_ins);}
 	if (gnuplot_dm){   fprintf(gnuplot_dm, "e\n");    fclose(gnuplot_dm);}
 	if (gnuplot_total){fprintf(gnuplot_total, "e\n"); fclose(gnuplot_total);}
@@ -276,7 +330,7 @@ void startplotting_rand_sort(){
 	//for (i = 100000; i < 1000000; i += 10000)
 	for (i = 100000; i < 200000; i += 10000)
 		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
-	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
+	/*if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
 	
@@ -285,7 +339,7 @@ void startplotting_rand_sort(){
 	for (i = 10000; i <= 100000; i += 10000)	
 		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	printf("\nTesting RB tree performance by sorting random elements\n");
-	/*for (i = 1000; i < 10000; i += 1000)
+	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	for (i = 100000; i < 1000000; i += 10000)
 		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
@@ -877,37 +931,3 @@ void print_rb_leafs(rb_tree * tree, rb_node * n, uint32_t height, uint32_t cutof
 	if (n->right != tree->nil)
 		print_rb_leafs(tree, n->right, height+1, cutoff);
 }
-
-/*int[] get_key_array(rb_tree * tree, rb_node * n, uint32_t height, uint32_t cutoff, int * elm){
-	int l_len = 0;
-	int r_len = 0;
-	int *l_arr;
-	int *r_arr;
-	if (n->left != tree->nil){
-		l_arr = get_key_array(tree, n->left, height+1, cutoff, int * &l_len)
-	}
-	if (n->right != tree->nil){
-		r_arr = get_key_array(tree, n->right, height+1, cutoff, int * &r_len)
-	}
-	int i, j;
-	
-	if (n->key >= cutoff)
-		j = 1;
-	else
-		j = 0;
-	int *arr  = malloc((l_len + r_len + j) *  sizeof(int));
-	
-	if (l_len){
-		for (i = 0; i < l_len; i++)
-			arr[i] = l_arr[i];
-	}
-	free(l_arr);
-	if (j)
-		arr[l_len + j] = n->key;
-	if (r_len){
-		for (i = 0; i < r_len; i++)
-			arr[l_len + j +i] = r_arr[i];
-	}
-	
-	
-}*/
