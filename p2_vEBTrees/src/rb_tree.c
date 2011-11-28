@@ -4,6 +4,8 @@
 #include "debug.h"
 #include "rb_tree.h"
 
+void rb_prio_inorder_walk_node(rb_tree *t, rb_node *n, linked_list*l);
+
 rb_tree* rb_init() {
 	rb_tree* tree = calloc(1, sizeof(rb_tree));
 	tree->nil = calloc(1,sizeof(rb_node));
@@ -19,6 +21,18 @@ int rb_search(int key, rb_tree * rbt){
 			current = current->left;
 	}
 	return current->key;
+}
+linked_list *rb_prio_inorder_walk(rb_tree *t){
+	linked_list *l = linked_list_init();
+	rb_prio_inorder_walk_node(t, t->root, l);
+	return l;
+}
+void rb_prio_inorder_walk_node(rb_tree *t, rb_node *n, linked_list*l){
+	if (n->left != t->nil)
+		rb_prio_inorder_walk_node(t, n->left, l);
+	linked_list_add_tail(n->key, l);
+	if (n->right != t->nil)
+		rb_prio_inorder_walk_node(t, n->right, l);
 }
 
 void rb_destruct(rb_tree* tree) {

@@ -14,6 +14,7 @@
 #include "plot_rand_sort.h"
 #include "plot_dkmax2.h"
 #include "plot_succ_pred.h"
+#include "linked_list.h"
 
 #ifndef UINT_MAX
 #define UINT_MAX 16777215 //2^24-1
@@ -135,9 +136,9 @@ int main(int argc, char **argv){
 }
 
 void startplotting(){
-	//startplotting_rand_sort();
+	startplotting_rand_sort();
 	//startplotting_dkmax();
-	startplotting_succ();
+	//startplotting_succ();
 }
 int calc_log2( int input ) {
     int log = 1;
@@ -272,7 +273,7 @@ void startplotting_rand_sort(){
 		fprintf(gnuplot_ins, "set title 'Sorting random: insert avg'\n");
 		fprintf(gnuplot_ins, "set ylabel 'Time (nano seconds)'\n");
 		fprintf(gnuplot_ins, "set logscale x\n");
-		fprintf(gnuplot_ins, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap', '-' title 'RB tree'\n");
+		fprintf(gnuplot_ins, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'RB tree'\n");
 	}
 	if (gnuplot_dm){
 		fprintf(gnuplot_dm, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
@@ -280,24 +281,24 @@ void startplotting_rand_sort(){
 		fprintf(gnuplot_dm, "set title 'Sorting random: delete min avg'\n");
 		fprintf(gnuplot_dm, "set ylabel 'Time (nano seconds)'\n");
 		fprintf(gnuplot_dm, "set logscale x\n");
-		fprintf(gnuplot_dm, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap', '-' title 'RB tree'\n");
+		fprintf(gnuplot_dm, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'RB tree'\n");
 	}
 	if (gnuplot_total){
 		fprintf(gnuplot_total, "set terminal png #FFFFFF nocrop enhanced font helvetica 12 size 1200,900\n");
 		fprintf(gnuplot_total, "set output 'Sort_rand_total.png'\n");
 		fprintf(gnuplot_total, "set title 'Sorting random: total'\n");
 		fprintf(gnuplot_total, "set ylabel 'Time (mili seconds)'\n");
-		fprintf(gnuplot_total, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'FibHeap', '-' title 'RB tree'\n");
+		fprintf(gnuplot_total, "plot '-' title 'vEB','-' title 'BinHeap', '-' title 'RB tree'\n");
 	}
 	printf("\nTesting VEB performance by sorting random elements\n");
 	int i;
 	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 10000; i <= 100000; i += 10000)
+	for (i = 10000; i < 1000000; i += 10000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	/*for (i = 1000; i < 100000; i += 1000)
+	for (i = 1000000; i <= 10000000; i += 100000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 100000; i < 1000000; i += 10000)
+	/*for (i = 100000; i < 1000000; i += 10000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	for (i = 1000000; i < 14000000; i += 100000)
 		plot_rand_sort_veb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
@@ -305,46 +306,33 @@ void startplotting_rand_sort(){
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
 	
+	printf("\nTesting BinHeap performance by sorting random elements\n");
 	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 10000; i <= 100000; i += 10000)	
+	for (i = 10000; i <= 500000; i += 10000)
 		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	printf("\nTesting BinHeap performance by sorting random elements\n");
-	/*for (i = 1000; i < 10000; i += 1000)
-		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 100000; i < 1000000; i += 10000)
-		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 1000000; i < 14000000; i += 100000)
+	/*for (i = 1000000; i < 14000000; i += 100000)
 		plot_rand_sort_bin(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
 	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
 	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
 	
+	/*printf("\nTesting FibHeap performance by sorting random elements\n");
 	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 10000; i <= 100000; i += 10000)
-		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	printf("\nTesting FibHeap performance by sorting random elements\n");
-	/*for (i = 1000; i < 10000; i += 1000)
-		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	//for (i = 100000; i < 1000000; i += 10000)
-	for (i = 100000; i < 200000; i += 10000)
-		plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
-	/*if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
+	//for (i = 10000; i < 100000; i += 10000)
+		//plot_rand_sort_fib(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
+	if (gnuplot_ins)   fprintf(gnuplot_ins, "e\n");
 	if (gnuplot_dm)    fprintf(gnuplot_dm, "e\n");
-	if (gnuplot_total) fprintf(gnuplot_total, "e\n");
+	if (gnuplot_total) fprintf(gnuplot_total, "e\n");*/
 	
-	for (i = 1000; i < 10000; i += 1000)
-		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 10000; i <= 100000; i += 10000)	
-		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	printf("\nTesting RB tree performance by sorting random elements\n");
 	for (i = 1000; i < 10000; i += 1000)
 		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 100000; i < 1000000; i += 10000)
+	for (i = 10000; i < 1000000; i += 10000)
 		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
-	for (i = 1000000; i < 14000000; i += 100000)
-		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);*/
+	for (i = 1000000; i <= 5000000; i += 100000)
+		plot_rand_sort_rb(i, 64, gnuplot_ins, gnuplot_dm, gnuplot_total);
 	if (gnuplot_ins){  fprintf(gnuplot_ins, "e\n");   fclose(gnuplot_ins);}
 	if (gnuplot_dm){   fprintf(gnuplot_dm, "e\n");    fclose(gnuplot_dm);}
 	if (gnuplot_total){fprintf(gnuplot_total, "e\n"); fclose(gnuplot_total);}
@@ -375,6 +363,8 @@ void testcorrectnessveb(){
 	}
 	uint32_t v, b, f;
 	FibNode * fn;
+	linked_list * llveb = veb_prio_walk(vebt);
+	linked_list_node * nveb = llveb->first;
 	for (i = 0; i < itr; i++){
 		v = vebt->min->value;
 		veb_delete_min(vebt);
@@ -385,11 +375,12 @@ void testcorrectnessveb(){
 		f = fn->key;
 		fib_delete_min(fheap);
 		free(fn);
-		if (b != v || b != f || v !=f){
+		if (b != v || b != f || v !=f || nveb->data != b){
 			printf("one of the datastructures was not correct\n");
-			printf("vEB: %d, bin: %d, fib: %d\n", v, b, f);
+			printf("vEB: %d, bin: %d, fib: %d, veb walk: %d\n", v, b, f, nveb->data);
 			exit(-1);
 		}
+		nveb = nveb->next;
 	}
 	printf("all data structures agree, so they can be assumed correct - %d -\n", bheap->size);
 	free(arr);

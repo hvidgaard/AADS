@@ -11,14 +11,16 @@ objectfiles				:= BinaryHeap.o FibonacciHeap.o vebtrees.o graph_generators.o ben
 
 plotting: plot_rand_sort.o plot_dkmax2.o plot_succ_pred.o
 
+misc: linked_list.o
+
 prebuild:
 	mkdir -p $(output)
 
 build: $(objectfiles)
 	gcc ./$(output)/rb_tree.o ./$(output)/list_generators.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile) ./$(output)/graph_generators.o ./$(output)/benchmark.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o -lm -lstdc++
 	
-build2: $(objectfiles) main.o plotting
-	gcc ./$(output)/plot_succ_pred.o ./$(output)/rb_tree.o ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile2) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o ./$(output)/plot_rand_sort.o ./$(output)/plot_dkmax2.o -lrt -lm
+build2: $(objectfiles) main.o plotting misc
+	gcc ./$(output)/linked_list.o ./$(output)/plot_succ_pred.o ./$(output)/rb_tree.o ./$(output)/main.o ./$(output)/BinaryHeap.o ./$(output)/FibonacciHeap.o ./$(output)/vebtrees.o -o ./$(output)/$(outputfile2) ./$(output)/graph_generators.o ./$(output)/dijkstra.o ./$(output)/sort.o ./$(output)/veb_pq.o ./$(output)/plot_rand_sort.o ./$(output)/plot_dkmax2.o -lrt -lm
 
 bench: prebuild build 
 
@@ -41,6 +43,9 @@ clean:
 	rm -f ./$(output)/dijkstra.o
 	rm -f ./$(output)/veb_pq.o
 	rm -f ./$(output)/$(outputfile)
+
+linked_list.o: ./$(sourcedir)/linked_list.c ./$(sourcedir)/linked_list.h
+	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@
 
 plot_succ_pred.o: ./$(sourcedir)/plot_succ_pred.c ./$(sourcedir)/plot_succ_pred.h
 	gcc $(Ccompileroptions) $(includes) -c $< -o ./$(output)/$@

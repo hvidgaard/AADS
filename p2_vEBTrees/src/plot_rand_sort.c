@@ -40,12 +40,18 @@ void plot_rand_sort_veb(int num_vertices, int thres, FILE *gnuplot_ins, FILE *gn
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 		increment(&ins, &start, &end);
 	}
-	for (i = 0; i < num_vertices; i++){
+	/*for (i = 0; i < num_vertices; i++){
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
 		veb_delete_min(vebt);
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 		increment(&delmin, &start, &end);
-	}
+	}*/
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+	linked_list * ll= veb_prio_walk(vebt);
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+	increment(&delmin, &start, &end);
+	
+	linked_list_destruct(ll);
 	free(arr);
 	veb_destruct(vebt);
 	if(gnuplot_ins)
@@ -181,13 +187,19 @@ void plot_rand_sort_rb(int num_vertices, int thres, FILE *gnuplot_ins, FILE *gnu
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 		increment(&ins, &start, &end);
 	}
-	for (i = 0; i < num_vertices; i++){
+	/*for (i = 0; i < num_vertices; i++){
 		e = rb_find_min(heap);
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
 		rb_delete(e, heap);
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 		increment(&delmin, &start, &end);
-	}
+	}*/
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+	linked_list *ll = rb_prio_inorder_walk(heap);
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+	increment(&delmin, &start, &end);
+	
+	linked_list_destruct(ll);
 	free(arr);
 	rb_destruct(heap);
 	if(gnuplot_ins)
