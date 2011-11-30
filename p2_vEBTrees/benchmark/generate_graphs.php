@@ -81,9 +81,10 @@ foreach($measurements as $measurement => $file) {
 				$plot->title = $algo->name;
 				$graph->addPlot($plot);
 			}
-			$graph->output($png);
-			$graph->terminal = "epslatex linewidth 3";
-			$graph->output($eps);
+//			$graph->output($png);
+//			$graph->terminal = "epslatex linewidth 3";
+//			$graph->output($eps);
+			echo $graph;
 		}
 	}
 }

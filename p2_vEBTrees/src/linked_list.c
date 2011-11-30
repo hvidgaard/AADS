@@ -10,6 +10,7 @@ linked_list * linked_list_init(){
 
 int linked_list_add_tail(uint32_t d, linked_list *ll){
 	linked_list_node *node = malloc(sizeof(linked_list_node));
+	node->next = NULL;
 	node->data = d;
 	if (ll->n == 0) {
 		ll->first = node;

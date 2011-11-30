@@ -2,13 +2,16 @@
 This project is about van Emde Boas trees, and their practical performance. We implement vEB trees, and design and perform experiments to compare the performance to our binary heap and fibonacci heap from the previous project. We also design and perform experiements to compare the performance to a Red Black tree.
 
 \subsection*{General remarks about testing and compiling}
-???????????????hvilken test maskiner vi bruger????????????
+We performed the benchmarks on a ``fresh horse'' in the Aarhus University Computer Science campus cluster. The machine is equiped with a quad-core Intel Xeon X3430 cpu with 8MiB of cache, and 8GiB of ram.
 
-We use an automated process to perform our benchmarks, so as such it's not possible to replicate our results without using ANT and other linux tools. We have however included a makefile, that can be used to compile everything and run some basic tests. This is done by calling the following command\\
+We have included a makefile, that can be used to compile everything and run some basic testing and the full benchmark, including generating graphs. This is done by calling the following command\\
 \\
 \textbf{make -f MAKEFILE simplecli}\\
 \\
-on a linux machine with the standard compilation tools installed - we only need \textit{make} and \textit{gcc}. The binary can then be found in the \textit{./debug/p2\_vebt}, don't worry, all debugging are turned off and \textit{-O2} used for optimal performance.
-
+on a linux machine with the standard compilation tools installed - we only need \textit{make} and \textit{gcc}. The binary can then be found in the \textit{./debug/p2\_vebt\_cli}, don't worry, all debugging are turned off and \textit{-O2} used for obvious performance reasons. If you want to generate the benchmark graphs, need to have testit{gnuplot} installed, and run \\
+\\
+\textbf{p2\_vebt\_cli 9}\\
+\\
+and I advice to grap a cup of your favorite brewage, as it takes quite some time to finish.
 \subsection*{Problems}
-Apart from the complexity of vEB and therefore difficult bug hunting, we didn't anticipate that we practically had to implement Red Black trees as well.
+Apart from the complexity of vEB and therefore difficult bug hunting, we didn't anticipate that we practically had to implement Red Black trees as well. Unfortunately we couldn't get the \textit{delete} operation quite right in the Red-Black tree, but we have benchmarkes slightly to work around this.
