@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ghc -Wall -optl"-Wl,-read_only_relocs,suppress" --make -hidir ../obj -odir ../obj -o ../bin/benchmark benchmark.hs

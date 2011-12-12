@@ -1,0 +1,10 @@
+.DS_Store
+bin
+obj
+build.properties
+cache.properties
+benchmark/logs/*
+benchmark/build.properties
+history.xml
+KT99.pdf
+O95.pdf

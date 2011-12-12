@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="benchmark" basedir=".">
+	
+	<property name="benchmark" value="${basedir}/benchmark" />
+	<property file="${benchmark}/build.properties"/>
+	<property name="logs" value="${benchmark}/logs" />
+	<property name="graphs" value="${benchmark}/graphs" />
+	
+	<target name="mkdirs">
+		<mkdir dir="${logs}"/>
+		<mkdir dir="${graphs}"/>
+	</target>
+	
+	<target name="dist-users">
+		<distribute-ssh-command command="echo `hostname`: `users`" />
+	</target>
+	
+	<target name="plot" depends="averages" description="Plot the output of the benchmark">
+		<mkdir dir="${graphs}" />
+		<apply executable="${benchmark}/generate_graphs.php" dir="${benchmark}" force="yes">
+			<srcfile/>
+			<targetfile/>
+			<fileset dir="${logs}" includes="*.averages" />
+			<mapper type="glob" from="*.averages" to="${graphs}/*"/>
+		</apply>
+	</target>
+	
+	<target name="averages" description="Concatenate all benchmark logs and compute averages" depends="concatenate">
+		<apply executable="${benchmark}/averages.php" dir="${benchmark}">
+			<srcfile/>
+			<targetfile/>
+			<arg value="3" />
+			<fileset dir="${logs}" includes="*.log" />
+			<mapper type="glob" from="*.log" to="${logs}/*.abs.averages"/>
+		</apply>
+		<apply executable="${benchmark}/averages.php" dir="${benchmark}">
+			<srcfile/>
+			<targetfile/>
+			<arg value="4" />
+			<fileset dir="${logs}" includes="*.log" />
+			<mapper type="glob" from="*.log" to="${logs}/*.cyc.averages"/>
+		</apply>
+	</target>
+	
+	<target name="concatenate">
+		<concat destfile="${logs}/concatenated.log" force="no">
+			<fileset dir="${logs}" includes="**/*.log" excludes="concatenated.log" />
+		</concat>
+	</target>
+	
+	<target name="convert2pdf" depends="plot">
+		<apply executable="pstopdf" osfamily="mac">
+			<srcfile/>
+			<targetfile/>
+			<fileset dir="${graphs}" includes="*.eps" />
+			<mapper type="glob" from="*.eps" to="${graphs}/*.pdf"/>
+		</apply>
+		<!-- <apply executable="ps2pdf" osfamily="linux">
+			<arg value="-dEPSCrop" />
+			<srcfile/>
+			<targetfile/>
+			<fileset dir="${graphs}" includes="*.eps" />
+			<mapper type="glob" from="*.eps" to="${graphs}/*.pdf"/>
+		</apply> -->
+	</target>
+	
+	<target name="alone" description="Fails unless the user is the only one logged in, used for distributed benchmarking">
+		<exec executable="users" outputproperty="users" />
+		<exec executable="hostname" outputproperty="hostname" />
+		<condition property="alone">
+			<matches pattern="^(${ssh.username} ?)*\n?$" string="${users}"/>
+		</condition>
+		<fail unless="alone" message="You are not alone. ${users} are logged in on ${hostname}." />
+	</target>
+	
+	<macrodef name="benchmark">
+		<attribute name="executable"/>
+		<attribute name="graph"/>
+		<attribute name="algorithm"/>
+		<attribute name="seed" default="0"/>
+		<attribute name="start" default="0"/>
+		<attribute name="end"   default="1"/>
+		<attribute name="step"  default="1"/>
+		<attribute name="tests" default="1"/>
+		<attribute name="logfile" default=""/>
+		
+		<sequential>
+			<tstamp>
+				<format property="time" pattern="hhmmssSSS"/>
+			</tstamp>
+			<tstamp>
+				<format property="timestamp" pattern="yyyy-MM-dd HHmmss"/>
+			</tstamp>
+			<condition property="seed" value="${time}" else="@{seed}">
+				<equals arg1="@{seed}" arg2="0" />
+			</condition>
+			<exec executable="hostname" outputproperty="hostname" />
+			<condition property="logfile" value="${logs}/${hostname}/${timestamp}.log" else="@{logfile}">
+				<equals arg1="@{logfile}" arg2="" />
+			</condition>
+			<mkdir dir="${logs}/${hostname}" />
+			<echo>graph @{graph}</echo>
+			<echo>algorithm @{algorithm}</echo>
+			<echo>seed ${seed}</echo>
+			<echo>start size @{start}</echo>
+			<echo>end size @{end}</echo>
+			<echo>number of tests @{tests}</echo>
+			<echo>logging to ${logfile}</echo>
+			<echo></echo>
+			<exec executable="@{executable}" dir="${basedir}">
+				<arg value="@{graph}" />
+				<arg value="@{algorithm}" />
+				<arg value="${seed}" />
+				<arg value="@{start}" />
+				<arg value="@{end}" />
+				<arg value="@{step}" />
+				<arg value="@{tests}" />
+				<arg value="${logfile}" />
+			</exec>
+			<echo></echo>
+			<echo></echo>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="distribute-ssh-command">
+		<attribute name="command" default="hostname"/>
+		<sequential>
+		<property name="keyfile" value="${user.home}/.ssh/id_rsa" />
+			<parallel>
+				<sshexec host="${ssh.host.1}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.2}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.3}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.4}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.5}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.6}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.7}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.8}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.9}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+				<sshexec host="${ssh.host.10}" username="${ssh.username}" trust="yes" keyfile="${keyfile}"
+				passphrase="${ssh.passphrase}" command="@{command}"/>
+			</parallel>
+		</sequential>
+	</macrodef>
+</project>

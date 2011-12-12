@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AADS Project 3" default="make" basedir=".">
+	<taskdef resource="cpptasks.tasks" classpath="lib/cpptasks-1.0b5.jar"/>
+	<taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpath="lib/ant_latex_0.0.9_1.jar"/>
+	
+	<property name="src" value="${basedir}/src" />
+	<property name="obj" value="${basedir}/obj" />
+	<property name="bin" value="${basedir}/bin" />
+	<property name="benchmark" value="${basedir}/benchmark" />
+	<property name="report" value="${basedir}/report" />
+	
+	<import file="${benchmark}/benchmark.xml"/>
+	
+	<property name="debug" value="true" />
+	
+	<target name="mkdirs">
+		<mkdir dir="${obj}"/>
+		<mkdir dir="${bin}"/>
+	</target>
+	
+	<target name="make" depends="make-c">
+	</target>
+	
+	<target name="make-hs" depends="mkdirs">
+		<apply executable="ghc" dir="${src}">
+			<arg line="-Wall" />
+			<arg line="-optl&quot;-Wl,-read_only_relocs,suppress&quot;" />
+			<arg line="--make" />
+			<arg value="-hidir ${obj}" />
+			<arg value="-odir ${obj}" />
+			<srcfile />
+			<arg line="-o" />
+			<targetfile/>
+			<fileset dir="${src}" includes="benchmark.hs" />
+			<mapper type="glob" from="*.hs" to="${bin}/*"/>
+		</apply>
+	</target>
+	
+	<target name="make-c" depends="mkdirs">
+		<condition property="isUnix">
+			<and>
+				<os family="unix" />
+				<not><os family="mac" /></not>
+			</and>
+		</condition>
+		<condition property="isMac">
+			<os family="mac" />
+		</condition>
+		<cc outfile="${bin}/test" outtype="executable"
+			subsystem="console" objdir="${obj}" debug="${debug}">
+			<includepath>
+				<pathelement path="${src}"/>
+			</includepath>
+			<includepath if="isUnix">
+				<pathelement path="/usr/include"/>
+			</includepath>
+			<libset libs="m" if="isUnix" />
+			<libset libs="stdc++" />
+			<compilerarg value="-Wall" />
+			<fileset dir="${src}" includes="*.c" excludes="benchmark.cpp" />
+		</cc>
+		<cc outfile="${bin}/benchmark" outtype="executable"
+			subsystem="console" objdir="${obj}" debug="${debug}">
+			<includepath>
+				<pathelement path="${src}"/>
+			</includepath>
+			<includepath if="isUnix">
+				<pathelement path="/usr/include"/>
+			</includepath>
+			<libset libs="m" if="isUnix" />
+			<libset libs="stdc++" />
+			<compilerarg value="-Wall" />
+			<fileset dir="${src}" includes="*.cpp, *.c" excludes="main.c" />
+		</cc>
+	</target>
+	
+	<target name="report" depends="copy-graphs">
+		<latex latexfile="${report}/report.tex"
+			verbose="on" clean="on" pdftex="on" workingDir="${report}" />
+	</target>
+	
+	<target name="copy-graphs" depends="convert2pdf">
+		<mkdir dir="${report}/graphs" />
+		<copy todir="${report}/graphs">
+			<fileset dir="${benchmark}/graphs" includes="*.pdf" />
+		</copy>
+	</target>
+	
+	<target name="clean" description="Remove all object and binary files">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${obj}" includes="**/*" defaultexcludes="no"/>
+			<fileset dir="${bin}" includes="**/*" defaultexcludes="no"/>
+		</delete>
+	</target>
+</project>
