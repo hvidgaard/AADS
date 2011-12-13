@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "debug.h"
 
+#define DEBUG
+
 #ifdef DEBUG
 #include <stdio.h>
 #endif
@@ -80,6 +82,10 @@ veb_pq_node * veb_pq_deletemin(vebtree * tree){
 	if (tree->n == 0)
 		return NULL;
 	veb_pq_node * n = ((veb_pq_data *)tree->min->data)->first;
+	if (!n){
+		printf("dfghksgaaethjrjjhkgujkg\n");
+		exit(1);
+	}
 	#ifdef DEBUG
 	if (n->parent == NULL){
 		printf("fatal error in veb_pq_deletemin\n");

@@ -16,7 +16,7 @@ data \GETS \text{succesor}(node.prio, tree)\\
 \THEN \text{insert $n$ into the linked list in $data$}
 \ELSE 
 \BEGIN
-data \GETS \text{new veb\_pq\_data containing a single element, $node$} \\
+data \GETS \text{new veb\_pq\_data with a single element, $node$} \\
   \text{insert}(data, tree)
 \END
 \end{pseudocode}
@@ -29,7 +29,7 @@ Let $T_{succ}(n)$ be the time for finding the successor to $n$, in the underlyin
 \ELSE \text{remove}(node.parent, tree)
 \end{pseudocode}
 
-It is assumed we have a pointer to the node we want to delete. By the same argument as for \textbf{veb\_pq\_insert}, the time is $O(T_{remove}(n)$ which translates to $O(\log \log U)$.
+It is assumed we have a pointer to the node we want to delete. If the parent to the node have more than one element, it's a matter of updating a few pointers, but by the same argument as for \textbf{veb\_pq\_insert}, the time is $O(T_{remove}(n))$ which translates to $O(\log \log U)$, in the worst case where the node is the only node in the parent..
 
 \subsubsection*{\textbf{veb\_pq\_deletemin}}
 Since vEB trees have a pointer to the minimum element, this can be fetched in constant time. The running time of \textbf{veb\_pq\_deletemin} is therefore $O(T_{remove}(n)) = O(\log \log U)$. The observant reader will notice that this means we can sort the integers $0, \dots, U$ in time $O(k \cdot \log \log U)$, where $k$ is the number of integers. So have we broken the $O(n \cdot \log n)$ barrier for comparison based integer sorting? No. In order to sort an arbitraty range of integers, we firstly need to build the vEB tree. Since this has size $O(U) = O(2^m)$, it takes $O(2^m)$ to build, where m is the bit length used for the vEB tree. This is clearly at least as large as $O(n)$. But for any fixed size integers set, we can sort efficiently by reusing the same vEB data structure.
@@ -40,26 +40,46 @@ node.prio \GETS n.prio - delta\\
 \text{veb\_pq\_insert}(node, tree)
 \end{pseudocode}
 
-With a running time of $O(T_{delete}(n) + T_{insert}(n) = O(\log \log U)$.
+With a running time of $O(O(\log \log U) + O(\log \log U)) = O(\log \log U)$.
 
 All operations on our priority queue with vEB takes $O(\log \log U)$ time, except initialization.
 
 \subsection*{Benchmarking}
-From the previous project, we had a graph generating algorithm that would generate a large number of decrease calls, such that the binary heap would do $\log n$ work, i.e bubble the element, a leaf, all the way to the root. The Fibonacci heaps have the obvious advantage that they have amotized $O(1)$ time for secrease key calls, and vEB have $O(\log \log n)$. Question is, are the hidden constants too large for practical purposes?
+From the previous project, we had a graph generating algorithm that would generate a large number of decrease calls, such that the binary heap would do $\log n$ work, i.e bubble the element, a leaf, all the way to the root. The Fibonacci heaps have the obvious advantage that they have amotized $O(1)$ time for decrease key calls, and vEB have $O(\log \log n)$. Question is, is the hidden constants too large for practical purposes?
 
-For good messure we have also included a random graph, where each vertice has a 15\% chance of being connected to another vertice with the weight being between 1 and a chosen maximum.
+\subsubsection*{Dijkstra: dkmax2 graph}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/dkmax2_dk.png}
+\caption{Decrease key average}
+\label{fig:dkmax2-dk}
+\end{figure}
 
-We measured the running time using two different methods. One using normal absolute time measurement, the other one counting clock cycles. Curios to see which method had the lowest standard deviation we were surprised to discover that it increases using both methods quite rapidly as the graph sizes grow bigger.\newline
-\input{../benchmark/graphs/random_standard_deviation_absolute.tex}
+It's obvious to see here, that both Fibonacci Heap and vEB trees have constant time for the decrease key operation. For Fibonacci heap this is expected, and the vEB it is because we don't change the size of the universe. We could make the size of the universe just large enough to fit all the data, and this is expected to show a $\log \log U$ growing function. However, since it we only decrease the depth by 1, when we half the bitlenght of the input, it's expected to jump in intervals, rather than being a nice growing graph.
 
-The only exception being the random graph, when counting clock cycles.\newline
-\input{../benchmark/graphs/random_standard_deviation_cycles.tex}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/dkmax2_dm.png}
+\caption{Deletemin average}
+\label{fig:dkmax2-dm}
+\end{figure}
 
-We have yet to explain why this is happening. It is not a random deviation, our sample size is fairly large.\newline
-\input{../benchmark/graphs/random_samples_cycles.tex}
+Here it's painfully obvious that our Fibonacci Heap delete min operation is done wrong.
 
-As can be observed below, the graph does not bode well for van Emde Boas trees. It is slower by a constant of ~225 ms.\newline
-\input{../benchmark/graphs/random_averages_cycles.tex}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/dkmax2_ins.png}
+\caption{Insert average}
+\label{fig:dkmax2-ins}
+\end{figure}
 
-All this changes however, once we switch the graph generation algorithm to dkmax2. The algorithm we developed for previous assignment. As you can see, the van Emde Boas tree outperforms both the binary and fibonacci heap at approx. 6300 nodes.\newline
-\input{../benchmark/graphs/dkmax2_averages_cycles.tex}
+The insert average is constant, which for Fibonacci Heap and vEB is expected, one due to the amotized $O(1)$ insert, and the other because the size of the universe is constant. For the Binary Heap, it is because it always inserts an element at the very end, and the algorithm insert elements with the maximum priority the first time, it doesn't have to bubble it up. It does not insert elements beyond this.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/dkmax2_total.png}
+\caption{Total running time}
+\label{fig:dkmax2-tot}
+\end{figure}
+
+When looking at the total running time, vEB tree does not look so good. If we had implemented Fibonacci Heaps correctly, it would be even faster, but it would still have a $O(\log n)$ delete minimum operation, and theoretically, for large enough inputs it should become slower than vEB at some point, because for both data structures the other operations are constant on average. But since we cannot have large enough vEB structures in the ram, we cannot benchmark beyond $n=4000$ because we use $n^2$ as the priority of one node for our graph, and that is very close to the maximum for the vEB tree when using 24-bits for the index.

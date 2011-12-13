@@ -2,6 +2,7 @@
 #define H_VEB_T
 
 #include <stdint.h>
+#include "linked_list.h"
 
 typedef struct vebelement {
 	uint32_t value;
@@ -33,9 +34,7 @@ void * veb_findsucc(uint32_t index, int32_t * succ, vebtree * tree);
 void * veb_findpred(uint32_t index, int32_t * pred, vebtree * tree);
 void * veb_delete_min(vebtree * tree);
 void veb_destruct(vebtree *tree);
-
-//void * veb_extract_min(vebtree * tree, int32_t * index);
-//void veb_decrease_key(uint32_t index, uint32_t delta, vebtree * tree);
+linked_list *veb_prio_walk(vebtree *t);
 
 
 

@@ -4,15 +4,55 @@
 #include "debug.h"
 #include "rb_tree.h"
 
+void rb_prio_inorder_walk_node(rb_tree *t, rb_node *n, linked_list*l);
+
 rb_tree* rb_init() {
 	rb_tree* tree = calloc(1, sizeof(rb_tree));
 	tree->nil = calloc(1,sizeof(rb_node));
 	tree->nil->color = BLACK;
 	return tree;
 }
+int rb_search(int key, rb_tree * rbt){
+	rb_node *current = rbt->root;
+	while (current->key != key){
+		if (key > current->key)
+			current = current->right;
+		else
+			current = current->left;
+	}
+	return current->key;
+}
+linked_list *rb_prio_inorder_walk(rb_tree *t){
+	linked_list *l = linked_list_init();
+	rb_prio_inorder_walk_node(t, t->root, l);
+	return l;
+}
+void rb_prio_inorder_walk_node(rb_tree *t, rb_node *n, linked_list*l){
+	if (n->left != t->nil)
+		rb_prio_inorder_walk_node(t, n->left, l);
+	linked_list_add_tail(n->key, l);
+	if (n->right != t->nil)
+		rb_prio_inorder_walk_node(t, n->right, l);
+}
 
 void rb_destruct(rb_tree* tree) {
+	rb_destruct_node(tree->root, tree);
+	free(tree->nil);
 	free(tree);
+}
+void rb_destruct_node(rb_node *n, rb_tree* tree) {
+	if (n->left != tree->nil)
+		rb_destruct_node(n->left, tree);
+	if (n->right != tree->nil)
+		rb_destruct_node(n->right, tree);
+	free (n);
+}
+
+rb_node * rb_find_min(rb_tree * tree){
+	rb_node *n = tree->root;
+	while (n->left != tree->nil)
+		n = n->left;
+	return n;
 }
 
 rb_node* rb_insert(uint32_t key, rb_tree* tree) {

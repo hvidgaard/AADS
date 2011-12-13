@@ -1,12 +1,33 @@
 \section*{Comparison with Red-Black Trees}
-Kort om red-black trees
-hvilke test cases har vi og hvorfor?
+Red-Black trees are self balancing search trees, which garantee that the height of the tree is at most $2 \cdot \log n$, by ensuring that any path from the root node to a leaf contains the same number of black node and both children of any red node, are black. So in order to compare the performance, we chould use sorting, but that only test the \textbf{insert} and \textbf{delete min} operations, and we might as well just use a heap for that anyway. We will test both heaps and both search trees with sorting later, but comparison with Red-Black trees focus on stressing \textbf{find succ} and \textbf{find pred} and to some extend \textbf{insert} and \textbf{delete}.
+
+Because the height of the vEB tree is $3$ (assuming $U = 2^{24}$ and leaf size of 64), it's almost futile effort to ensure it goes to the bottom every time we perform a \textbf{find succ} or \textbf{find pred} operation. There is simply too much overhead assosiated with it anyway, and the time complexity will not grow with the size of the input, but the universe. What is more interesting is to construct a benchmark where Red-Black trees consistently have to search a path of length at least $\log n$ for every \textbf{find succ} or \textbf{find pred}. We have done this by simply constructing the Red-Black tree and traverse it, adding node with height at least $\log n$, to a linked list, and then search for this in both structures.The trees used contain elements from 1 to n. This way we're guranteed to have a tree that is heavily biased to the right, because it always search to the right most node, perform the insert there and rebalance.
 
 \subsection*{Benchmarking}
 
-In order to compare Red-Black trees to van Emde Boas trees we constructed a simple sorting benchmark.
-To do that we implemented a list generator, whose product should be sorted by either algorithm.
-The generator produces a list of random numbers from 0 to a given maximum and terminates once a given size is reached.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/succ_ins.png}
+\caption{Insert average}
+\label{fig:succ-ins}
+\end{figure}
 
-test og plots
-konklutioner på testne
+The average time for inserting is as expected. The vEB tree is constant time, again because we do not change the size of the universe, and interestingly it's always faster than the Red-Black tree. This is probably due to all the rebalancing.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/succ_succ.png}
+\caption{Succesor average}
+\label{fig:succ-succ}
+\end{figure}
+
+The successor test is, again for vEB not surprising. The slight increase may be due to cache effects, but we have not been able to verify this. The average for the Red-Black tree is growing, and by the approximated shape of the graph, it's obvious that it is sub-linear; this fits well with $O(\log n$.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{../benchmark/cli/succ_total.png}
+\caption{Total running time}
+\label{fig:succ-tot}
+\end{figure}
+
+At first glance, the total running times look at little odd. But this is because the shape of the Red-Black trees does not give a strictly increasing number of nodes with height at least $\log n$ as the tree grows. At some point, inserting more elements will cause the rebalancing to always ``move nodes to the left subtree'' of the root, until this has gained an increase it's (the left subtree) height by one.

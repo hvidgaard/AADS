@@ -16,7 +16,8 @@ int32_t veb_insert_tree(uint32_t index, void * data, vebtree * tree);
 void * veb_delete_tree(uint32_t index, vebtree * tree);
 void * veb_delete_leaf(uint32_t index, vebtree * tree);
 void vebfactor(int w, uint32_t i, uint32_t * a, uint32_t * b);
-
+void veb_prio_walk_leaf(vebtree *t, linked_list *l, uint32_t multiplier);
+void veb_prio_walk_recursive(vebtree *t, linked_list*l, uint32_t multiplier);
 /*w is number of bits to use for the elements. Note
  *that the size of the entire datastructure will be 
  *2^size...
@@ -473,230 +474,48 @@ void veb_destruct(vebtree *tree){
 	}
 	free(tree);
 }
-
-
-/*void * veb_findsucc(uint32_t index, int32_t * succ, vebtree * tree){
-	//in a recursive tree
-	else {
-		uint32_t * t_a = malloc(sizeof(uint32_t));
-		uint32_t * t_b = malloc(sizeof(uint32_t));
-		vebfactor (tree->w, index, t_a, t_b);
-		int32_t a = *t_a;
-		int32_t b = *t_b;
-		free(t_a);
-		free(t_b);
-		int32_t n_a, n_b;
-		veb_findsucc(a, &n_a, tree->top);
-		if (n_a == -1){
-			*succ = tree->max->value;
-			return tree->max->data;
-		}
-		else if (a == n_a){
-			void * d = veb_findsucc(b, &n_b, tree->bottom[a]);
-			if (n_b < b){
-				*succ = tree->max->value;
-				return tree->max->data;
-			}
-			else {
-				*succ = a * tree->sqrtsize + n_b;
-				return d;
-			}
-		}
-		else {
-			*succ = n_a * tree->sqrtsize + tree->bottom[n_a]->min->value;
-			return tree->bottom[n_a]->min->data;
-		}
-	}
-}
-void * veb_findpred(uint32_t index, int32_t * pred, vebtree * tree){
-	if (tree->n == 0){
-		*pred = -1;
-		return NULL;
-	}
-	//in a leaf
-	if (tree->size <= threshold){
-		void * result = NULL;
-		int i;
-		int32_t idx = -1;
-		for (i = 0; i <= index; i++){
-			if (tree->arr[i].value){
-				result = tree->arr[i].data;
-				idx = i;
-			}
-		}
-		*pred = idx;
-		return result;
-	}
-	//in a recursive tree
-	else {
-		if (index < tree->min->value){
-			*pred = -1;
-			return NULL;
-		}
-		else if (index >= tree->max->value && tree->n > 0){
-			*pred = tree->max->value;
-			return tree->max->data;
-		}
-		else if (tree->n <= 2){
-			*pred = tree->min->value;
-			return tree->min->data;
-		}
-		uint32_t * t_a = malloc(sizeof(uint32_t));
-		uint32_t * t_b = malloc(sizeof(uint32_t));
-		vebfactor (tree->w, index, t_a, t_b);
-		uint32_t a = *t_a;
-		uint32_t b = *t_b;
-		free(t_a);
-		free(t_b);
-		if ((tree->bottom)[a]->n > 0 && (tree->bottom)[a]->min->value <= b){
-			int32_t r;
-			void * data = veb_findpred(b, &r, (tree->bottom)[a]);
-			*pred = a * (tree->sqrtsize) + r;
-			return data;
-		}
-		else if (tree->top->min->value >= a){
-			*pred = tree->min->value;
-			return tree->min->data;
-		}
-		int32_t c;
-		veb_findpred(a, &c, tree->top);
-		if (c == -1){
-			*pred = tree->min->value;
-			return tree->min->data;
-		}
-		*pred = c * (tree->sqrtsize) + (tree->bottom[c]->max->value);
-		return tree->bottom[c]->max->data;
-	}
-}*/
 void * veb_extract_min(vebtree * tree, int32_t * index){
 	return veb_findsucc(0, index, tree);
 }
-/*void veb_decrease_key(uint32_t delta, uint32_t index, vebtree * tree){
-	void * d = malloc(sizeof(void *));
-	veb_delete(index, d, tree);
-	veb_insert(index-delta, d, tree);
-}*/
-
-/* return 0 if the insert succeded. Any other value 
- * indicated an error
- */
-/*int32_t veb_insert(uint32_t index, void * data, vebtree * tree){
-	//the element shouldn't be stored as the index is too large
-	if (index > tree->size){
-		#ifdef DEBUG
-		printf("For stort element\n");
-		exit(24);
-		#endif
-		return 1;
+linked_list *veb_prio_walk(vebtree *t){
+	linked_list *l = linked_list_init();
+	veb_prio_walk_recursive(t, l,0);
+	return l;
+}
+void veb_prio_walk_recursive(vebtree *t, linked_list*l, uint32_t add){
+	if (t->leaf)
+		veb_prio_walk_leaf(t, l, add);
+	else if (t->n > 0){
+		linked_list_add_tail(t->min->value + add, l);
+		int i;
+		veb_findsucc(0, &i, t->top);
+		while (i != -1){
+			veb_prio_walk_recursive(t->bottom[i], l, i*(t->sqrtsize)+add);
+			veb_findsucc(i+1, &i, t->top);
+		}
+		if (t->n > 1)
+			linked_list_add_tail(t->max->value + add, l);
 	}
-	//the tree is at the threshold, thus it's just a simple array
-	if (tree->size <= threshold)
-		return veb_insert_leaf(index, data, tree);
-	//the insert is a trivial case with no recursion
-	else if (tree->n < 2)
-		return veb_insert_node_trivial(index, data, tree);
-	//the insert is a recursive case.
-	//check if the new insert falls outside the current min/max span
-	//and swap accordingly
-	uint32_t * a = malloc(sizeof(uint32_t));
-	uint32_t * b = malloc(sizeof(uint32_t));
-	#ifdef DEBUG
-	if (index == tree->min->value){
-		printf("igen noget der allerede er der....\n");
-		exit(40);
-	}
-	else if (index == tree->max->value){
-		printf("igen noget der allerede er der----\n");
-		exit(41);
-	}
-	#endif
-	if (index < tree->min->value) {
-		vebfactor(tree->w, tree->min->value, a, b);
-		tree->min->data = data;
-		tree->min->value = index;
-		veb_insert(*b, tree->min->data, tree->bottom[*a]);
-		//vebswap(&index, &data, tree->min);
-	}
-	else if (index > tree->max->value) {
-		vebfactor(tree->w, tree->max->value, a, b);
-		tree->max->data = data;
-		tree->max->value = index;
-		veb_insert(*b, tree->max->data, tree->bottom[*a]);
-		//vebswap(&index, &data, tree->max);
+}
+void veb_prio_walk_leaf(vebtree *tree, linked_list *l, uint32_t add){
+	if (tree->n == 0)
+		return;
+	else if (tree->n == 1)
+		linked_list_add_tail(tree->min->value + add, l);
+	else if (tree->n == 2){
+		linked_list_add_tail(tree->min->value + add, l);
+		linked_list_add_tail(tree->max->value + add, l);
 	}
 	else {
-		vebfactor(tree->w, index, a, b);
-		veb_insert(*b, data, tree->bottom[*a]);
-	}
-	if (tree->bottom[*a]->n == 1)
-		veb_insert(*a, NULL, tree->top);
-	free(a);
-	free(b);
-	tree->n++;
-	return 0;
-}
-int32_t veb_insert_leaf(uint32_t index, void * data, vebtree * tree){
-	if ((tree->arr)[index].value){
-		#ifdef DEBUG
-		printf("trying to insert where there already is an element\n");
-		exit(14);
-		#endif
-		return 1;
-	}
-	(tree->arr)[index].value = index;
-	(tree->arr)[index].data = data;
-	if (tree->n){
-		if (index > tree->max->value){
-			tree->max = &(tree->arr)[index];
-		}
-		else if (index < tree->min->value){
-			tree->min = &(tree->arr)[index];
+		//this is to make sure we add a 0 if actually in the array.
+		linked_list_add_tail(tree->min->value + add, l);
+		int i;
+		for (i = tree->min->value + 1; i <= tree->max->value; i ++){
+			if (tree->arr[i].value)
+				linked_list_add_tail(tree->arr[i].value + add, l);
 		}
 	}
-	else{
-		tree->min = &(tree->arr)[index];
-		tree->max = &(tree->arr)[index];
-	}
-	tree->n++;
-	return 0;
 }
-int32_t veb_insert_node_trivial(uint32_t index, void * data, vebtree * tree){
-	#ifdef DEBUG
-	if (tree->n > 1){
-		printf("oups, skulle ikke kunne komme her...\n");
-		exit(25);
-	}
-	#endif
-	if (tree->n == 0){
-		tree->max->value = index;
-		tree->min->value = index;
-		tree->max->data = data;
-		tree->min->data = data;
-	}
-	#ifdef DEBUG
-	else if (index == tree->max->value){
-		printf("ups, inserting something that is there\n");
-		exit(30);
-	}
-	else if (index == tree->min->value){
-		printf("ups, inserting something that is there---2\n");
-		exit(31);
-	}
-	#endif
-	else if (index > tree->max->value){
-		tree->min->value = tree->max->value;
-		tree->min->data = tree->max->data;
-		tree->max->value = index;
-		tree->max->data = data;
-	}
-	else {
-		tree->min->value = index;
-		tree->min->data = data;
-	}
-	tree->n++;
-	return 0;
-}
-*/
 void vebswap(uint32_t *index, void **data, vebelement *e){
 	void *tmp_data = e->data;
 	uint32_t tmp_idx = e->value;
@@ -705,17 +524,7 @@ void vebswap(uint32_t *index, void **data, vebelement *e){
 	*data = tmp_data;
 	*index = tmp_idx;
 }
-
-
-/*
-vebtree * veb_init_tree(int w){
-
-	tree->top = veb_initialize(halfofw, 0);
-	
-	tree->bottom = malloc(tree->sqrtsize * sizeof(struct vebtree *));
-	int i;
-	for (i = 0; i < tree->sqrtsize; i++)
-		tree->bottom[i] = veb_initialize(w-halfofw, 0);
-	
-	return tree;
-}*/
+linked_list * inorder_tree_walk(vebtree *tree){
+		//min + b0,b1,...,bk + max
+		return NULL;
+}
