@@ -1,15 +1,5 @@
-module Queue
-( push
-, pop
-, inject
-, eject
-, size
-, Queue
-) where
+module Queue ( Queue (..) ) where
 
 class Queue a where
-	push :: Int -> a -> a
-	pop :: a -> (Maybe Int, a)
-	inject :: Int -> a -> a
-	eject :: a -> (Maybe Int, a)
-	size :: a -> Int
+	insert :: Int -> a -> a
+	remove :: a -> (Maybe Int, a)

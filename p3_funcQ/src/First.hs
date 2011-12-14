@@ -1,5 +1,5 @@
 module First
-( First (..)
+( FirstQueue (..)
 , makelist ) where
 import Queue
 

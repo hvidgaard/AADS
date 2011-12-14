@@ -1,5 +1,5 @@
 module Second
-( Second (..)
+( SecondQueue (..)
 , makelist ) where
 import Queue
 
