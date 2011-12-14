@@ -25,7 +25,8 @@ makeq :: ThirdQueue -> ThirdQueue
 makeq ThirdQueue {left=l, right=r, lefthat=[]} =
 	ThirdQueue {left=l', right=[], lefthat=l'}
 	where l' = rot l r []
-makeq queue = queue
+makeq ThirdQueue {left=l, right=r, lefthat=_:lhats} =
+	ThirdQueue {left=l, right=r, lefthat=lhats}
 
 rot :: [Int] -> [Int] -> [Int] -> [Int]
 rot [] (r:_) a = r:a
