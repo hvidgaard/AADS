@@ -1,13 +1,9 @@
 module Fourth
-( push
-, pop
-, inject
-, eject
-, size
-, makelist
-) where
+( Fourth (..)
+, makelist ) where
 import Queue
 
+-- Queues as paired lazy lists
 data FourthQueue = FourthQueue {
 		left :: [Int],
 		right :: [Int],
@@ -15,39 +11,28 @@ data FourthQueue = FourthQueue {
 		rightLength :: Int
 	} deriving (Show)
 
-makelist :: Int -> FourthQueue
-makelist x = FourthQueue {left=[x], right=[], leftLength=1, rightLength=0}
+makelist :: FourthQueue
+makelist = FourthQueue {left=[], right=[], leftLength=0, rightLength=0}
 
 instance Queue FourthQueue where
-	inject y FourthQueue {left=h, right=t, leftLength=l, rightLength=r}
-		| l > r = FourthQueue {
-				left=h,
-				right=y:t,
-				leftLength=l,
-				rightLength=r+1 }
-		| otherwise  = FourthQueue {
-				left=h ++ reverse (y:t),
-				right=[],
-				leftLength=l+r+1,
-				rightLength=0 }
+	insert e FourthQueue {left=l, right=r, leftLength=lengthL, rightLength=lengthR} =
+		makeq FourthQueue {left=l, right=e:r, leftLength=lengthL, rightLength=lengthR+1}
+	remove FourthQueue {left=l:ls, right=r, leftLength=lengthL, rightLength=lengthR} =
+		( l,	makeq FourthQueue {left=ls, right=r, leftLength=lengthL-1, rightLength=lengthR} )
+
+makeq :: FourthQueue -> FourthQueue
+makeq FourthQueue {left=l, right=r, leftLength=leftLength, rightLength=rightLength}
+	| rightLength <= leftLength   = id
+	| rightLength == leftLength+1 = FourthQueue {
+			left        = rot l r [],
+			right       = [],
+			leftLength  = l+r,
+			rightLength = 0 }
+
+rot :: [Int] -> [Int] -> [Int] -> [Int]
+rot [] r a = head r:a
+rot l:ls r:rs a  = l:( rot  ls rs (r:a) )
 	
-	pop FourthQueue {left=[], right=[], leftLength=l, rightLength=r} =
-		( Nothing, FourthQueue {left=[], right=[], leftLength=l, rightLength=r} )
-	pop FourthQueue {left=[], right=_, leftLength=_, rightLength=_} = error "Should not happen"
-	
-	pop FourthQueue {left=h@(x:xs), right=t, leftLength=l, rightLength=r}
-		| l > r = ( Just x, FourthQueue {
-				left=xs,
-				right=t,
-				leftLength=l-1,
-				rightLength=r} )
-		| otherwise = ( Just x, FourthQueue {
-				left=(xs ++ reverse t),
-				right=[],
-				leftLength=l-1+r,
-				rightLength=0} )
-	
-	size FourthQueue {left=h, right=t} = length h + length t
-	
-	push _ _ = error "Not implemented"
-	eject _ = error "Not implemented"
+
+
+

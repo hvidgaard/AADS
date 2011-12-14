@@ -1,27 +1,16 @@
 module Second
-( push
-, pop
-, inject
-, eject
-, size
-, makelist
-) where
+( Second (..)
+, makelist ) where
 import Queue
 
+-- Paired lists
 data SecondQueue = SecondQueue {left :: [Int], right :: [Int]} deriving (Show)
 
-makelist :: Int -> SecondQueue
-makelist x = SecondQueue {left=[x], right=[]}
+makelist :: SecondQueue
+makelist = SecondQueue {left=[], right=[]}
 
 instance Queue SecondQueue where
-	inject y SecondQueue {left=h, right=t} = ( SecondQueue {left=h, right=y:t} )
-	pop SecondQueue {left=[], right=[]} = ( Nothing, SecondQueue {left=[], right=[]})
-	pop SecondQueue {left=[], right=t} =
-		let t' = reverse t
-		in ( Just (head t'), SecondQueue {left=tail t', right=[]} )
-	pop SecondQueue {left=x:xs, right=t} = ( Just x, SecondQueue {left=xs, right=t} )
-	
-	size SecondQueue {left=h, right=t} = length h + length t
-	
-	push _ _ = error "Not implemented"
-	eject _ = error "Not implemented"
+	insert y SecondQueue {left=h, right=t} = ( SecondQueue {left=h, right=y:t} )
+	remove SecondQueue {left=[], right=[]} = ( Nothing, SecondQueue {left=[], right=[]})
+	remove SecondQueue {left=[], right=t} = remove SecondQueue {left=reverse t, right=[]}
+	remove SecondQueue {left=x:xs, right=t} = ( Just x, SecondQueue {left=xs, right=t} )
