@@ -35,7 +35,7 @@ main = do
 
 run :: String -> String -> Int -> Int -> Int -> FilePath -> IO()
 run _ _ size end _ _
-	| size >= end = return ()
+	| size > end = return ()
 run queue@"first" benchmark size end step logfile = do
 	time <- runBenchmark No1.makelist (getBenchmark benchmark) size
 	logPerformance logfile (queue, benchmark, size, time)
@@ -56,7 +56,9 @@ run _ benchmark _ _ _ _ = error ("unknown benchmark: " ++ benchmark)
 
 getBenchmark :: (Queue a) => String -> (a -> Int -> a)
 getBenchmark "simple" = B.simple
---getBenchmark "reuse-remove" = B.reuseremove
+getBenchmark "insertonly" = B.insertonly
+getBenchmark "reuseremove_snd" = B.reuseremove_snd
+getBenchmark "reuseremove_fth" = B.reuseremove_fth
 getBenchmark _ = error "unknown benchmark"
 
 runBenchmark :: (Queue a) => a -> (a -> Int -> a) -> Int -> IO(Integer)
@@ -64,6 +66,7 @@ runBenchmark q bench_fn s = do
 	start <- getCPUTime
 	_ <- return $! bench_fn q s
 	stop <- getCPUTime
+	print ((stop-start) `div` 1000000)
 	return ((stop-start) `div` 1000000)
 
 logPerformance :: FilePath -> (String, String, Int, Integer) -> IO()

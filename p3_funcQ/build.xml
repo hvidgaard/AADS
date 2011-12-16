@@ -52,11 +52,29 @@
 		</delete>
 	</target>
 	
+	<target name="test-bm">
+		<medium-benchmark queue="second" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="third" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="fourth" benchmark="reuseremove_fth" />
+	</target>
+	
 	<target name="medium-benchmark">
 		<medium-benchmark queue="fourth" benchmark="simple" />
 		<medium-benchmark queue="third" benchmark="simple" />
 		<medium-benchmark queue="second" benchmark="simple" />
 		<medium-benchmark queue="first" benchmark="simple" />
+		<medium-benchmark queue="fourth" benchmark="insertonly" />
+		<medium-benchmark queue="third" benchmark="insertonly" />
+		<medium-benchmark queue="second" benchmark="insertonly" />
+		<medium-benchmark queue="first" benchmark="insertonly" />
+		<medium-benchmark queue="fourth" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="third" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="second" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="first" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="fourth" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="third" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="second" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="first" benchmark="reuseremove_fth" />
 	</target>
 	
 	<macrodef name="medium-benchmark">
@@ -68,7 +86,9 @@
 			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
 			 start="60" end="5000" step="10" />
 			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
-			 start="5100" end="20000" step="100" />
+			 start="5100" end="10000" step="100" />
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 start="11000" end="20000" step="1000" />
 		</sequential>
 	</macrodef>
 </project>
