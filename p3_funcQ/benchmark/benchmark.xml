@@ -77,7 +77,9 @@
 		<attribute name="executable"/>
 		<attribute name="queue"/>
 		<attribute name="benchmark"/>
-		<attribute name="size" default="0"/>
+		<attribute name="start" default="0"/>
+		<attribute name="end" default="0"/>
+		<attribute name="step" default="0"/>
 		<attribute name="logfile" default=""/>
 		
 		<sequential>
@@ -94,13 +96,15 @@
 			<mkdir dir="${logs}/${hostname}" />
 			<echo>queue @{queue}</echo>
 			<echo>benchmark @{benchmark}</echo>
-			<echo>size @{size}</echo>
+			<echo>start @{start} end @{end} step @{step}</echo>
 			<echo>logging to ${logfile}</echo>
 			<echo></echo>
 			<exec executable="@{executable}" dir="${basedir}">
 				<arg line="--queue=@{queue}" />
 				<arg line="--benchmark=@{benchmark}" />
-				<arg line="--size=@{size}" />
+				<arg line="--start=@{start}" />
+				<arg line="--end=@{end}" />
+				<arg line="--step=@{step}" />
 				<arg line="--logfile=${logfile}" />
 			</exec>
 			<echo></echo>

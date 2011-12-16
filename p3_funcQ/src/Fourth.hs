@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 module Fourth
 ( FourthQueue (..)
 , makelist ) where
@@ -15,16 +16,16 @@ makelist :: FourthQueue
 makelist = FourthQueue {left=[], right=[], balance=0, size=0}
 
 instance Queue FourthQueue where
-	insert e FourthQueue {left=l, right=r, balance=b, size=s} =
-		makeq FourthQueue {left=l, right=e:r, balance=b+1, size=s+1}
-	remove FourthQueue {left=[], right=r, balance=b, size=s} =
-		( Nothing, makeq FourthQueue {left=[], right=r, balance=b, size=s} )
-	remove FourthQueue {left=l:ls, right=r, balance=b, size=s} =
-		( Just l, makeq FourthQueue {left=ls, right=r, balance=b+1, size=s-1} )
+	insert e FourthQueue {..} =
+		makeq (FourthQueue left (e:right) (balance+1) (size+1))
+	remove FourthQueue {left=[], right, balance, size} =
+		( Nothing, makeq (FourthQueue [] right balance size) )
+	remove FourthQueue {left=l:ls, right, balance, size} =
+		( Just l, makeq (FourthQueue ls right (balance+1) (size-1)) )
 
 makeq :: FourthQueue -> FourthQueue
-makeq FourthQueue {left=l, right=r, balance=1, size=s} =
-	FourthQueue {left = rot l r [], right = [], balance = -s, size = s }
+makeq (FourthQueue left right 1 size) =
+	FourthQueue (rot left right []) [] (-size) size
 makeq queue = queue
 
 rot :: [Int] -> [Int] -> [Int] -> [Int]
