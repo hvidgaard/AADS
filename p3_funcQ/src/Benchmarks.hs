@@ -1,6 +1,6 @@
 module Benchmarks
 ( simple
-, insertonly
+, alternate
 , reuseremove_snd
 , reuseremove_fth
 ) where
@@ -11,10 +11,11 @@ simple queue size =
 	let full = populate queue size
 	in snd $ until ((==) Nothing . fst) (remove . snd) (Just 0, full)
 
-insertonly :: (Queue a) => a -> Int -> a
-insertonly queue size =
-	let full = populate queue size
-	in seq full queue
+alternate :: (Queue a) => a -> Int -> a
+alternate queue 0 = queue
+alternate queue size =
+	let full = insert 4 (snd . remove $ queue)
+	in seq (alternate queue (size-1)) (snd . remove $ insert 4 full)
 
 reuseremove_snd :: (Queue a) => a -> Int -> a
 reuseremove_snd queue size =

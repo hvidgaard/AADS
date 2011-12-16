@@ -89,6 +89,13 @@
 		<big-benchmark queue="third" benchmark="insertonly" />
 	</target>
 	
+	<target name="alternate-bm">
+		<medium-benchmark queue="first" benchmark="alternate" />
+		<medium-benchmark queue="second" benchmark="alternate" />
+		<medium-benchmark queue="third" benchmark="alternate" />
+		<medium-benchmark queue="fourth" benchmark="alternate" />
+	</target>
+	
 	<macrodef name="medium-benchmark">
 		<attribute name="queue"/>
 		<attribute name="benchmark"/>
