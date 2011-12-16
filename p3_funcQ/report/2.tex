@@ -1,8 +1,6 @@
 \section*{Queue implementations}
 A list in Haskell is nothing more than a singly linked list. So in other words, it's cheap to add or remove the first element, but very expensive to add an element to the tail, or remove the last element. Throughout the description of the queues, we will omit talking about trivial cases for the remove operation when we have an empty queues. This is because the only sensible action is to return nothing.
 
-\textbf{Teoretiske overvejelser og overfladisk analyse af deres running times}
-
 \subsection*{A standard Haskell list}
 Using a standard Haskell list is a very simple data structure. Unfortunately it is only usable as a queue if you gurantee that it only contain a few elements. Because of how Haskell represent lists, when inserting at the end of the queue, it will have to traverse the entire list, before appending the new element. Thus the complexity for inserting is $O(n)$. Removing on the other hand, is fairly simple. You can simply remove the first element in constant time. Thus $O(1)$ for remove.
 
