@@ -75,13 +75,9 @@
 	
 	<macrodef name="benchmark">
 		<attribute name="executable"/>
-		<attribute name="graph"/>
-		<attribute name="algorithm"/>
-		<attribute name="seed" default="0"/>
-		<attribute name="start" default="0"/>
-		<attribute name="end"   default="1"/>
-		<attribute name="step"  default="1"/>
-		<attribute name="tests" default="1"/>
+		<attribute name="queue"/>
+		<attribute name="benchmark"/>
+		<attribute name="size" default="0"/>
 		<attribute name="logfile" default=""/>
 		
 		<sequential>
@@ -91,31 +87,21 @@
 			<tstamp>
 				<format property="timestamp" pattern="yyyy-MM-dd HHmmss"/>
 			</tstamp>
-			<condition property="seed" value="${time}" else="@{seed}">
-				<equals arg1="@{seed}" arg2="0" />
-			</condition>
 			<exec executable="hostname" outputproperty="hostname" />
-			<condition property="logfile" value="${logs}/${hostname}/${timestamp}.log" else="@{logfile}">
+			<condition property="logfile" value="&quot;${logs}/${hostname}/${timestamp}.log&quot;" else="@{logfile}">
 				<equals arg1="@{logfile}" arg2="" />
 			</condition>
 			<mkdir dir="${logs}/${hostname}" />
-			<echo>graph @{graph}</echo>
-			<echo>algorithm @{algorithm}</echo>
-			<echo>seed ${seed}</echo>
-			<echo>start size @{start}</echo>
-			<echo>end size @{end}</echo>
-			<echo>number of tests @{tests}</echo>
+			<echo>queue @{queue}</echo>
+			<echo>benchmark @{benchmark}</echo>
+			<echo>size @{size}</echo>
 			<echo>logging to ${logfile}</echo>
 			<echo></echo>
 			<exec executable="@{executable}" dir="${basedir}">
-				<arg value="@{graph}" />
-				<arg value="@{algorithm}" />
-				<arg value="${seed}" />
-				<arg value="@{start}" />
-				<arg value="@{end}" />
-				<arg value="@{step}" />
-				<arg value="@{tests}" />
-				<arg value="${logfile}" />
+				<arg line="--queue=@{queue}" />
+				<arg line="--benchmark=@{benchmark}" />
+				<arg line="--size=@{size}" />
+				<arg line="--logfile=${logfile}" />
 			</exec>
 			<echo></echo>
 			<echo></echo>

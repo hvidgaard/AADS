@@ -18,10 +18,7 @@
 		<mkdir dir="${bin}"/>
 	</target>
 	
-	<target name="make" depends="make-c">
-	</target>
-	
-	<target name="make-hs" depends="mkdirs">
+	<target name="make" depends="mkdirs">
 		<apply executable="ghc" dir="${src}">
 			<arg line="-Wall" />
 			<arg line="-optl&quot;-Wl,-read_only_relocs,suppress&quot;" />
@@ -34,44 +31,6 @@
 			<fileset dir="${src}" includes="benchmark.hs" />
 			<mapper type="glob" from="*.hs" to="${bin}/*"/>
 		</apply>
-	</target>
-	
-	<target name="make-c" depends="mkdirs">
-		<condition property="isUnix">
-			<and>
-				<os family="unix" />
-				<not><os family="mac" /></not>
-			</and>
-		</condition>
-		<condition property="isMac">
-			<os family="mac" />
-		</condition>
-		<cc outfile="${bin}/test" outtype="executable"
-			subsystem="console" objdir="${obj}" debug="${debug}">
-			<includepath>
-				<pathelement path="${src}"/>
-			</includepath>
-			<includepath if="isUnix">
-				<pathelement path="/usr/include"/>
-			</includepath>
-			<libset libs="m" if="isUnix" />
-			<libset libs="stdc++" />
-			<compilerarg value="-Wall" />
-			<fileset dir="${src}" includes="*.c" excludes="benchmark.cpp" />
-		</cc>
-		<cc outfile="${bin}/benchmark" outtype="executable"
-			subsystem="console" objdir="${obj}" debug="${debug}">
-			<includepath>
-				<pathelement path="${src}"/>
-			</includepath>
-			<includepath if="isUnix">
-				<pathelement path="/usr/include"/>
-			</includepath>
-			<libset libs="m" if="isUnix" />
-			<libset libs="stdc++" />
-			<compilerarg value="-Wall" />
-			<fileset dir="${src}" includes="*.cpp, *.c" excludes="main.c" />
-		</cc>
 	</target>
 	
 	<target name="report" depends="copy-graphs">
@@ -92,4 +51,24 @@
 			<fileset dir="${bin}" includes="**/*" defaultexcludes="no"/>
 		</delete>
 	</target>
+	
+	<target name="medium-benchmark">
+		<medium-benchmark queue="fourth" benchmark="simple" />
+		<medium-benchmark queue="third" benchmark="simple" />
+		<medium-benchmark queue="second" benchmark="simple" />
+		<medium-benchmark queue="first" benchmark="simple" />
+	</target>
+	
+	<macrodef name="medium-benchmark">
+		<attribute name="queue"/>
+		<attribute name="benchmark"/>
+		<sequential>
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 size="500" />
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 size="5000" />
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 size="50000" />
+		</sequential>
+	</macrodef>
 </project>
