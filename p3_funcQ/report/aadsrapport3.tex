@@ -1,0 +1,50 @@
+\documentclass[12pt,a4paper]{report}
+
+% Sproget s�ttes til dansk og orddeling indl�ses
+\usepackage[pdfborder={0 0 0}]{hyperref}
+%\usepackage[utf-8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amssymb, amsmath}
+\usepackage{cite}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{fancybox}
+\usepackage{pseudocode}
+\usepackage{graphicx}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Tabeller og s�jler
+\usepackage{array, booktabs, dcolumn}
+\newcolumntype{d}[1]{D{,}{,}{#1}} % Justering under komma
+
+% Figurer
+\usepackage{graphics, graphicx, caption, subfig}
+\captionsetup{font=small,labelfont=bf}
+
+\usepackage{fixme}
+
+\newcounter{problemnr}
+\newcounter{subproblemnr}
+\setcounter{problemnr}{0}
+
+\parindent 0pt
+\parskip 4mm
+
+\title{WHAT?}
+\author{Anders Ingemann (20052979) \and Peter E. Hvidgaard (20062546)}
+
+\begin{document}
+\maketitle
+\newpage\mbox{}\newpage
+\include{1}
+\include{2}
+\include{3}
+\include{4}
+\include{5}
+\include{6}
+
+\end{document}
