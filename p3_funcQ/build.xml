@@ -21,6 +21,7 @@
 	<target name="make" depends="mkdirs">
 		<apply executable="ghc" dir="${src}">
 			<arg line="-Wall" />
+			<arg line="-rtsopts" />
 			<arg line="-optl&quot;-Wl,-read_only_relocs,suppress&quot;" />
 			<arg line="--make" />
 			<arg value="-hidir ${obj}" />
@@ -59,18 +60,18 @@
 	</target>
 	
 	<target name="medium-benchmark">
-		<medium-benchmark queue="fourth" benchmark="reuseremove_snd" />
-		<medium-benchmark queue="third" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="fourth" benchmark="reuseremove_fth" />
 		<medium-benchmark queue="third" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="fourth" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="third" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="fourth" benchmark="simple" />
 		<medium-benchmark queue="third" benchmark="simple" />
 		<medium-benchmark queue="fourth" benchmark="insertonly" />
 		<medium-benchmark queue="third" benchmark="insertonly" />
-		<medium-benchmark queue="second" benchmark="reuseremove_snd" />
-		<medium-benchmark queue="first" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="second" benchmark="reuseremove_fth" />
 		<medium-benchmark queue="first" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="second" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="first" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="second" benchmark="simple" />
 		<medium-benchmark queue="first" benchmark="simple" />
 		<medium-benchmark queue="second" benchmark="insertonly" />

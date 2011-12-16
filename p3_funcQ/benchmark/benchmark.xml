@@ -99,6 +99,7 @@
 				<arg line="--end=@{end}" />
 				<arg line="--step=@{step}" />
 				<arg line="--logfile=${logfile}" />
+				<arg line="+RTS -K536870912" />
 			</exec>
 			<echo></echo>
 			<echo></echo>

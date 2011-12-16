@@ -21,10 +21,11 @@ reuseremove_snd queue size =
 	let full = populate queue size
 	in repeatR full size
 
-reuseremove_fth :: (Queue a) => a -> Int -> a
-reuseremove_fth queue size =
+reuseremove_fth :: (Queue a) => Int -> a -> Int -> a
+reuseremove_fth 0 queue size = queue
+reuseremove_fth repeats queue size =
 	let full = populate queue size
-	in repeatR (populate full (diff size)) size
+	in seq (reuseremove_fth (repeats-1) queue size) (snd . remove $ populate full (diff size))
 	where
 		diff :: Int -> Int
 		diff count =
@@ -41,4 +42,4 @@ populate q s = populate (insert 4 q) (s-1)
 
 repeatR :: (Queue a) => a -> Int -> a
 repeatR queue 0 = queue
-repeatR queue repeats = seq (remove queue) (repeatR queue (repeats-1))
+repeatR queue repeats = seq (remove . snd . remove $ insert 4 queue) (repeatR queue (repeats-1))

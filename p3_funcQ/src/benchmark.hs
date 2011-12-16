@@ -38,6 +38,7 @@ run _ _ size end _ _
 	| size > end = return ()
 --run queue benchmark 0 end step logfile = run queue benchmark step end step logfile
 run queue@"first" benchmark size end step logfile = do
+	
 	time <- runBenchmark No1.makelist (getBenchmark benchmark) size
 	logPerformance logfile (queue, benchmark, size, time)
 	run queue benchmark (size+step) end step logfile
@@ -59,7 +60,7 @@ getBenchmark :: (Queue a) => String -> (a -> Int -> a)
 getBenchmark "simple" = B.simple
 getBenchmark "insertonly" = B.insertonly
 getBenchmark "reuseremove_snd" = B.reuseremove_snd
-getBenchmark "reuseremove_fth" = B.reuseremove_fth
+getBenchmark "reuseremove_fth" = B.reuseremove_fth 100
 getBenchmark _ = error "unknown benchmark"
 
 runBenchmark :: (Queue a) => a -> (a -> Int -> a) -> Int -> IO(Integer)

@@ -25,8 +25,8 @@ instance Queue ThirdQueue where
 
 makeq :: ThirdQueue -> ThirdQueue
 makeq (ThirdQueue left right []) =
-	ThirdQueue l' [] l'
-	where l' = rot left right []
+	let l' = rot left right []
+	in ThirdQueue l' [] l'
 makeq ThirdQueue {left, right, lefthat=_:lhats} =
 	ThirdQueue left right lhats
 

@@ -7,8 +7,7 @@ Graph::setDefaults(array(
 	'grid' => null,
 	'xlabel' => '"Vertices"',
 	'ylabel' => '"Time (ms)"',
-	'key' => 'bmargin',
-	'logscale' => 'x'
+	'key' => 'bmargin'
 ));
 
 $file = 'logs/concatenated.averages';
@@ -35,33 +34,28 @@ $preev->selector = 'third';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard_deviation', 7 => 'samples');
 $generators = array("simple" => 'Populate/Clear', 'insertonly' => 'Inject Only', 'reuseremove_snd' => 'Queue Reuse (#1)', 'reuseremove_fth' => 'Queue Reuse (#2)');
 $algorithms = array($simple, $lrpair, $pairs, $preev);
-$ranges = array('full' => null, 'low' => '[1:5000]');
+$ranges = array('full' => null, 'low' => '[1:200]', 'mid' => '[1:5000]');
 foreach($ranges as $rangeName => $range) {
-	foreach($columns as $column => $columnName) {
 		foreach($generators as $generator => $generatorName)  {
 			
-			$png = "graphs/{$generator}_{$columnName}_{$rangeName}.png";
-			$eps = "graphs/{$generator}_{$columnName}_{$rangeName}.eps";
+			$png = "graphs/{$generator}_{$rangeName}.png";
+			$eps = "graphs/{$generator}_{$rangeName}.eps";
 			if(file_exists($png) && file_exists($eps))
 				if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
 					continue;
-			$columnName = str_replace('_', ' ', $columnName);
 			
 			$graph = new Graph;
 			if($range)
 				$graph->xrange = $range;
-			if($columnName == 'samples')
-				$graph->ylabel = '"Samples"';
 			
-			$graph->title = "\"$generatorName benchmark\\n$columnName\"";
+			$graph->title = "\"$generatorName benchmark\"";
 			
 			foreach($algorithms as $algo) {
 				$plot = new Plot;
 				$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
-				$plot->datamodifiers = "using 2:$column";
+				$plot->datamodifiers = "using 2:5";
 				$plot->style = "$stdline '$algo->color'";
 				$plot->title = $algo->name;
 				$graph->addPlot($plot);
@@ -71,5 +65,4 @@ foreach($ranges as $rangeName => $range) {
 			$graph->output($eps);
 			// echo $graph;
 		}
-	}
 }
