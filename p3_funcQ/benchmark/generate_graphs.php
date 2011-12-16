@@ -39,7 +39,11 @@ $generators = array(
 	'simple' => 'Populate/Clear',
 	'reuseremove_snd' => 'Queue Reuse (#2)',
 	'reuseremove_fth' => 'Queue Reuse (#1)');
-$algorithms = array($simple, $lrpair, $pairs, $preev);
+$algorithms = array(
+	$simple,
+	$lrpair,
+	$pairs,
+	$preev);
 foreach($generators as $generator => $generatorName)  {
 	
 	$png = "graphs/{$generator}.png";
@@ -66,12 +70,12 @@ foreach($generators as $generator => $generatorName)  {
 	// echo $graph;
 }
 
-$generators = array('simple' => 'Populate/Clear (low)');
+$generators = array('simple' => 'Populate/Clear (high)');
 $algorithms = array($lrpair, $pairs, $preev);
 foreach($generators as $generator => $generatorName)  {
 	
-	$png = "graphs/{$generator}_low.png";
-	$eps = "graphs/{$generator}_low.eps";
+	$png = "graphs/{$generator}_high.png";
+	$eps = "graphs/{$generator}_high.eps";
 	
 	if(file_exists($png) && file_exists($eps))
 		if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
