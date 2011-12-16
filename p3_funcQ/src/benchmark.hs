@@ -36,6 +36,7 @@ main = do
 run :: String -> String -> Int -> Int -> Int -> FilePath -> IO()
 run _ _ size end _ _
 	| size > end = return ()
+--run queue benchmark 0 end step logfile = run queue benchmark step end step logfile
 run queue@"first" benchmark size end step logfile = do
 	time <- runBenchmark No1.makelist (getBenchmark benchmark) size
 	logPerformance logfile (queue, benchmark, size, time)
@@ -66,7 +67,6 @@ runBenchmark q bench_fn s = do
 	start <- getCPUTime
 	_ <- return $! bench_fn q s
 	stop <- getCPUTime
-	print ((stop-start) `div` 1000000)
 	return ((stop-start) `div` 1000000)
 
 logPerformance :: FilePath -> (String, String, Int, Integer) -> IO()
