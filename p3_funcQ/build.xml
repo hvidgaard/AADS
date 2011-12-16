@@ -79,14 +79,9 @@
 	</target>
 	
 	<target name="big-benchmark">
-		<big-benchmark queue="fourth" benchmark="reuseremove_snd" />
-		<big-benchmark queue="third" benchmark="reuseremove_snd" />
-		<big-benchmark queue="fourth" benchmark="reuseremove_fth" />
-		<big-benchmark queue="third" benchmark="reuseremove_fth" />
-		<big-benchmark queue="fourth" benchmark="simple" />
+		<big-benchmark queue="second" benchmark="simple" />
 		<big-benchmark queue="third" benchmark="simple" />
-		<big-benchmark queue="fourth" benchmark="insertonly" />
-		<big-benchmark queue="third" benchmark="insertonly" />
+		<big-benchmark queue="fourth" benchmark="simple" />
 	</target>
 	
 	<target name="alternate-bm">
@@ -119,6 +114,8 @@
 			 start="30000" end="100000" step="10000" />
 			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
 			 start="100000" end="1000000" step="100000" />
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 start="1100000" end="3100000" step="1000000" />
 		</sequential>
 	</macrodef>
 </project>

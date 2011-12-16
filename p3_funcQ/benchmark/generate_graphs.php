@@ -7,7 +7,8 @@ Graph::setDefaults(array(
 	'grid' => null,
 	'xlabel' => '"Vertices"',
 	'ylabel' => '"Time (ms)"',
-	'key' => 'bmargin'
+	'key' => 'bmargin',
+	'xrange' => '[0:20000]'
 ));
 
 $file = 'logs/concatenated.averages';
@@ -77,7 +78,7 @@ foreach($generators as $generator => $generatorName)  {
 			continue;
 	
 	$graph = new Graph;
-	
+	$graph->xrange = '[0:2000000]';
 	$graph->title = "\"$generatorName benchmark\"";
 	foreach($algorithms as $algo) {
 		$plot = new Plot;
