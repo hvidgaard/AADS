@@ -6,12 +6,24 @@ A list in Haskell is nothing more than a singly linked list. So in other words, 
 \subsection*{A standard Haskell list}
 Using a standard Haskell list is a very simple data structure. Unfortunately it is only usable as a queue if you gurantee that it only contain a few elements. Because of how Haskell represent lists, when inserting at the end of the queue, it will have to traverse the entire list, before appending the new element. Thus the complexity for inserting is $O(n)$. Removing on the other hand, is fairly simple. You can simply remove the first element in constant time. Thus $O(1)$ for remove.
 
+\subsubsection{Worst-case input}
+The worst-case test is fairly straight forward. Simply insert $n$ elements and that is it.
+
 \subsection*{A pair of lists}
 Using a pair of lists, we can obtain amotized $O(1)$ as long as we do not repeat expensive operations. The queue works by having a pair lists, a $left$ and a $right$. When inserting, we will add the element to the head of $right$. Removing on the other hand is a bit more complicated. There are 2 cases:
 \begin{enumerate}
 	\item $left$ contain 1 or more elements.
 	\item $left$ is empty and $right$ contains 1 or more elements.
 \end{enumerate}
-For (1), the remove operation will simply remove the head. For (2) it's a bit more involved. The list $right$ is reversed and the first element is removed, this makes sense, because that will be the oldest element in the queue.
-\subsection*{A $O(1)$ list}
+For (1), the remove operation will simply remove the head. For (2) it's a bit more involved. The list $right$ is reversed, become $left$ and the first element is removed, this makes sense, because that will be the oldest element in the queue. The running time of the insert operation is still $O(1)$, however the remove operation can be $O(n)$, especially, the first time er remove an element, we will reverse $right$. If we gurantee that we do not repeat the expensive operation, we have a $O(1)$ amotized (for every element we have in the reverse operation, we will do a remove paying for that element). However, it is common in the functional paradigm to reuse functions. Therefore one should take care to not use expensive operation more than once. This also provide us with the worst-case behaviour.
+
+\subsubsection{Worst-case input}
+Just as with the single list queue, the worst-case test is straight forward: insert $n$ elements and repeat the remove of the first element.
+
 \subsection*{A pair of lists, exploiting laziness}
+
+\subsubsection{Worst-case input}
+
+\subsection*{A $O(1)$ list}
+
+\subsubsection{Worst-case input}
