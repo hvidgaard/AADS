@@ -21,8 +21,16 @@ For (1), the remove operation will simply remove the head. For (2) it's a bit mo
 Just as with the single list queue, the worst-case test is straight forward: insert $n$ elements and repeat the remove of the first element.
 
 \subsection*{A pair of lists, exploiting laziness}
+As described in the paper \textit{Simple and Efficient Purely Functional Queues and Deques} by Chris Okasaki, we can exploit lazyness to achieve the same $O(1)$ amotized bound, but with an improved worst-case to $O(\log n)$.
+
+To achieve this, we want to calculate the reverse of $right$ in an incremental fashion, i.e. $left$ ++ rev$(right)$, where ++ is the append operation. Since append is lazy, we have to make the reverse lazy as well. To do this, we replace <$left$, $right$> with <$left$ ++ rev$(right)$, []> periodically. This is called a rotation, denoted $rot$, and is a fusion of append and reverse. The function $rot$ takes as input 3 lists, $left$, $right$ and $acc$ - it will then peel of the elements of $left$ one by one. For each element it will also take off an element from $right$ and append it to $acc$. Assuming that $left$ and $right$ have the same length, once the recursion have removed all elements from $left$, the content of $acc$ will be the reversed $right$. Because append operation is lazy, the recursive calls to $rot$ will be lazy as well.
+
+The details of this can be found in the before mentioned paper.
+
+The data structure works by maintaining an invariant, $|right| \leq |left|$. We maintain this invariant by calling $rot$ whenever $right$ become strictly larger than $left$, i.e. when $|right| \geq |left| + 1$. So, when inserting we make a call to $rot$ every time we have inserted $|left| +1$ elements. But the lazy nature of $rot$ means the actual evaluation will be deferred until needed. This makes insert $O(\log 1)$. When we call remove, it is possible that $left$ consists of a series of deferred $rot$ calls, all of which have to be evaluated. We know that each of those calls will reduce the size of $left$ in half, thus the recursion will have depth of $\log n$. Again the lazy nature of $rot$ ensure that only $\log n$ work will be done, giving the $O(\log n)$ bound.
 
 \subsubsection{Worst-case input}
+We have already mentioned how $left$ should be to enforce the worst-case behaviour. By inserting $1 + 2^i$ for any $i$ will leave us with such a senarios for the first time we call remove. Note, due to memoization repeating this call will not be expensive for any successive calls. This is importent when timing several runs to gain an average.
 
 \subsection*{A $O(1)$ list}
 
