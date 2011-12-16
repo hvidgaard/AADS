@@ -34,35 +34,61 @@ $preev->selector = 'third';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$generators = array("simple" => 'Populate/Clear', 'alternate' => 'Alternating', 'reuseremove_snd' => 'Queue Reuse (#1)', 'reuseremove_fth' => 'Queue Reuse (#2)');
+$generators = array(
+	'simple' => 'Populate/Clear',
+	'reuseremove_snd' => 'Queue Reuse (#2)',
+	'reuseremove_fth' => 'Queue Reuse (#1)');
 $algorithms = array($simple, $lrpair, $pairs, $preev);
-$ranges = array('full' => null, 'low' => '[1:1000]', 'mid' => '[1:5000]');
-foreach($ranges as $rangeName => $range) {
-		foreach($generators as $generator => $generatorName)  {
-			
-			$png = "graphs/{$generator}_{$rangeName}.png";
-			$eps = "graphs/{$generator}_{$rangeName}.eps";
-			if(file_exists($png) && file_exists($eps))
-				if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
-					continue;
-			
-			$graph = new Graph;
-			if($range)
-				$graph->xrange = $range;
-			
-			$graph->title = "\"$generatorName benchmark\"";
-			
-			foreach($algorithms as $algo) {
-				$plot = new Plot;
-				$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
-				$plot->datamodifiers = "using 2:5";
-				$plot->style = "$stdline '$algo->color'";
-				$plot->title = $algo->name;
-				$graph->addPlot($plot);
-			}
-			$graph->output($png);
-			$graph->terminal = "epslatex linewidth 3";
-			$graph->output($eps);
-			// echo $graph;
-		}
+foreach($generators as $generator => $generatorName)  {
+	
+	$png = "graphs/{$generator}.png";
+	$eps = "graphs/{$generator}.eps";
+	
+	if(file_exists($png) && file_exists($eps))
+		if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
+			continue;
+	
+	$graph = new Graph;
+	
+	$graph->title = "\"$generatorName benchmark\"";
+	foreach($algorithms as $algo) {
+		$plot = new Plot;
+		$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
+		$plot->datamodifiers = "using 2:5";
+		$plot->style = "$stdline '$algo->color'";
+		$plot->title = $algo->name;
+		$graph->addPlot($plot);
+	}
+	$graph->output($png);
+	$graph->terminal = "epslatex linewidth 3";
+	$graph->output($eps);
+	// echo $graph;
+}
+
+$generators = array('simple' => 'Populate/Clear (low)');
+$algorithms = array($lrpair, $pairs, $preev);
+foreach($generators as $generator => $generatorName)  {
+	
+	$png = "graphs/{$generator}_low.png";
+	$eps = "graphs/{$generator}_low.eps";
+	
+	if(file_exists($png) && file_exists($eps))
+		if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
+			continue;
+	
+	$graph = new Graph;
+	
+	$graph->title = "\"$generatorName benchmark\"";
+	foreach($algorithms as $algo) {
+		$plot = new Plot;
+		$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
+		$plot->datamodifiers = "using 2:5";
+		$plot->style = "$stdline '$algo->color'";
+		$plot->title = $algo->name;
+		$graph->addPlot($plot);
+	}
+	$graph->output($png);
+	$graph->terminal = "epslatex linewidth 3";
+	$graph->output($eps);
+	// echo $graph;
 }
