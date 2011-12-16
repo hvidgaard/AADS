@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 module Second
 ( SecondQueue (..)
 , makelist ) where
@@ -10,7 +11,7 @@ makelist :: SecondQueue
 makelist = SecondQueue {left=[], right=[]}
 
 instance Queue SecondQueue where
-	insert y SecondQueue {left=h, right=t} = ( SecondQueue {left=h, right=y:t} )
-	remove SecondQueue {left=[], right=[]} = ( Nothing, SecondQueue {left=[], right=[]})
-	remove SecondQueue {left=[], right=t} = remove SecondQueue {left=reverse t, right=[]}
-	remove SecondQueue {left=x:xs, right=t} = ( Just x, SecondQueue {left=xs, right=t} )
+	insert y SecondQueue {..} = ( SecondQueue left (y:right) )
+	remove (SecondQueue [] []) = ( Nothing, (SecondQueue [] []))
+	remove (SecondQueue [] right) = remove (SecondQueue (reverse right) [])
+	remove (SecondQueue (x:xs) right) = ( Just x, SecondQueue {left=xs, right} )

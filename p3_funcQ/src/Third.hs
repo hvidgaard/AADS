@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 module Third
 ( ThirdQueue (..)
 , makelist ) where
@@ -10,23 +11,24 @@ data ThirdQueue = ThirdQueue {
 		lefthat :: [Int]
 	} deriving (Show)
 
+
 makelist :: ThirdQueue
 makelist = ThirdQueue {left=[], right=[], lefthat=[]}
 
 instance Queue ThirdQueue where
-	insert e ThirdQueue {left=l, right=r, lefthat=lhat} =
-		makeq ThirdQueue {left=l, right=e:r, lefthat=lhat}
-	remove ThirdQueue {left=[], right=r, lefthat=lhat} = 
-		( Nothing, makeq ThirdQueue {left=[], right=r, lefthat=lhat} )
-	remove ThirdQueue {left=l:ls, right=r, lefthat=lhat} = 
-		( Just l, makeq ThirdQueue {left=ls, right=r, lefthat=lhat} )
+	insert e ThirdQueue {..} =
+		makeq (ThirdQueue left (e:right) lefthat)
+	remove ThirdQueue {left=[], right, lefthat} = 
+		( Nothing, makeq (ThirdQueue [] right lefthat) )
+	remove ThirdQueue {left=l:ls, right, lefthat} = 
+		( Just l, makeq (ThirdQueue ls right lefthat) )
 
 makeq :: ThirdQueue -> ThirdQueue
-makeq ThirdQueue {left=l, right=r, lefthat=[]} =
-	ThirdQueue {left=l', right=[], lefthat=l'}
-	where l' = rot l r []
-makeq ThirdQueue {left=l, right=r, lefthat=_:lhats} =
-	ThirdQueue {left=l, right=r, lefthat=lhats}
+makeq (ThirdQueue left right []) =
+	ThirdQueue l' [] l'
+	where l' = rot left right []
+makeq ThirdQueue {left, right, lefthat=_:lhats} =
+	ThirdQueue left right lhats
 
 rot :: [Int] -> [Int] -> [Int] -> [Int]
 rot [] (r:_) a = r:a
