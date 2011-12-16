@@ -72,6 +72,6 @@ runBenchmark q bench_fn s = do
 logPerformance :: FilePath -> (String, String, Int, Integer) -> IO()
 logPerformance file (q, b, s, time) = do
 	--print ("Writing to " ++ (show file))
-	appendFile file ("\n"++q++"\t"++b++"\t"++(show s)++"\t"++(show time))
+	appendFile file ("\n"++q++"_"++b++"\t"++(show s)++"\t"++(show time))
 
 

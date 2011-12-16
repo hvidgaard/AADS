@@ -39,10 +39,6 @@ populate q 0 = q
 populate q s = populate (insert 4 q) (s-1)
 -- 4 was thrown with a dice and is completely random
 
-takeQ :: (Queue a) => a -> Int -> a
-takeQ queue 0 = queue
-takeQ queue amount = takeQ (snd $ remove queue) (amount-1)
-
 repeatR :: (Queue a) => a -> Int -> a
 repeatR queue 0 = queue
 repeatR queue repeats = seq (remove queue) (repeatR queue (repeats-1))

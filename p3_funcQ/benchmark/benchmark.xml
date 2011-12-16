@@ -31,14 +31,7 @@
 			<targetfile/>
 			<arg value="3" />
 			<fileset dir="${logs}" includes="*.log" />
-			<mapper type="glob" from="*.log" to="${logs}/*.abs.averages"/>
-		</apply>
-		<apply executable="${benchmark}/averages.php" dir="${benchmark}">
-			<srcfile/>
-			<targetfile/>
-			<arg value="4" />
-			<fileset dir="${logs}" includes="*.log" />
-			<mapper type="glob" from="*.log" to="${logs}/*.cyc.averages"/>
+			<mapper type="glob" from="*.log" to="${logs}/*.averages"/>
 		</apply>
 	</target>
 	

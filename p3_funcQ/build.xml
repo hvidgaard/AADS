@@ -59,22 +59,33 @@
 	</target>
 	
 	<target name="medium-benchmark">
-		<medium-benchmark queue="fourth" benchmark="simple" />
-		<medium-benchmark queue="third" benchmark="simple" />
-		<medium-benchmark queue="second" benchmark="simple" />
-		<medium-benchmark queue="first" benchmark="simple" />
-		<medium-benchmark queue="fourth" benchmark="insertonly" />
-		<medium-benchmark queue="third" benchmark="insertonly" />
-		<medium-benchmark queue="second" benchmark="insertonly" />
-		<medium-benchmark queue="first" benchmark="insertonly" />
 		<medium-benchmark queue="fourth" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="third" benchmark="reuseremove_snd" />
-		<medium-benchmark queue="second" benchmark="reuseremove_snd" />
-		<medium-benchmark queue="first" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="fourth" benchmark="reuseremove_fth" />
 		<medium-benchmark queue="third" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="fourth" benchmark="simple" />
+		<medium-benchmark queue="third" benchmark="simple" />
+		<medium-benchmark queue="fourth" benchmark="insertonly" />
+		<medium-benchmark queue="third" benchmark="insertonly" />
+		<medium-benchmark queue="second" benchmark="reuseremove_snd" />
+		<medium-benchmark queue="first" benchmark="reuseremove_snd" />
 		<medium-benchmark queue="second" benchmark="reuseremove_fth" />
 		<medium-benchmark queue="first" benchmark="reuseremove_fth" />
+		<medium-benchmark queue="second" benchmark="simple" />
+		<medium-benchmark queue="first" benchmark="simple" />
+		<medium-benchmark queue="second" benchmark="insertonly" />
+		<medium-benchmark queue="first" benchmark="insertonly" />
+	</target>
+	
+	<target name="big-benchmark">
+		<big-benchmark queue="fourth" benchmark="reuseremove_snd" />
+		<big-benchmark queue="third" benchmark="reuseremove_snd" />
+		<big-benchmark queue="fourth" benchmark="reuseremove_fth" />
+		<big-benchmark queue="third" benchmark="reuseremove_fth" />
+		<big-benchmark queue="fourth" benchmark="simple" />
+		<big-benchmark queue="third" benchmark="simple" />
+		<big-benchmark queue="fourth" benchmark="insertonly" />
+		<big-benchmark queue="third" benchmark="insertonly" />
 	</target>
 	
 	<macrodef name="medium-benchmark">
@@ -89,6 +100,17 @@
 			 start="5100" end="10000" step="100" />
 			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
 			 start="11000" end="20000" step="1000" />
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="big-benchmark">
+		<attribute name="queue"/>
+		<attribute name="benchmark"/>
+		<sequential>
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 start="30000" end="100000" step="10000" />
+			<benchmark executable="bin/benchmark" queue="@{queue}" benchmark="@{benchmark}"
+			 start="100000" end="1000000" step="100000" />
 		</sequential>
 	</macrodef>
 </project>
