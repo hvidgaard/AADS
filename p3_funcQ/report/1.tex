@@ -4,7 +4,7 @@ In this project we perform an experimental study of functional data structures. 
 We implement a queue using
 \begin{enumerate}
  \item A standard Haskell list.
- \item A pair of lists, with amotized $O(1)$ gurantee if the same queue will never be argument to repeated queue operations.
+ \item A pair of lists, with amotized $O(1)$ guarantee if the same queue will never be argument to repeated queue operations.
  \item A pair of lists, exploiting the properties of lazy evaluation of list concatenation to guranteed amortized $O(1)$ per queue operation.
  \item A $O(1)$ list, with a worst-case gurantee of $O(1)$ per queue operation (if executed strictly).
 \end{enumerate}

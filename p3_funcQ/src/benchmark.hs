@@ -58,7 +58,7 @@ run _ benchmark _ _ _ _ = error ("unknown benchmark: " ++ benchmark)
 
 getBenchmark :: (Queue a) => String -> (a -> Int -> a)
 getBenchmark "simple" = B.simple
-getBenchmark "insertonly" = B.insertonly
+getBenchmark "alternate" = B.alternate
 getBenchmark "reuseremove_snd" = B.reuseremove_snd
 getBenchmark "reuseremove_fth" = B.reuseremove_fth 100
 getBenchmark _ = error "unknown benchmark"

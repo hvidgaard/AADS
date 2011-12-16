@@ -34,9 +34,9 @@ $preev->selector = 'third';
 
 $stdline = 'lines linewidth 2 linecolor rgb';
 
-$generators = array("simple" => 'Populate/Clear', 'insertonly' => 'Inject Only', 'reuseremove_snd' => 'Queue Reuse (#1)', 'reuseremove_fth' => 'Queue Reuse (#2)');
+$generators = array("simple" => 'Populate/Clear', 'alternate' => 'Alternating', 'reuseremove_snd' => 'Queue Reuse (#1)', 'reuseremove_fth' => 'Queue Reuse (#2)');
 $algorithms = array($simple, $lrpair, $pairs, $preev);
-$ranges = array('full' => null, 'low' => '[1:200]', 'mid' => '[1:5000]');
+$ranges = array('full' => null, 'low' => '[1:1000]', 'mid' => '[1:5000]');
 foreach($ranges as $rangeName => $range) {
 		foreach($generators as $generator => $generatorName)  {
 			
