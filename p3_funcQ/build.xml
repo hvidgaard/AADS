@@ -34,7 +34,7 @@
 	</target>
 	
 	<target name="report" depends="copy-graphs">
-		<latex latexfile="${report}/report.tex"
+		<latex latexfile="${report}/aadsrapport3.tex"
 			verbose="on" clean="on" pdftex="on" workingDir="${report}" />
 	</target>
 	

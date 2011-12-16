@@ -1,6 +1,7 @@
 \section*{Experiments with worst-case}
 
 \subsection*{A standard Haskell list}
+The worst case of a standard Haskell list can be achieved by simply append (enqueueing) an element to it. This forces haskell to copy the entire list because the existing list will have to point at the new element from its tail. This takes of course $O(n)$ time.
 \subsection*{A pair of lists}
 \subsection*{A pair of lists, exploiting laziness}
 \subsection*{A $O(1)$ list}

@@ -5,12 +5,10 @@ require_once 'gnuplot/Plot.php';
 Graph::setDefaults(array(
 	'terminal' => 'png #FFFFFF nocrop enhanced font helvetica 18 size 1200,900',
 	'grid' => null,
-	// 'xrange' => '[0:12000]',
 	'xlabel' => '"Vertices"',
 	'ylabel' => '"Time (ms)"',
 	'key' => 'bmargin',
-	'logscale' => 'x',
-	'logscale' => 'y'
+	'logscale' => 'x'
 ));
 
 $file = 'logs/concatenated.averages';
@@ -40,35 +38,38 @@ $stdline = 'lines linewidth 2 linecolor rgb';
 $columns = array(3 => 'minimum', 4 => 'maximum', 5 => 'averages', 6 => 'standard_deviation', 7 => 'samples');
 $generators = array("simple" => 'Populate/Clear', 'insertonly' => 'Inject Only', 'reuseremove_snd' => 'Queue Reuse (#1)', 'reuseremove_fth' => 'Queue Reuse (#2)');
 $algorithms = array($simple, $lrpair, $pairs, $preev);
-
-foreach($columns as $column => $columnName) {
-	foreach($generators as $generator => $generatorName)  {
-		
-		$png = "graphs/{$generator}_{$columnName}.png";
-		$eps = "graphs/{$generator}_{$columnName}.eps";
-		if(file_exists($png) && file_exists($eps))
-			if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
-				continue;
-		$columnName = str_replace('_', ' ', $columnName);
-		
-		$graph = new Graph;
-		
-		if($columnName == 'samples')
-			$graph->ylabel = '"Samples"';
-		
-		$graph->title = "\"$generatorName benchmark\\n$columnName\"";
-		
-		foreach($algorithms as $algo) {
-			$plot = new Plot;
-			$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
-			$plot->datamodifiers = "using 2:$column";
-			$plot->style = "$stdline '$algo->color'";
-			$plot->title = $algo->name;
-			$graph->addPlot($plot);
+$ranges = array('full' => null, 'low' => '[1:5000]');
+foreach($ranges as $rangeName => $range) {
+	foreach($columns as $column => $columnName) {
+		foreach($generators as $generator => $generatorName)  {
+			
+			$png = "graphs/{$generator}_{$columnName}_{$rangeName}.png";
+			$eps = "graphs/{$generator}_{$columnName}_{$rangeName}.eps";
+			if(file_exists($png) && file_exists($eps))
+				if(filemtime($file) < filemtime($png) && filemtime(__FILE__) < filemtime($png))
+					continue;
+			$columnName = str_replace('_', ' ', $columnName);
+			
+			$graph = new Graph;
+			if($range)
+				$graph->xrange = $range;
+			if($columnName == 'samples')
+				$graph->ylabel = '"Samples"';
+			
+			$graph->title = "\"$generatorName benchmark\\n$columnName\"";
+			
+			foreach($algorithms as $algo) {
+				$plot = new Plot;
+				$plot->datafile = "< grep \"{$algo->selector}_{$generator}\" $file";
+				$plot->datamodifiers = "using 2:$column";
+				$plot->style = "$stdline '$algo->color'";
+				$plot->title = $algo->name;
+				$graph->addPlot($plot);
+			}
+			$graph->output($png);
+			$graph->terminal = "epslatex linewidth 3";
+			$graph->output($eps);
+			// echo $graph;
 		}
-		$graph->output($png);
-		$graph->terminal = "epslatex linewidth 3";
-		$graph->output($eps);
-		// echo $graph;
 	}
 }
