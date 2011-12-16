@@ -14,7 +14,7 @@ The worst-case test for this queue is a bit more tricky. We didn't get it quite 
 The amotized $O(1)$ should be obvious on figure \ref{simple-high}, but it seems to grow in a super linear shape. We do not have an explanation for this, but maybe a bigger input will normalize the graph, or something fundamental in the Haskell VM causes this.
 
 \subsection*{A $O(1)$ list}
-Since the queue gurantee worst-case $O(1)$ for both operations, we can use it for comparison with the other queues, and see that it works fast in all cases. For the standard insert/remove benchmark, it unfortunately, just as the lazy pairs queue, something that looks like super liniar growth. We do not think cache effects are the cause since we're well beyond 1 million elements in the queue. This again leave our best bet to be the nature of the Haskell VM (garbage collector and other mechanics).
+Since the queue gurantee worst-case $O(1)$ for both operations, we can use it for comparison with the other queues, and see that it works fast in all cases. For the standard insert/remove benchmark, it unfortunately show something that looks like super liniar growth, just as the lazy pairs queue. We do not think cache effects are the cause since we're well beyond 1 million elements in the queue. This again leave our best bet to be the nature of the Haskell VM (garbage collector and other mechanics).
 
 
 \begin{figure}[htb]
