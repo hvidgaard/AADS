@@ -24,12 +24,14 @@ reuseremove_snd queue size =
 reuseremove_fth :: (Queue a) => a -> Int -> a
 reuseremove_fth queue size =
 	let full = populate queue size
-	in repeatR (takeQ full (diff size)) size
+	in repeatR (populate full (diff size)) size
 	where
 		diff :: Int -> Int
-		diff elms =
-			let e = fromIntegral elms
-			in round (2^(ceiling $ sqrt e) - e - 2)
+		diff count =
+			let
+				elms = fromIntegral count
+				elms_exp = max ((ceiling $ logBase 2 elms)+1) 0
+			in max (round (2^elms_exp-elms-2)) 0
 
 -- populate the queue with random numbers
 populate :: (Queue a) => a -> Int -> a
