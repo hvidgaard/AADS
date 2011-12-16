@@ -4,16 +4,11 @@
 \subsection*{A pair of lists}
 \subsection*{A pair of lists, exploiting laziness}
 \subsection*{A $O(1)$ list}
-
-\input{../benchmark/graphs/alternate_low.tex}
-\input{../benchmark/graphs/alternate_mid.tex}
-\input{../benchmark/graphs/alternate_full.tex}
-\input{../benchmark/graphs/simple_low.tex}
-\input{../benchmark/graphs/simple_mid.tex}
 \input{../benchmark/graphs/simple_full.tex}
-\input{../benchmark/graphs/reuseremove_snd_low.tex}
-\input{../benchmark/graphs/reuseremove_snd_mid.tex}
+
 \input{../benchmark/graphs/reuseremove_snd_full.tex}
-\input{../benchmark/graphs/reuseremove_fth_low.tex}
-\input{../benchmark/graphs/reuseremove_fth_mid.tex}
+
+The graph below looks unusual because of the way our benchmark works. In order to force the worst-case scenario of the paired lazy lists, the size of the left list has to be exactly one less than the size of the right list. Given the nature of our benchmarking framework we are stuck with whatever size we are given. Therefore we fill up the queue until the two lists are exactly the same. For any given list size its actual size is going to be one less than the subsequent exponent of 2. Since the number of insertions shrink as the size increases, the lines are declining slightly only to jump at the point where we have reached a new exponent of 2.
+
 \input{../benchmark/graphs/reuseremove_fth_full.tex}
+
