@@ -37,8 +37,8 @@ $stdline = 'lines linewidth 2 linecolor rgb';
 
 $generators = array(
 	'simple' => 'Populate/Clear',
-	'reuseremove_snd' => 'Queue Reuse (#1)',
-	'reuseremove_fth' => 'Queue Reuse (#2)');
+	'reuseremove_snd' => 'Queue Reuse (1)',
+	'reuseremove_fth' => 'Queue Reuse (2)');
 $algorithms = array(
 	$simple,
 	$lrpair,
