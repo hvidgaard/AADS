@@ -1,17 +1,17 @@
 \section*{Experiments with worst-case}
 
 \subsection*{A standard Haskell list}
-The worst-case test for this queue is simply a timing of how long it takes to insert $n$ elements and then removing them again. Since either insert or remove will be $O(n)$, the graph is expected to grow in a super linear shape. This is consistent with figure \ref{simple}. All other queues are obviously much faster, and that is in line with the $O(1)$ gurantees.
+The worst-case test for this queue is simply a timing of how long it takes to insert $n$ elements and then removing them again. Since either insert or remove will be $O(n)$, the graph is expected to grow in a super linear shape. This is consistent with figure ~\ref{simple}. All other queues are obviously much faster, and that is in line with the $O(1)$ gurantees.
 
 \subsection*{A pair of lists}
-The worst-case here, is reusing the function to repeately extract the element that will cause the queue to reverse the list. This is seen on figure \ref{reuse-remove-2}. All other queues are much faster in this aspect. The simple list because the remove operation is constant, the paired lazy list because it gurantee a $O(\log n)$ worst-case the the pre-evaluated list because it gurantee a $O(1)$.
+The worst-case here, is reusing the function to repeately extract the element that will cause the queue to reverse the list. This is seen on figure ~\ref{reuse-remove-2}. All other queues are much faster in this aspect. The simple list because the remove operation is constant, the paired lazy list because it gurantee a $O(\log n)$ worst-case the the pre-evaluated list because it gurantee a $O(1)$.
 
-The list still gurantee a amotized $O(1)$ if we do not repeat expensive operations, and that is seen in figure \ref{simple-high}
+The list still gurantee a amotized $O(1)$ if we do not repeat expensive operations, and that is seen in figure ~\ref{simple-high}
 
 \subsection*{A pair of lists, exploiting laziness}
-The worst-case test for this queue is a bit more tricky. We didn't get it quite right, and the graph in figure \ref{reuse-remove-4} was the best we managed to produce. Unfortunately it's not really useful, but what we expect to see is that the lazy pair queue will have a $O(\log n)$ growth, with list of pairs queue $O(n)$ as described above, and the other two queues to have a constant time remove.
+The worst-case test for this queue is a bit more tricky. We didn't get it quite right, and the graph in figure ~\ref{reuse-remove-4} was the best we managed to produce. Unfortunately it's not really useful, but what we expect to see is that the lazy pair queue will have a $O(\log n)$ growth, with list of pairs queue $O(n)$ as described above, and the other two queues to have a constant time remove.
 
-The amotized $O(1)$ should be obvious on figure \ref{simple-high}, but it seems to grow in a super linear shape. We do not have an explanation for this, but maybe a bigger input will normalize the graph, or something fundamental in the Haskell VM causes this.
+The amotized $O(1)$ should be obvious on figure ~\ref{simple-high}, but it seems to grow in a super linear shape. We do not have an explanation for this, but maybe a bigger input will normalize the graph, or something fundamental in the Haskell VM causes this.
 
 \subsection*{A $O(1)$ list}
 Since the queue gurantee worst-case $O(1)$ for both operations, we can use it for comparison with the other queues, and see that it works fast in all cases. For the standard insert/remove benchmark, it unfortunately show something that looks like super liniar growth, just as the lazy pairs queue. We do not think cache effects are the cause since we're well beyond 1 million elements in the queue. This again leave our best bet to be the nature of the Haskell VM (garbage collector and other mechanics).
@@ -36,7 +36,7 @@ Since the queue gurantee worst-case $O(1)$ for both operations, we can use it fo
 \label{reuse-remove-2}
 \end{figure}
 
-The graph in figure \ref{reuse-remove-4} looks unusual because of the way our benchmark works. In order to force the worst-case scenario of the paired lazy lists, the size of the left list has to be exactly one less than the size of the right list. Given the nature of our benchmarking framework we are stuck with whatever size we are given. Therefore we fill up the queue until the two lists are exactly the same. For any given list size its actual size is going to be one less than the subsequent exponent of 2. Since the number of insertions shrink as the size increases, the lines are declining slightly only to jump at the point where we have reached a new exponent of 2.
+The graph in figure ~\ref{reuse-remove-4} looks unusual because of the way our benchmark works. In order to force the worst-case scenario of the paired lazy lists, the size of the left list has to be exactly one less than the size of the right list. Given the nature of our benchmarking framework we are stuck with whatever size we are given. Therefore we fill up the queue until the two lists are exactly the same. For any given list size its actual size is going to be one less than the subsequent exponent of 2. Since the number of insertions shrink as the size increases, the lines are declining slightly only to jump at the point where we have reached a new exponent of 2.
 
 
 \begin{figure}[htb]
