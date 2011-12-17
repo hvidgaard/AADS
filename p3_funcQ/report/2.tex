@@ -5,7 +5,7 @@ A list in Haskell is nothing more than a singly linked list. So in other words, 
 Using a standard Haskell list is a very simple data structure. Unfortunately it is only usable as a queue if you gurantee that it only contain a few elements. Because of how Haskell represent lists, when inserting at the end of the queue, it will have to traverse the entire list, before appending the new element. Thus the complexity for inserting is $O(n)$. Removing on the other hand, is fairly simple. You can simply remove the first element in constant time. Thus $O(1)$ for remove.
 
 \subsubsection{Worst-case input}
-The worst-case test is fairly straight forward. Simply insert $n$ elements and that is it. Note that the lazy nature of append, require us to force strict behaviour \textbf{HOW DO WE DO THIS?}
+The worst-case test is fairly straight forward. Simply insert $n$ elements and that is it. Note that the lazy nature of append, require us to force strict behaviour.
 
 \subsection*{A pair of lists}
 Using a pair of lists, we can obtain amotized $O(1)$ as long as we do not repeat expensive operations. The queue works by having a pair of lists, a $left$ and a $right$. When inserting, we will add the element to the head of $right$. Removing on the other hand is a bit more complicated. There are 2 cases:
